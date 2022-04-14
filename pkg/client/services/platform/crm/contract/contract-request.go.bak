@@ -1,0 +1,78 @@
+package pro
+
+import (
+	"context"
+	"strings"
+
+	"github.com/AlecAivazis/survey/v2"
+	"github.com/spf13/viper"
+	catalog "mmesh.dev/m-api-go/grpc/resources/services/catalog/pro"
+	"mmesh.dev/m-api-go/grpc/resources/services/platform/pro"
+	"mmesh.dev/m-cli/pkg/client/account"
+	"mmesh.dev/m-cli/pkg/client/services/provider"
+	"mmesh.dev/m-cli/pkg/grpc"
+	"mmesh.dev/m-cli/pkg/input"
+	"mmesh.dev/m-cli/pkg/output"
+	"mmesh.dev/m-cli/pkg/status"
+)
+
+func (api *API) Request() {
+	a := account.GetAccount()
+
+	userEmail := viper.GetString("user.email")
+	if len(userEmail) == 0 {
+		userEmail = input.GetInput("User Email:", "", "", input.ValidEmail)
+	}
+
+	userNickname := strings.Split(userEmail, "@")[0]
+
+	nxc, grpcConn := grpc.GetServicesAPIClient(true)
+	defer grpcConn.Close()
+
+	serviceCategory := selectServiceCategory()
+
+	serviceOffer := provider.GetServiceOffer(serviceCategory)
+
+	scReq := &pro.ServiceContractRequest{
+		AccountID:         a.AccountID,
+		OwnerUserEmail:    userEmail,
+		OwnerUserNickname: userNickname,
+		Spec: &pro.ServiceContractSpec{
+			ServiceOffer: serviceOffer,
+		},
+	}
+
+	s := output.Spinner()
+
+	sc, err := nxc.RequestServiceContract(context.TODO(), scReq)
+	if err != nil {
+		status.Error(err, "Unable to create service contract request")
+	}
+
+	s.Stop()
+
+	Output().Show(sc)
+}
+
+func selectServiceCategory() catalog.ServiceCategory {
+	svcCategories := map[string]catalog.ServiceCategory{
+		"Advisory Service":       catalog.ServiceCategory_ADVISORY_SERVICE,
+		"Managed Service":        catalog.ServiceCategory_MANAGED_SERVICE,
+		"Infrastructure Project": catalog.ServiceCategory_INFRASTRUCTURE_PROJECT,
+		"Automation Project":     catalog.ServiceCategory_AUTOMATION_PROJECT,
+		"Software Development":   catalog.ServiceCategory_SOFTWARE_DEVELOPMENT,
+		"Project Management":     catalog.ServiceCategory_PROJECT_MANAGEMENT,
+		"Special Project":        catalog.ServiceCategory_SPECIAL_PROJECT,
+		"Special Task":           catalog.ServiceCategory_SPECIAL_TASK,
+	}
+
+	opts := make([]string, 0)
+
+	for c, _ := range svcCategories {
+		opts = append(opts, c)
+	}
+
+	sc := input.GetSelect("Service Category:", "", opts, survey.Required)
+
+	return svcCategories[sc]
+}

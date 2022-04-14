@@ -1,0 +1,6 @@
+package pro
+
+func (api *API) List(providerAccount bool) {
+	//output.Show(scl)
+	Output().List(serviceContracts(providerAccount))
+}

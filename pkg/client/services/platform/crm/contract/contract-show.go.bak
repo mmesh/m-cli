@@ -1,0 +1,5 @@
+package pro
+
+func (api *API) Show(providerAccount bool) {
+	Output().Show(GetServiceContract(providerAccount))
+}
