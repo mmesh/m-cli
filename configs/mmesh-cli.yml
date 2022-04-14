@@ -1,0 +1,11 @@
+controller:
+  id: mmesh-dev-01
+  authServer: "https://mmesh.domain.tld"
+  endpoint: "mmesh.domain.tld:443"
+
+account:
+  # id: dev
+
+admin:
+  # token: ""
+  # secret: ""

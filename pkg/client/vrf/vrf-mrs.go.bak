@@ -1,0 +1,42 @@
+package vrf
+/*
+import (
+	"context"
+
+	"mmesh.dev/m-cli/pkg/grpc"
+	"mmesh.dev/m-cli/pkg/output"
+	"mmesh.dev/m-cli/pkg/status"
+)
+
+func (api *API) EnableVRFRelayService() {
+	v := GetVRF(false)
+
+	nxc, grpcConn := grpc.GetCoreAPIClient()
+	defer grpcConn.Close()
+
+	output.ShowWaiting()
+
+	v, err := nxc.EnableVRFRelayService(context.TODO(), v)
+	if err != nil {
+		status.Error(err, "Unable to delete VRF (subnet)")
+	}
+
+	Output().Show(v)
+}
+
+func (api *API) DisableVRFRelayService() {
+	v := GetVRF(false)
+
+	nxc, grpcConn := grpc.GetCoreAPIClient()
+	defer grpcConn.Close()
+
+	output.ShowWaiting()
+
+	v, err := nxc.DisableVRFRelayService(context.TODO(), v)
+	if err != nil {
+		status.Error(err, "Unable to delete VRF (subnet)")
+	}
+
+	Output().Show(v)
+}
+*/

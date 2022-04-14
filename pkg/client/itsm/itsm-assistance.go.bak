@@ -1,0 +1,14 @@
+package itsm
+
+import (
+	"mmesh.dev/m-api-go/grpc/resources/itsm"
+)
+
+// customer support
+func (api *API) AssistanceInfo() {
+	submitIssue(itsm.IssueType_ASSISTANCE, itsm.IssueSubtype_ASSISTANCE_INFO)
+}
+
+func (api *API) AssistanceSupport() {
+	submitIssue(itsm.IssueType_ASSISTANCE, itsm.IssueSubtype_ASSISTANCE_SUPPORT)
+}

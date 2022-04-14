@@ -1,0 +1,60 @@
+package network
+
+import (
+	"context"
+
+	"github.com/AlecAivazis/survey/v2"
+	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-cli/pkg/client/tenant"
+	"mmesh.dev/m-cli/pkg/grpc"
+	"mmesh.dev/m-cli/pkg/input"
+	"mmesh.dev/m-cli/pkg/output"
+	"mmesh.dev/m-cli/pkg/status"
+)
+
+func (api *API) Set() {
+	t := tenant.GetTenant(false)
+
+	nxc, grpcConn := grpc.GetCoreAPIClient()
+	defer grpcConn.Close()
+
+	n := GetNetwork(true)
+	if n != nil { // editing existing resource
+		output.Choice("Edit Network")
+	} else { // <new> resource
+		output.Choice("New Network")
+
+		n = &network.Network{
+			AccountID: t.AccountID,
+			TenantID:  t.TenantID,
+		}
+
+		if err := survey.AskOne(
+			&survey.Input{Message: "Network ID:"},
+			&n.NetID,
+			survey.WithValidator(validNetID),
+			survey.WithIcons(input.SurveySetIcons),
+		); err != nil {
+			status.Error(err, "Unable to get response")
+		}
+
+		helpMsg := "A valid /16 network with format 'n.n.0.0/16' is required"
+		n.NetworkCIDR = input.GetInput("Network CIDR:", helpMsg, "", input.ValidNetwork)
+	}
+
+	n.Description = input.GetInput("Description:", "", n.Description, survey.Required)
+
+	n.RouteVRFs = input.GetConfirm("Route this network's subnets (VRFs) each other?", n.RouteVRFs)
+
+	s := output.Spinner()
+
+	n, err := nxc.SetNetwork(context.TODO(), n)
+	if err != nil {
+		status.Error(err, "Unable to set network")
+	}
+
+	s.Stop()
+
+	// output.Show(n)
+	Output().Show(n)
+}

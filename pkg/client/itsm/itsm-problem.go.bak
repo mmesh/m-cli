@@ -1,0 +1,10 @@
+package itsm
+
+import (
+	"mmesh.dev/m-api-go/grpc/resources/itsm"
+)
+
+// problem
+func (api *API) Problem() {
+	submitIssue(itsm.IssueType_PROBLEM, itsm.IssueSubtype_PROBLEM_PLATFORM)
+}

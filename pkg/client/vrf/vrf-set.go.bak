@@ -1,0 +1,110 @@
+package vrf
+
+import (
+	"context"
+
+	"github.com/AlecAivazis/survey/v2"
+	network_pb "mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-cli/pkg/client/network"
+	"mmesh.dev/m-cli/pkg/grpc"
+	"mmesh.dev/m-cli/pkg/input"
+	"mmesh.dev/m-cli/pkg/output"
+	"mmesh.dev/m-cli/pkg/status"
+	"mmesh.dev/m-cli/pkg/vars"
+	"mmesh.dev/m-lib/pkg/ipnet"
+)
+
+func (api *API) Set() {
+	n := network.GetNetwork(false)
+
+	v := GetVRF(true)
+	if v != nil { // editing existing resource
+		output.Choice("Edit Subnet")
+	} else { // <new> resource
+		output.Choice("New Subnet")
+
+		v = &network_pb.VRF{
+			AccountID: n.AccountID,
+			TenantID:  n.TenantID,
+			NetID:     n.NetID,
+			IPAM: &network_pb.IPAM{
+				NetworkCIDR: n.NetworkCIDR,
+			},
+		}
+
+		// global var needed by the validation function
+		networkCIDR = n.NetworkCIDR
+
+		helpText, err := subnetHelp(networkCIDR)
+		if err != nil {
+			status.Error(err, "Unable to parse network CIDR")
+		}
+		if err := survey.AskOne(
+			&survey.Input{Message: "Subnet CIDR:", Help: helpText},
+			&v.IPAM.SubnetCIDR,
+			survey.WithValidator(validSubnet),
+			survey.WithIcons(input.SurveySetIcons),
+		); err != nil {
+			status.Error(err, "Unable to get response")
+		}
+
+		subnetID, err := getSubnetID(v.IPAM.SubnetCIDR)
+		if err != nil {
+			status.Error(err, "Unable to parse subnet CIDR")
+		}
+
+		v.VRFID = subnetID
+
+		v.NetworkPolicy = &network_pb.Policy{
+			DefaultPolicy:  ipnet.Policy_ACCEPT,
+			NetworkFilters: make([]*network_pb.Filter, 0),
+		}
+	}
+
+	v.Description = input.GetInput("Subnet Description:", "", v.Description, survey.Required)
+
+	pwMsg := "This secret will never be shown, keep it safe"
+	v.AuthSecret = input.GetPassword("Subnet Secret:", pwMsg)
+
+	if v.NetworkPolicy == nil {
+		v.NetworkPolicy = &network_pb.Policy{
+			DefaultPolicy:  ipnet.Policy_ACCEPT,
+			NetworkFilters: make([]*network_pb.Filter, 0),
+		}
+	}
+	np := v.NetworkPolicy
+	np.DefaultPolicy = input.GetSelect("Default Network Policy:", "", vars.Policies, survey.Required)
+
+	// if v.RelayService == nil {
+	// 	v.RelayService = &network_pb.NodeInstance{}
+	// }
+	// v.RelayService.Enabled = true
+
+	// promptConfirm := &survey.Confirm{Default: v.RelayService.Enabled}
+	// if v.RelayService.Enabled {
+	// 	promptConfirm.Message = "Do you want to keep enabled the managed relay service on this subnet?"
+
+	// } else {
+	// 	promptConfirm.Message = "Do you want to enable the managed relay service on this subnet?"
+	// }
+
+	// if err := survey.AskOne(promptConfirm, &v.RelayService.Enabled, survey.WithValidator(survey.Required), survey.WithIcons(input.SurveySetIcons)); err != nil {
+	// 	status.Error(err, "Unable to get response")
+	// }
+
+	s := output.Spinner()
+
+	nxc, grpcConn := grpc.GetCoreAPIClient()
+	defer grpcConn.Close()
+
+	v, err := nxc.SetVRF(context.TODO(), v)
+	if err != nil {
+		s.Stop()
+		status.Error(err, "Unable to set VRF (subnet)")
+	}
+
+	s.Stop()
+
+	// output.Show(v)
+	Output().Show(v)
+}

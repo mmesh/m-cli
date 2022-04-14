@@ -1,0 +1,147 @@
+version: '3'
+
+silent: true
+
+vars:
+  NAME: m-cli
+  ORG: mmesh
+  DOMAIN: mmesh.dev
+  PROJECT: mmesh
+  GITHUB_PKG: 'github.com/{{.ORG}}/{{.NAME}}'
+  PREFIX: {sh: pwd}
+  PROJECT_DIR: '{{.PREFIX}}/../..'
+  DIST_DIR: '{{.PREFIX}}/_dist'
+  VERSION: {sh: cat VERSION}
+  LOCAL_UID: {sh: id -u}
+  LOCAL_GID: {sh: id -g}
+  PKG_REPO: 'mmesh'
+  PKG_REPO_DEV: 'mmesh-dev'
+  # GS_BUCKET: 'gs://mmesh-io'
+  S3_BUCKET: 'nl-ams_scaleway:mmesh'
+
+env:
+  PKG: '{{.DOMAIN}}/{{.PROJECT}}'
+  VERSION: {sh: cat VERSION}
+  VERSION_DATE: {sh: date -u +%Y%m%d%H%M%S}
+  GO_VERSION: {sh: go version | cut -f 3 -d ' '}
+  GO111MODULE: on
+  CGO_ENABLED: 0
+  #GOPRIVATE: 'mmesh.dev/m-api-go,mmesh.dev/m-lib'
+
+tasks:
+  _build-all:
+    cmds:
+      - task: _build-cli
+
+  _build-cli:
+    cmds:
+      - task: golang:go-generate
+      - task: golang:go-fmt
+      - task: golang:go-verify-vendor
+      # - task: golang:go-vet
+      # - task: golang:golangci-lint
+      # - goreleaser build -f build/ci/goreleaser/cli.yml --snapshot --rm-dist
+      - goreleaser release -f build/ci/goreleaser/release.yml --snapshot --rm-dist
+      # - goreleaser build -f build/ci/goreleaser/release.yml --snapshot --rm-dist
+
+  build-all:
+    desc: Build all binaries.
+    deps: [golang:golang-builder]
+    cmds:
+      - docker run --rm -e GITHUB_TOKEN="$(cat $HOME/.cloud/github/github_token.buildbot)" -e COSIGN_PWD="$(cat $HOME/.x6a/mmesh/cosign/pw.txt)" -v $HOME/.x6a/mmesh/cosign:/cosign:ro -v {{.PROJECT_DIR}}:/go/src/{{.PROJECT}} -v /var/run/docker.sock:/var/run/docker.sock -w /go/src/{{.PROJECT}}/modules/{{.NAME}} --cap-add=IPC_LOCK --ulimit memlock=-1:-1 x6adev/golang-builder:latest _build-all
+      - sudo chown -R {{.LOCAL_UID}}:{{.LOCAL_GID}} .
+
+  build-cli:
+    desc: Build the cli binary.
+    deps: [golang:golang-builder]
+    cmds:
+      - docker run --rm -e GITHUB_TOKEN="$(cat $HOME/.cloud/github/github_token.buildbot)" -e COSIGN_PWD="$(cat $HOME/.x6a/mmesh/cosign/pw.txt)" -v $HOME/.x6a/mmesh/cosign:/cosign:ro -v {{.PROJECT_DIR}}:/go/src/{{.PROJECT}} -v /var/run/docker.sock:/var/run/docker.sock -w /go/src/{{.PROJECT}}/modules/{{.NAME}} --cap-add=IPC_LOCK --ulimit memlock=-1:-1 x6adev/golang-builder:latest _build-cli
+      - sudo chown -R {{.LOCAL_UID}}:{{.LOCAL_GID}} .
+
+  clean:
+    desc: Clean everything.
+    deps: [golang:go-clean, docker:docker-images-clean]
+    cmds:
+      - echo 'Cleaning dist working directory...'
+      - rm -rf {{.DIST_DIR}}
+
+  docker-build-cli:
+    desc: docker build -- mmesh-cli
+    # deps: [build-cli]
+    cmds:
+    - task: docker:docker-build
+      vars: {IMAGE: "mmeshctl", DIR: "_dist/mmesh-cli_linux_amd64", DOCKERFILE: "./build/package/dockerfiles/dockerfile-cli"}
+
+  docker-push-cli-dev:
+    desc: docker push -- mmesh-cli (dev build)
+    deps: [docker-build-cli]
+    cmds:
+    - task: docker:docker-push
+      vars: {IMAGE: "mmeshctl", VERSION: "snapshot", REPO: "mmeshdev", TAG: "dev"}
+    - task: docker:image-scan
+      vars: {IMAGE: "mmeshctl", REPO: "mmeshdev", TAG: "dev"}
+
+  docker-push-cli-stable:
+    desc: docker push -- mmesh-cli (stable build)
+    deps: [docker-build-cli]
+    cmds:
+    - task: docker:docker-push
+      vars: {IMAGE: "mmeshctl", VERSION: '{{.VERSION}}', REPO: "mmeshdev", TAG: "stable"}
+    - task: docker:image-scan
+      vars: {IMAGE: "mmeshctl", REPO: "mmeshdev", TAG: "stable"}
+
+  release-binaries-dev:
+    desc: Release binaries (dev build)
+    dir: '{{.PREFIX}}'
+    cmds:
+      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmeshctl_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO_DEV}}'
+      - ./scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmeshctl_*_linux_amd64.deb '{{.PKG_REPO_DEV}}'
+      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmeshctl_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO_DEV}}'
+      - ./scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmeshctl_*_linux_amd64.rpm '{{.PKG_REPO_DEV}}'
+      # - ./scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}' 'dev'
+      - ./scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.S3_BUCKET}}' 'dev'
+
+  release-binaries-stable:
+    desc: Release binaries (stable build)
+    dir: '{{.PREFIX}}'
+    cmds:
+      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmeshctl_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO}}'
+      - ./scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmeshctl_*_linux_amd64.deb '{{.PKG_REPO}}'
+      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmeshctl_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO}}'
+      - ./scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmeshctl_*_linux_amd64.rpm '{{.PKG_REPO}}'
+      # - ./scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}' 'stable'
+      - ./scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.S3_BUCKET}}' 'stable'
+
+  release-all-dev:
+    desc: Release docker images and binaries (dev build)
+    cmds:
+      - task: git:git-update
+      - task: docker-push-cli-dev
+      - task: release-binaries-dev
+
+  release-all-stable:
+    desc: Release docker images and binaries (stable build)
+    cmds:
+      - task: docker-push-cli-stable
+      - task: release-binaries-stable
+
+  goreleaser:
+    desc: Build and release all the packages.
+    deps: [docker:docker-login]
+    cmds:
+      - task: golang:go-generate
+      - task: golang:go-fmt
+      - task: golang:go-verify-vendor
+      # - task: golang:go-vet
+      # - task: golang:golangci-lint
+      - task: git:git-update
+      - task: git:git-tag
+      - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist
+      # - ./scripts/_local/build/gh-tag-delete.sh '{{.VERSION}}'
+      - task: release-binaries-stable
+      - task: git:version-bump
+
+includes:
+  git: ./build/taskfiles/build/gitTasks.yml
+  golang: ./build/taskfiles/build/golangTasks.yml
+  docker: ./build/taskfiles/build/dockerTasks.yml
