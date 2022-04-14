@@ -1,0 +1,27 @@
+package pro
+
+import (
+	"mmesh.dev/m-cli/pkg/client/services/platform/pro/output"
+)
+
+type Interface interface {
+	Request()
+	List(providerAccount bool)
+	Show(providerAccount bool)
+	Delete(providerAccount bool)
+
+	Confirm()
+	Activate()
+	Reject()
+	Cancel(providerAccount bool)
+	Finalize(providerAccount bool)
+}
+type API struct{}
+
+func Resource() Interface {
+	return &API{}
+}
+
+func Output() output.Interface {
+	return &output.API{}
+}
