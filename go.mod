@@ -2,9 +2,9 @@ module mmesh.dev/m-cli
 
 go 1.17
 
-replace mmesh.dev/m-api-go => ./modules/m-api-go
+replace mmesh.dev/m-api-go => ../m-api/_dist/mmesh.dev/m-api-go
 
-replace mmesh.dev/m-lib => ./modules/m-lib
+replace mmesh.dev/m-lib => ../m-lib
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.2

@@ -1,6 +1,6 @@
 # mmesh-cli
 
-This repository contains the `mmeshctl` CLI for managing the `mmesh` multi-cloud integration platform.
+This repository contains the `mmeshctl` CLI for managing the mmesh multi-cloud integration platform.
 
 ## Minimun Requirements
 
