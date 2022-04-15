@@ -607,7 +607,7 @@ k8s.io/klog/v2
 ## explicit; go 1.12
 k8s.io/utils/integer
 # mmesh.dev/m-api-go v0.0.0-00010101000000-000000000000 => ../m-api/_dist/mmesh.dev/m-api-go
-## explicit; go 1.15
+## explicit; go 1.17
 mmesh.dev/m-api-go/grpc/common/datetime
 mmesh.dev/m-api-go/grpc/common/empty
 mmesh.dev/m-api-go/grpc/common/jwt
