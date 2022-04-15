@@ -23,7 +23,7 @@ View the [changelog](/CHANGELOG.md) for the latest updates and changes by versio
 ### Binary Downloads
 
 Linux, macOS and Windows binary downloads are available from the [mmesh downloads](https://mmesh.io/downloads)
-page or from each [GitHub Releases](https://github.com/mmesh/mmesh-cli/releases) page.
+page or from each [GitHub Releases](https://github.com/mmesh/m-cli/releases) page.
 
 Download the pre-compiled binaries and install them with the appropriate tools.
 
@@ -31,7 +31,7 @@ Download the pre-compiled binaries and install them with the appropriate tools.
 
 mmesh also provides a package repo that contains both DEB and RPM downloads.
 
-For DEB-based platforms (e.g. Ubuntu and Debian) run the following to setup a new APT sources.list entry and install `mmeshctl`:
+For DEB-based platforms (e.g. Ubuntu and Debian) run the following to setup a new APT sources.list entry and install `mmesh-cli`:
 
 ```shell
 echo 'deb [trusted=yes] https://repo.mmesh.io/apt/ /' | sudo tee /etc/apt/sources.list.d/mmesh.list
@@ -39,7 +39,7 @@ sudo apt update
 sudo apt install mmesh-cli
 ```
 
-For RPM-based platforms (e.g. RHEL, CentOS) use the following to create a repo file and install `mmeshctl`:
+For RPM-based platforms (e.g. RHEL, CentOS) use the following to create a repo file and install `mmesh-cli`:
 
 ```shell
 cat <<EOF | sudo tee /etc/yum.repos.d/mmesh.repo
@@ -61,9 +61,9 @@ All artifacts are checksummed and the checksum file is signed with [cosign](http
 1. Download the files you want, and the `checksums.txt`, `checksum.txt.pem` and `checksums.txt.sig` files from the [releases](https://github.com/mmesh/mmesh-cli/releases) page:
 
     ```shell
-    wget https://github.com/mmesh/mmesh-cli/releases/download/v0.1.0/checksums.txt
-    wget https://github.com/mmesh/mmesh-cli/releases/download/v0.1.0/checksums.txt.sig
-    wget https://github.com/mmesh/mmesh-cli/releases/download/v0.1.0/checksums.txt.pem
+    wget https://github.com/mmesh/m-cli/releases/download/v0.1.0/checksums.txt
+    wget https://github.com/mmesh/m-cli/releases/download/v0.1.0/checksums.txt.sig
+    wget https://github.com/mmesh/m-cli/releases/download/v0.1.0/checksums.txt.pem
     ```
 
 2. Verify the signature:

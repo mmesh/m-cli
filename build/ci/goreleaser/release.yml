@@ -2,8 +2,8 @@ project_name: mmesh-cli
 
 dist: _dist
 
-env_files:
-  github_token: ~/.cloud/github/github_token.buildbot
+# env_files:
+#   github_token: ~/.cloud/github/github_token.buildbot
 
 env:
   - GO111MODULE=on
@@ -12,11 +12,11 @@ env:
 
 before:
   hooks:
-    - go generate $(go list ./... | grep -v /vendor/)
-    - go fmt $(go list ./... | grep -v '/vendor/' | grep -v '.pb.go' | grep -v '.twirp.go' | grep -v 'bindata.go') | tee /dev/stderr
     - go mod tidy -v
     - go mod vendor
     - go mod verify
+    - go generate $(go list ./... | grep -v /vendor/)
+    - go fmt $(go list ./... | grep -v '/vendor/' | grep -v '.pb.go' | grep -v '.twirp.go' | grep -v 'bindata.go') | tee /dev/stderr
 
 builds:
 - id: "mmesh-cli"
@@ -97,24 +97,20 @@ archives:
 - id: mmesh-cli
   builds:
     - mmesh-cli
-  # name_template: "{{ .ProjectName }}ctl_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
-  # name_template: "{{ .ProjectName }}ctl_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  # name_template: "{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
   name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
   wrap_in_directory: false
   format: tar.gz
   format_overrides:
     - goos: windows
       format: zip
-  # files:
-  #   - ./_dist/*.sig
 
 nfpms:
   - id: mmesh-cli
     package_name: mmesh-cli
-    # file_name_template: "{{ .ProjectName }}ctl_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
-    # file_name_template: "{{ .ProjectName }}ctl_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    # file_name_template: "{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
+    # file_name_template: "{{ .ProjectName }}_{{ .Arch }}"
     file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
-    # file_name_template: "{{ .ProjectName }}ctl_{{ .Arch }}"
     builds:
       - mmesh-cli
     vendor: mmesh.io
@@ -186,7 +182,7 @@ release:
   name_template: '{{.Tag}}'
   disable: false
   # extra_files:
-  #   - glob: _dist/*.sig
+  #   - glob: ./_dist/*.sig
   footer: |
     **Full Changelog**: https://github.com/mmesh/m-cli/compare/{{ .PreviousTag }}...{{ .Tag }}
 
@@ -221,11 +217,11 @@ changelog:
 # publishers:
 #   # dev repos
 #   - name: repo.mmesh.dev/apt
-#     cmd: ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}ctl_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO_DEV}}'
+#     cmd: ./build/_deps/scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}ctl_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO_DEV}}'
 #   - name: repo.mmesh.dev/yum
-#     cmd: ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}ctl_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO_DEV}}'
+#     cmd: ./build/_deps/scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}ctl_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO_DEV}}'
 #   # stable repos
 #   - name: repo.mmesh.io/apt
-#     cmd: ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}ctl_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO}}'
+#     cmd: ./build/_deps/scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}ctl_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO}}'
 #   - name: repo.mmesh.io/yum
-#     cmd: ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}ctl_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO}}'
+#     cmd: ./build/_deps/scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}ctl_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO}}'

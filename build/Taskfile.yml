@@ -1,9 +1,6 @@
 version: '3'
 
 includes:
-  # git:
-  #   taskfile: ./build/_deps/taskfiles/build/gitTasks.yml
-  #   optional: true
   golang:
     taskfile: ./build/_deps/taskfiles/build/golangTasks.yml
     optional: true
@@ -21,7 +18,7 @@ vars:
   GITHUB_PKG: 'github.com/{{.ORG}}/{{.NAME}}'
   PREFIX:
     sh: pwd
-  PROJECT_DIR: '{{.PREFIX}}/../..'
+  PROJECT_DIR: '{{.PREFIX}}/..'
   DIST_DIR: '{{.PREFIX}}/_dist'
   VERSION:
     sh: svu current
@@ -70,16 +67,16 @@ tasks:
           -v $HOME/.x6a/mmesh/cosign:/cosign:ro \
           -v {{.PROJECT_DIR}}:/go/src/{{.PROJECT}} \
           -v /var/run/docker.sock:/var/run/docker.sock \
-          -w /go/src/{{.PROJECT}}/modules/{{.NAME}} \
+          -w /go/src/{{.PROJECT}}/{{.NAME}} \
           --cap-add=IPC_LOCK --ulimit memlock=-1:-1 \
           x6adev/golang-builder:latest {{.TASK_CMD}}
       - sudo chown -R {{.LOCAL_UID}}:{{.LOCAL_GID}} .
 
   _goreleaser:
     cmds:
+      # - task: golang:go-verify-vendor
       # - task: golang:go-generate
       # - task: golang:go-fmt
-      # - task: golang:go-verify-vendor
       ## - task: golang:go-vet
       ## - task: golang:golangci-lint
       - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist {{.OPTS}}
