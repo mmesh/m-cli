@@ -14,7 +14,7 @@ import (
 )
 
 func (api *API) Settings() {
-	a := fetchAccount()
+	a := FetchAccount()
 
 	Output().Configuration(a)
 

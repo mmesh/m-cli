@@ -15,7 +15,7 @@ import (
 )
 
 func (api *API) Subscription() {
-	a := fetchAccount()
+	a := FetchAccount()
 
 	Output().Subscriptions(a)
 
@@ -51,7 +51,7 @@ func (api *API) Subscription() {
 }
 
 func (api *API) ApplyPromotion() {
-	a := fetchAccount()
+	a := FetchAccount()
 
 	Output().Subscriptions(a)
 
