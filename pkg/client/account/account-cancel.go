@@ -13,7 +13,7 @@ import (
 )
 
 func (api *API) Cancel() {
-	a := fetchAccount()
+	a := FetchAccount()
 
 	nxc, grpcConn := grpc.GetManagerProviderAPIClient(true)
 	defer grpcConn.Close()

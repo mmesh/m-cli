@@ -30,7 +30,7 @@ func GetAccount() *account.Account {
 	}
 }
 
-func fetchAccount() *account.Account {
+func FetchAccount() *account.Account {
 	a := GetAccount()
 
 	nxc, grpcConn := grpc.GetControllerProviderAPIClient(true)
