@@ -47,11 +47,11 @@ builds:
     - CGO_ENABLED=0
   goos:
     - linux
-    - darwin
-    - windows
+    # - darwin
+    # - windows
   goarch:
     - amd64
-    - arm64
+    # - arm64
   goamd64:
     - v1
   # lang: go
@@ -138,7 +138,7 @@ nfpms:
         dst: /usr/share/doc/mmeshctl/LICENSE
 
 dockers:
-  - dockerfile: ./build/package/dockerfiles/dockerfile-cli
+  - dockerfile: ./build/package/dockerfiles/Dockerfile
     skip_push: false
     image_templates:
       - "mmeshdev/mmeshctl:latest"
