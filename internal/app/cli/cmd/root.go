@@ -38,6 +38,7 @@ Find support and more information:
   Project Website:     ` + version.MMESH_URL + `
   Documentation:       ` + version.MMESH_DOC_URL + `
   Join Us on Discord:  ` + version.DISCORD_URL,
+
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
@@ -85,6 +86,9 @@ func init() {
 
 	// cobra.OnInitialize(initConfig, adminOpts)
 	cobra.OnInitialize()
+
+	rootCmd.CompletionOptions.DisableDefaultCmd = true
+	// rootCmd.CompletionOptions.DisableDescriptions = true
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
