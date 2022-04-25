@@ -297,7 +297,7 @@ docker run --rm -ti -v $HOME/.mmesh:/root/.mmesh:ro mmeshdev/mmeshctl help
 
 ## Community
 
-Have questions, need support and or just want to talk about mmesh?
+Have questions, need support and or just want to talk?
 
 Get in touch with the mmesh community!
 
@@ -309,8 +309,7 @@ Get in touch with the mmesh community!
 
 Participation in the mmesh community is governed by the Contributor Covenant [Code of Conduct](https://github.com/mmesh/.github/blob/HEAD/CODE_OF_CONDUCT.md). Please make sure to read and observe this document.
 
-Please make sure to read and observe this document. By participating, you are ex
-pected to uphold this code.
+Please make sure to read and observe this document. By participating, you are expected to uphold this code.
 
 ## License
 
