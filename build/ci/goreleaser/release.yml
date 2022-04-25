@@ -47,11 +47,11 @@ builds:
     - CGO_ENABLED=0
   goos:
     - linux
-    # - darwin
-    # - windows
+    - darwin
+    - windows
   goarch:
     - amd64
-    # - arm64
+    - arm64
   goamd64:
     - v1
   # lang: go
@@ -79,7 +79,7 @@ signs:
       - '--output-certificate=${certificate}'
       - '--output-signature=${signature}'
       - '${artifact}'
-    artifacts: all
+    artifacts: checksum
     output: false
 
 docker_signs:
@@ -106,6 +106,23 @@ archives:
   format_overrides:
     - goos: windows
       format: zip
+
+brews:
+  - tap:
+      owner: mmesh
+      name: homebrew-tap
+      branch: master
+    folder: Formula
+    goarm: "7"
+    goamd64: v1
+    commit_author:
+      name: mmeshbot
+      email: mmeshbot@mmesh.io
+    homepage: https://mmesh.io
+    description: mmesh-cli
+    license: "Apache License 2.0"
+    install: |-
+      bin.install "mmeshctl"
 
 nfpms:
   - id: mmesh-cli
@@ -209,12 +226,12 @@ changelog:
       order: 999
   filters:
     exclude:
-    - "^.*docs"
-    - "^.*test"
-    - "^.*wip"
-    - '^\[wip\]'
-    - "^.*bump version"
-    - typo
+      - "^doc"
+      - "^chore"
+      - "^wip"
+      - "^test"
+      - "^typo"
+      - "^Merge"
 
 # publishers:
 #   # dev repos
