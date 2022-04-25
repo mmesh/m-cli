@@ -60,7 +60,7 @@ func (api *API) New() {
 		}
 	}
 	np := v.NetworkPolicy
-	np.DefaultPolicy = input.GetSelect("Default Network Policy:", "", vars.Policies, survey.Required)
+	np.DefaultPolicy = input.GetSelect("Default Security Policy:", "", vars.Policies, survey.Required)
 
 	s := output.Spinner()
 
