@@ -20,6 +20,8 @@ var tenantListCmd = &cobra.Command{
 	Long:  `List all tenants.`,
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
+		// fmt.Println(colors.Black(version.CLI_NAME + " " + version.GetVersion()))
+		// output.AppHeader(vars.AccountID, false)
 		client.Tenant().List()
 	},
 }
@@ -31,6 +33,8 @@ var tenantShowCmd = &cobra.Command{
 	Long:  `Show tenant details.`,
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
+		// fmt.Println(colors.Black(version.CLI_NAME + " " + version.GetVersion()))
+		// output.AppHeader(vars.AccountID, false)
 		client.Tenant().Show()
 	},
 }
