@@ -10,15 +10,18 @@ import (
 var accountCmd = &cobra.Command{
 	Use:   "account",
 	Short: "Account administration",
-	Long:  `Account administration for platform admins.`,
+	Long:  appHeader(`Account administration for platform admins.`),
 }
 
 // accountCreateCmd represents the account create verb
 var accountCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create new account",
-	Long:  `Create new account.`,
+	Long:  appHeader(`Create new account.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		header()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Account().New()
 	},
@@ -28,8 +31,11 @@ var accountCreateCmd = &cobra.Command{
 var accountSettingsCmd = &cobra.Command{
 	Use:   "settings",
 	Short: "Edit account settings and integrations",
-	Long:  `Edit account settings and integrations.`,
+	Long:  appHeader(`Edit account settings and integrations.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Account().Settings()
 	},
@@ -39,8 +45,11 @@ var accountSettingsCmd = &cobra.Command{
 var accountShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show all account details",
-	Long:  `Show all account details.`,
+	Long:  appHeader(`Show all account details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Account().Show()
 	},
@@ -50,8 +59,11 @@ var accountShowCmd = &cobra.Command{
 var accountStatsCmd = &cobra.Command{
 	Use:   "stats",
 	Short: "Show account stats and usage",
-	Long:  `Show account stats and usage.`,
+	Long:  appHeader(`Show account stats and usage.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Account().Stats()
 	},
@@ -61,15 +73,18 @@ var accountStatsCmd = &cobra.Command{
 var accountSubscriptionCmd = &cobra.Command{
 	Use:   "subscription",
 	Short: "Manage service subscription",
-	Long:  `Manage service subscription.`,
+	Long:  appHeader(`Manage service subscription.`),
 }
 
 // accountSubscriptionShowCmd represents the account subscription show verb
 var accountSubscriptionShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show and update service subscription",
-	Long:  `Show and update service subscription.`,
+	Long:  appHeader(`Show and update service subscription.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Account().Subscription()
 	},
@@ -79,8 +94,11 @@ var accountSubscriptionShowCmd = &cobra.Command{
 var accountSubscriptionApplyPromotionCmd = &cobra.Command{
 	Use:   "promo-code",
 	Short: "Apply promotion code",
-	Long:  `Apply promotion code.`,
+	Long:  appHeader(`Apply promotion code.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Account().ApplyPromotion()
 	},
@@ -90,8 +108,11 @@ var accountSubscriptionApplyPromotionCmd = &cobra.Command{
 var accountSubscriptionCancelCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Cancel subscription and delete account",
-	Long:  `Cancel subscription and delete account.`,
+	Long:  appHeader(`Cancel subscription and delete account.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Account().Cancel()
 	},
@@ -101,7 +122,7 @@ var accountSubscriptionCancelCmd = &cobra.Command{
 var billingCmd = &cobra.Command{
 	Use:   "billing",
 	Short: "Manage invoices and billable items",
-	Long:  `Manage invoices and billable items.`,
+	Long:  appHeader(`Manage invoices and billable items.`),
 }
 
 func init() {

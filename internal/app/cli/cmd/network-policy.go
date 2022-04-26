@@ -10,15 +10,18 @@ import (
 var networkPolicyCmd = &cobra.Command{
 	Use:   "policy",
 	Short: "Network policies administration",
-	Long:  `Network policies operations for network administrators.`,
+	Long:  appHeader(`Network policies operations for network administrators.`),
 }
 
 // networkPolicyShowCmd represents the network/policies get verb
 var networkPolicyShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show network policy",
-	Long:  `Show network policy details.`,
+	Long:  appHeader(`Show network policy details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.NetworkPolicy().Show()
 	},
@@ -28,8 +31,11 @@ var networkPolicyShowCmd = &cobra.Command{
 var networkPolicyImportCmd = &cobra.Command{
 	Use:   "import -f <yamlFile>",
 	Short: "Import network policy from YAML file",
-	Long:  `Import network policy from YAML file.`,
+	Long:  appHeader(`Import network policy from YAML file.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.NetworkPolicy().Import(vars.YAMLFile)
 	},
@@ -39,8 +45,11 @@ var networkPolicyImportCmd = &cobra.Command{
 var networkPolicyExportCmd = &cobra.Command{
 	Use:   "export",
 	Short: "Export network policy to standard output",
-	Long:  `Export network policy  to standard output.`,
+	Long:  appHeader(`Export network policy  to standard output.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.NetworkPolicy().Export()
 	},
@@ -50,8 +59,11 @@ var networkPolicyExportCmd = &cobra.Command{
 var networkPolicySetDefaultCmd = &cobra.Command{
 	Use:   "set-default",
 	Short: "Set default policy",
-	Long:  `Set default policy.`,
+	Long:  appHeader(`Set default policy.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.NetworkPolicy().SetDefault()
 	},
@@ -61,8 +73,11 @@ var networkPolicySetDefaultCmd = &cobra.Command{
 var networkPolicySetRuleCmd = &cobra.Command{
 	Use:   "set-rule",
 	Short: "Set network policy rule",
-	Long:  `Set network policy rule.`,
+	Long:  appHeader(`Set network policy rule.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.NetworkPolicy().SetRule()
 	},
@@ -72,8 +87,11 @@ var networkPolicySetRuleCmd = &cobra.Command{
 var networkPolicyUnsetRuleCmd = &cobra.Command{
 	Use:   "unset-rule",
 	Short: "Unset network policy rule",
-	Long:  `Unset network policy rule.`,
+	Long:  appHeader(`Unset network policy rule.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.NetworkPolicy().UnsetRule()
 	},
@@ -83,15 +101,17 @@ var networkPolicyUnsetRuleCmd = &cobra.Command{
 var networkPolicyDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete network policy (all rules)",
-	Long:  `Remove network policy (all rules) from database.`,
+	Long:  appHeader(`Remove network policy (all rules) from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.NetworkPolicy().Delete()
 	},
 }
 
 func init() {
-	// rootCmd.AddCommand(networkPolicyCmd)
 	networkPolicyCmd.AddCommand(networkPolicyShowCmd)
 	networkPolicyCmd.AddCommand(networkPolicyImportCmd)
 	networkPolicyCmd.AddCommand(networkPolicyExportCmd)

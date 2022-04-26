@@ -19,7 +19,7 @@ type apiClientParameters struct {
 	grpcServer string
 }
 
-func getManagerApiClientParams(reqAuth bool) *apiClientParameters {
+func getManagerAPIClientParams(reqAuth bool) *apiClientParameters {
 	p := &apiClientParameters{}
 
 	if reqAuth {
@@ -33,7 +33,7 @@ func getManagerApiClientParams(reqAuth bool) *apiClientParameters {
 		p.authKey = auth.GetNoAuthKey()
 	}
 
-	p.authSecret = viper.GetString("controller.authSecret")
+	// p.authSecret = viper.GetString("controller.authSecret")
 	p.grpcServer = viper.GetString("apiserver.endpoint")
 
 	return p
@@ -52,7 +52,7 @@ func getControllerAPIClientParams(reqAuth bool) *apiClientParameters {
 		p.authKey = auth.GetNoAuthKey()
 	}
 
-	p.authSecret = viper.GetString("controller.authSecret")
+	// p.authSecret = viper.GetString("controller.authSecret")
 
 	p.grpcServer = viper.GetString("controller.endpoint")
 	if len(p.grpcServer) == 0 {
@@ -64,7 +64,7 @@ func getControllerAPIClientParams(reqAuth bool) *apiClientParameters {
 }
 
 func GetBillingAPIClient(reqAuth bool) (rpc.BillingAPIClient, *grpc.ClientConn) {
-	p := getManagerApiClientParams(reqAuth)
+	p := getManagerAPIClientParams(reqAuth)
 
 	nxc, conn, err := client.NewBillingAPIClient(p.grpcServer, p.authKey, p.authSecret)
 	if err != nil {
@@ -76,7 +76,7 @@ func GetBillingAPIClient(reqAuth bool) (rpc.BillingAPIClient, *grpc.ClientConn) 
 }
 
 func GetServicesAPIClient(reqAuth bool) (rpc.ServicesAPIClient, *grpc.ClientConn) {
-	p := getManagerApiClientParams(reqAuth)
+	p := getManagerAPIClientParams(reqAuth)
 
 	nxc, conn, err := client.NewServicesAPIClient(p.grpcServer, p.authKey, p.authSecret)
 	if err != nil {
@@ -88,7 +88,7 @@ func GetServicesAPIClient(reqAuth bool) (rpc.ServicesAPIClient, *grpc.ClientConn
 }
 
 func GetManagerProviderAPIClient(reqAuth bool) (rpc.ProviderAPIClient, *grpc.ClientConn) {
-	p := getManagerApiClientParams(reqAuth)
+	p := getManagerAPIClientParams(reqAuth)
 
 	nxc, conn, err := client.NewProviderAPIClient(p.grpcServer, p.authKey, p.authSecret)
 	if err != nil {

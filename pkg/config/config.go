@@ -12,18 +12,13 @@ import (
 )
 
 const (
-	versionBranchStable string = "stable"
-	versionBranchDev    string = "dev"
+	// versionStable string = "stable"
+	versionDev string = "dev"
 
 	defaultAPIServerAuthServer    string = "https://mmesh.network"
 	defaultAPIServerAuthServerDev string = "https://dev.mmesh.network"
 	defaultAPIServerEndpoint      string = "mmesh.network:443"
 	defaultAPIServerEndpointDev   string = "dev.mmesh.network:443"
-
-	defaultControllerAuthServer    string = "https://eu-central-01.mmesh.network"
-	defaultControllerAuthServerDev string = "https://eu-central-01.dev.mmesh.network"
-	defaultControllerEndpoint      string = "eu-central-01.mmesh.network:443"
-	defaultControllerEndpointDev   string = "eu-central-01.dev.mmesh.network:443"
 
 	defaultServiceID string = "mmesh"
 )
@@ -35,7 +30,7 @@ func Init() {
 		os.Exit(1)
 	}
 
-	//viper.Set("clientID", clientID)
+	// viper.Set("clientID", clientID)
 
 	mmID := mmid.NewMMCLIID(hostID)
 
@@ -47,7 +42,6 @@ func Init() {
 
 	SetDefaults()
 
-	// logLevel
 	logging.LogLevel = xlog.GetLogLevel(viper.GetString("loglevel"))
 	if logging.LogLevel == -1 {
 		logging.LogLevel = xlog.INFO
@@ -59,8 +53,8 @@ func Init() {
 func SetDefaults() {
 	var isDev bool
 
-	if viper.GetString("version.branch") == versionBranchDev ||
-		os.Getenv("MMESH_VERSION") == versionBranchDev {
+	if viper.GetString("version.branch") == versionDev ||
+		os.Getenv("MMESH_VERSION") == versionDev {
 		isDev = true
 	}
 
@@ -70,24 +64,6 @@ func SetDefaults() {
 	} else {
 		viper.Set("apiserver.authServer", defaultAPIServerAuthServer)
 		viper.Set("apiserver.endpoint", defaultAPIServerEndpoint)
-	}
-
-	controllerAuthServer := viper.GetString("controller.authServer")
-	if len(controllerAuthServer) == 0 {
-		if isDev {
-			viper.Set("controller.authServer", defaultControllerAuthServerDev)
-		} else {
-			viper.Set("controller.authServer", defaultControllerAuthServer)
-		}
-	}
-
-	controllerEndpoint := viper.GetString("controller.endpoint")
-	if len(controllerEndpoint) == 0 {
-		if isDev {
-			viper.Set("controller.endpoint", defaultControllerEndpointDev)
-		} else {
-			viper.Set("controller.endpoint", defaultControllerEndpoint)
-		}
 	}
 
 	viper.Set("serviceID", defaultServiceID)

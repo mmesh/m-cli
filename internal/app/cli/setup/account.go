@@ -48,15 +48,13 @@ func setupExistingAccount(configFile string) {
 
 	var controllerAuthServer, controllerEndpoint string
 	for _, c := range f.Controllers {
-		controllerAuthServer = fmt.Sprintf("https://%s", c.Host)
-		controllerEndpoint = fmt.Sprintf("%s:%d", c.Host, c.Port)
+		controllerAuthServer = fmt.Sprintf("https://%s", c.VirtualHost)
+		controllerEndpoint = fmt.Sprintf("%s:%d", c.VirtualHost, c.Port)
 		break
 	}
 
 	viper.Set("controller.authServer", controllerAuthServer)
 	viper.Set("controller.endpoint", controllerEndpoint)
-
-	fmt.Println()
 
 	config.WriteCLIConfig(configFile)
 

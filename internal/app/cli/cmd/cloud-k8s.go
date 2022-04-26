@@ -10,15 +10,18 @@ import (
 var cloudKubernetesClusterCmd = &cobra.Command{
 	Use:   "kubernetes",
 	Short: "Kubernetes clusters management",
-	Long:  `Kubernetes clusters management.`,
+	Long:  appHeader(`Kubernetes clusters management.`),
 }
 
 // cloudKubernetesClusterListCmd represents the cloud/kubernetes list verb
 var cloudKubernetesClusterListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List kubernetes clusters",
-	Long:  `List all kubernetes clusters.`,
+	Long:  appHeader(`List all kubernetes clusters.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Kubernetes().Cluster().List()
 	},
@@ -28,8 +31,11 @@ var cloudKubernetesClusterListCmd = &cobra.Command{
 var cloudKubernetesClusterShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show kubernetes cluster",
-	Long:  `Show kubernetes cluster details.`,
+	Long:  appHeader(`Show kubernetes cluster details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Kubernetes().Cluster().Show()
 	},
@@ -39,8 +45,11 @@ var cloudKubernetesClusterShowCmd = &cobra.Command{
 var cloudKubernetesClusterAddCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create and add a kubernetes cluster to your mmesh",
-	Long:  `Create and add a kubernetes cluster to your mmesh interactively.`,
+	Long:  appHeader(`Create and add a kubernetes cluster to your mmesh interactively.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Kubernetes().Cluster().Create()
 	},
@@ -50,8 +59,11 @@ var cloudKubernetesClusterAddCmd = &cobra.Command{
 var cloudKubernetesClusterDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Destroy and remove a kubernetes cluster from your mmesh",
-	Long:  `Destroy and remove a kubernetes cluster from your mmesh.`,
+	Long:  appHeader(`Destroy and remove a kubernetes cluster from your mmesh.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Kubernetes().Cluster().Delete()
 	},
@@ -61,8 +73,11 @@ var cloudKubernetesClusterDeleteCmd = &cobra.Command{
 var cloudKubernetesClusterGetKubeConfigCmd = &cobra.Command{
 	Use:   "kubeconfig",
 	Short: "Get kubeconfig file in YAML format from cluster",
-	Long:  `Get kubeconfig file in YAML format from cluster.`,
+	Long:  appHeader(`Get kubeconfig file in YAML format from cluster.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Kubernetes().Cluster().GetKubeConfig()
 	},
@@ -72,8 +87,11 @@ var cloudKubernetesClusterGetKubeConfigCmd = &cobra.Command{
 var cloudKubernetesCreateNodePoolCmd = &cobra.Command{
 	Use:   "add-nodepool",
 	Short: "Add a new nodepool to an existing cluster",
-	Long:  `Add a new nodepool to an existing cluster.`,
+	Long:  appHeader(`Add a new nodepool to an existing cluster.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Kubernetes().Cluster().CreateNodePool()
 	},
@@ -83,8 +101,11 @@ var cloudKubernetesCreateNodePoolCmd = &cobra.Command{
 var cloudKubernetesDeleteNodePoolCmd = &cobra.Command{
 	Use:   "delete-nodepool",
 	Short: "Delete nodepool from kubernetes cluster",
-	Long:  `Delete nodepool from kubernetes cluster.`,
+	Long:  appHeader(`Delete nodepool from kubernetes cluster.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Kubernetes().Cluster().DeleteNodePool()
 	},
@@ -94,8 +115,11 @@ var cloudKubernetesDeleteNodePoolCmd = &cobra.Command{
 var cloudKubernetesAddNodeCmd = &cobra.Command{
 	Use:   "add-node",
 	Short: "Add a new node to an existing cluster",
-	Long:  `Add a new node to an existing cluster.`,
+	Long:  appHeader(`Add a new node to an existing cluster.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Kubernetes().Cluster().AddNode()
 	},
@@ -105,8 +129,11 @@ var cloudKubernetesAddNodeCmd = &cobra.Command{
 var cloudKubernetesDeleteNodeCmd = &cobra.Command{
 	Use:   "delete-node",
 	Short: "Delete node from kubernetes cluster",
-	Long:  `Delete node from kubernetes cluster.`,
+	Long:  appHeader(`Delete node from kubernetes cluster.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Kubernetes().Cluster().DeleteNode()
 	},

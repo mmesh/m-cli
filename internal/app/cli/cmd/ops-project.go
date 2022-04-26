@@ -10,15 +10,18 @@ import (
 var opsProjectsCmd = &cobra.Command{
 	Use:   "project",
 	Short: "Workflow projects administration",
-	Long:  `Workflow projects administration.`,
+	Long:  appHeader(`Workflow projects administration.`),
 }
 
 // opsProjectsListCmd represents the ops/projects list verb
 var opsProjectsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List projects",
-	Long:  `List all projects.`,
+	Long:  appHeader(`List all projects.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Project().List()
 	},
@@ -28,8 +31,11 @@ var opsProjectsListCmd = &cobra.Command{
 var opsProjectsShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show project",
-	Long:  `Show project details.`,
+	Long:  appHeader(`Show project details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Project().Show()
 	},
@@ -39,8 +45,11 @@ var opsProjectsShowCmd = &cobra.Command{
 var opsProjectsSetCmd = &cobra.Command{
 	Use:   "set",
 	Short: "Create or update a project",
-	Long:  `Create or update a project interactively.`,
+	Long:  appHeader(`Create or update a project interactively.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Project().Set()
 	},
@@ -50,8 +59,11 @@ var opsProjectsSetCmd = &cobra.Command{
 var opsProjectsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Remove project",
-	Long:  `Remove project from database.`,
+	Long:  appHeader(`Remove project from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Project().Delete()
 	},

@@ -10,15 +10,18 @@ import (
 var alertsCmd = &cobra.Command{
 	Use:   "alert",
 	Short: "Alert system",
-	Long:  `Alert system.`,
+	Long:  appHeader(`Alert system.`),
 }
 
 // alertAddCommentCmd represents the alert newComment verb
 var alertAddCommentCmd = &cobra.Command{
 	Use:   "comment",
 	Short: "Add a new comment to alert",
-	Long:  `Add a new comment to alert.`,
+	Long:  appHeader(`Add a new comment to alert.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Alert().NewComment()
 	},
@@ -28,8 +31,11 @@ var alertAddCommentCmd = &cobra.Command{
 var alertListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your alerts",
-	Long:  `List all your alerts.`,
+	Long:  appHeader(`List all your alerts.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Alert().List()
 	},
@@ -39,8 +45,11 @@ var alertListCmd = &cobra.Command{
 var alertShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show alert",
-	Long:  `Show alert details.`,
+	Long:  appHeader(`Show alert details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Alert().Show()
 	},
@@ -50,8 +59,11 @@ var alertShowCmd = &cobra.Command{
 var alertDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete alert",
-	Long:  `Remove alert from database.`,
+	Long:  appHeader(`Remove alert from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Alert().Delete()
 	},

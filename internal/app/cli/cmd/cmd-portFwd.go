@@ -8,12 +8,15 @@ import (
 
 // portFwdCmd represents the mmp cmdPortFwd
 var portFwdCmd = &cobra.Command{
-	//Use:   "port-forward <nodeID:port> <nodeID:port>",
+	// Use:   "port-forward <nodeID:port> <nodeID:port>",
 	Use:   "port-fwd",
 	Short: "Forward local TCP port to target node",
-	Long:  `Forward local TCP port to target node.`,
-	//Args:  cobra.ExactArgs(2),
+	Long:  appHeader(`Forward local TCP port to target node.`),
+	// Args:  cobra.ExactArgs(2),
 	Args: cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Command().PortFwd()
 	},

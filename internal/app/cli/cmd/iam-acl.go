@@ -10,15 +10,18 @@ import (
 var iamACLsCmd = &cobra.Command{
 	Use:   "acl",
 	Short: "IAM ACLs adminstration",
-	Long:  `IAM ACLs adminstration operations.`,
+	Long:  appHeader(`IAM ACLs adminstration operations.`),
 }
 
 // iamACLsListCmd represents the iam/roles list verb
 var iamACLsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List ACLs",
-	Long:  `List all ACLs.`,
+	Long:  appHeader(`List all ACLs.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.ACL().List()
 	},
@@ -28,8 +31,11 @@ var iamACLsListCmd = &cobra.Command{
 var iamACLsShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show ACL",
-	Long:  `Show ACL details.`,
+	Long:  appHeader(`Show ACL details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.ACL().Show()
 	},
@@ -39,8 +45,11 @@ var iamACLsShowCmd = &cobra.Command{
 var iamACLsSetCmd = &cobra.Command{
 	Use:   "set",
 	Short: "Create or update ACL",
-	Long:  `Create or update ACL.`,
+	Long:  appHeader(`Create or update ACL.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.ACL().Set()
 	},
@@ -50,8 +59,11 @@ var iamACLsSetCmd = &cobra.Command{
 var iamACLsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete ACL",
-	Long:  `Delete ACL.`,
+	Long:  appHeader(`Delete ACL.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.ACL().Delete()
 	},

@@ -10,15 +10,18 @@ import (
 var iamSecurityGroupsCmd = &cobra.Command{
 	Use:   "security-group",
 	Short: "IAM security-groups adminstration",
-	Long:  `IAM security-groups adminstration operations.`,
+	Long:  appHeader(`IAM security-groups adminstration operations.`),
 }
 
 // iamSecurityGroupsListCmd represents the iam/security-groups list verb
 var iamSecurityGroupsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List security-groups",
-	Long:  `List all realm's security-groups.`,
+	Long:  appHeader(`List all realm's security-groups.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.SecurityGroup().List()
 	},
@@ -28,8 +31,11 @@ var iamSecurityGroupsListCmd = &cobra.Command{
 var iamSecurityGroupsShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show security-group",
-	Long:  `Show security-group details.`,
+	Long:  appHeader(`Show security-group details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.SecurityGroup().Show()
 	},
@@ -39,8 +45,11 @@ var iamSecurityGroupsShowCmd = &cobra.Command{
 var iamSecurityGroupsSetCmd = &cobra.Command{
 	Use:   "set",
 	Short: "Create or update security-group",
-	Long:  `Create or update security-group.`,
+	Long:  appHeader(`Create or update security-group.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.SecurityGroup().Set()
 	},
@@ -50,8 +59,11 @@ var iamSecurityGroupsSetCmd = &cobra.Command{
 var iamSecurityGroupsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete security-group",
-	Long:  `Delete security-group.`,
+	Long:  appHeader(`Delete security-group.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.SecurityGroup().Delete()
 	},

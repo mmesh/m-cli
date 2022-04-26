@@ -10,15 +10,18 @@ import (
 var serviceCmd = &cobra.Command{
 	Use:   "service",
 	Short: "Marketplace of professional services for your mmesh",
-	Long:  `Marketplace of professional services for your mmesh.`,
+	Long:  appHeader(`Marketplace of professional services for your mmesh.`),
 }
 
 // serviceRequestCmd represents the service/request verb
 var serviceRequestCmd = &cobra.Command{
 	Use:   "request",
 	Short: "Create RFS (Request for Service) for the mmesh marketplace",
-	Long:  `Create RFS (Request for Service) for the mmesh marketplace.`,
+	Long:  appHeader(`Create RFS (Request for Service) for the mmesh marketplace.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.ITSM().ServiceRequest()
 	},
@@ -28,8 +31,11 @@ var serviceRequestCmd = &cobra.Command{
 var serviceCatalogListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List product/services in mmesh marketplace",
-	Long:  `List product/services in mmesh marketplace.`,
+	Long:  appHeader(`List product/services in mmesh marketplace.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Product().List(true)
 	},
@@ -39,8 +45,11 @@ var serviceCatalogListCmd = &cobra.Command{
 var serviceCatalogShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show product/service in mmesh marketplace",
-	Long:  `Show product/service in mmesh marketplace.`,
+	Long:  appHeader(`Show product/service in mmesh marketplace.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Product().Show(true)
 	},
@@ -50,22 +59,25 @@ var serviceCatalogShowCmd = &cobra.Command{
 var serviceCRMCmd = &cobra.Command{
 	Use:   "crm",
 	Short: "Manage your service/product catalog and sales opportunities",
-	Long:  `Manage your service/product catalog and sales opportunities.`,
+	Long:  appHeader(`Manage your service/product catalog and sales opportunities.`),
 }
 
 // serviceCRMOpportunityCmd represents the service/crm opportunity command
 var serviceCRMOpportunityCmd = &cobra.Command{
 	Use:   "opportunity",
 	Short: "Manage your opportunities",
-	Long:  `Manage your opportunities.`,
+	Long:  appHeader(`Manage your opportunities.`),
 }
 
 // serviceCRMOpportunityListCmd represents the service/crm list verb
 var serviceCRMOpportunityListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your opportunities",
-	Long:  `List your opportunities.`,
+	Long:  appHeader(`List your opportunities.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().CRM().Opportunity().List()
 	},
@@ -75,8 +87,11 @@ var serviceCRMOpportunityListCmd = &cobra.Command{
 var serviceCRMOpportunityShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show opportunity",
-	Long:  `Show opportunity details.`,
+	Long:  appHeader(`Show opportunity details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().CRM().Opportunity().Show()
 	},
@@ -86,8 +101,11 @@ var serviceCRMOpportunityShowCmd = &cobra.Command{
 var serviceCRMOpportunitySetMilestoneCmd = &cobra.Command{
 	Use:   "set-milestone",
 	Short: "Set opportunity milestone",
-	Long:  `Set opportunity milestone.`,
+	Long:  appHeader(`Set opportunity milestone.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().CRM().Opportunity().SetMilestone()
 	},
@@ -97,8 +115,11 @@ var serviceCRMOpportunitySetMilestoneCmd = &cobra.Command{
 var serviceCRMOpportunitySetOutcomeCmd = &cobra.Command{
 	Use:   "set-outcome",
 	Short: "Set opportunity outcome",
-	Long:  `Set opportunity outcome.`,
+	Long:  appHeader(`Set opportunity outcome.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().CRM().Opportunity().SetOutcome()
 	},
@@ -108,8 +129,11 @@ var serviceCRMOpportunitySetOutcomeCmd = &cobra.Command{
 var serviceCRMOpportunityDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Remove opportunity from database",
-	Long:  `Remove opportunity from database.`,
+	Long:  appHeader(`Remove opportunity from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().CRM().Opportunity().Delete()
 	},
@@ -119,15 +143,18 @@ var serviceCRMOpportunityDeleteCmd = &cobra.Command{
 var serviceCRMCatalogCmd = &cobra.Command{
 	Use:   "catalog",
 	Short: "Manage your service/product catalog",
-	Long:  `Manage your service/product catalog.`,
+	Long:  appHeader(`Manage your service/product catalog.`),
 }
 
 // serviceCRMCatalogListCmd represents the service/crm list verb
 var serviceCRMCatalogListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List product/services published in your catalog",
-	Long:  `List product/services published in your catalog.`,
+	Long:  appHeader(`List product/services published in your catalog.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Product().List(false)
 	},
@@ -137,8 +164,11 @@ var serviceCRMCatalogListCmd = &cobra.Command{
 var serviceCRMCatalogShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show product/service published in your catalog",
-	Long:  `Show product/service published in your catalog.`,
+	Long:  appHeader(`Show product/service published in your catalog.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Product().Show(false)
 	},
@@ -148,8 +178,11 @@ var serviceCRMCatalogShowCmd = &cobra.Command{
 var serviceCRMCatalogSetCmd = &cobra.Command{
 	Use:   "publish -f <yamlFile>",
 	Short: "Publish your service catalog in the mmesh marketplace",
-	Long:  `Publish your service catalog in the mmesh marketplace.`,
+	Long:  appHeader(`Publish your service catalog in the mmesh marketplace.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Product().Set(vars.YAMLFile)
 	},
@@ -159,8 +192,11 @@ var serviceCRMCatalogSetCmd = &cobra.Command{
 var serviceCRMCatalogDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Remove product/service from your catalog",
-	Long:  `Remove product/service from your catalog.`,
+	Long:  appHeader(`Remove product/service from your catalog.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Product().Delete()
 	},

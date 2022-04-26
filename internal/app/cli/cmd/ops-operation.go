@@ -10,15 +10,18 @@ import (
 var opsOperationsCmd = &cobra.Command{
 	Use:   "log",
 	Short: "Workflow log administration",
-	Long:  `Workflow log administration.`,
+	Long:  appHeader(`Workflow log administration.`),
 }
 
 // opsOperationsListCmd represents the ops/operations list verb
 var opsOperationsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List logs",
-	Long:  `List all logs.`,
+	Long:  appHeader(`List all logs.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Operation().List()
 	},
@@ -28,8 +31,11 @@ var opsOperationsListCmd = &cobra.Command{
 var opsOperationsShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show log",
-	Long:  `Show log details.`,
+	Long:  appHeader(`Show log details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Operation().Show()
 	},
@@ -39,8 +45,11 @@ var opsOperationsShowCmd = &cobra.Command{
 var opsOperationsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete log",
-	Long:  `Remove log from database.`,
+	Long:  appHeader(`Remove log from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Operation().Delete()
 	},

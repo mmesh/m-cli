@@ -12,15 +12,18 @@ import (
 var cloudInstanceCmd = &cobra.Command{
 	Use:   "instance",
 	Short: "Cloud instances management",
-	Long:  `Cloud instances management.`,
+	Long:  appHeader(`Cloud instances management.`),
 }
 
 // cloudInstanceAddCmd represents the cloud/instance set verb
 var cloudInstanceAddCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add a cloud instance to your mmesh",
-	Long:  `Add a cloud instance to your mmesh interactively.`,
+	Long:  appHeader(`Add a cloud instance to your mmesh interactively.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Instance().Create(login.NewRequest(), compute.ImageClass_OS)
 	},
@@ -30,8 +33,11 @@ var cloudInstanceAddCmd = &cobra.Command{
 var cloudInstanceListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List cloud instances",
-	Long:  `List all cloud instances.`,
+	Long:  appHeader(`List all cloud instances.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Instance().List(compute.ImageClass_OS)
 	},
@@ -41,8 +47,11 @@ var cloudInstanceListCmd = &cobra.Command{
 var cloudInstanceShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show cloud instance",
-	Long:  `Show cloud instance details.`,
+	Long:  appHeader(`Show cloud instance details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Instance().Show(compute.ImageClass_OS)
 	},
@@ -52,8 +61,11 @@ var cloudInstanceShowCmd = &cobra.Command{
 var cloudInstanceDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Destroy and remove a cloud instance from your mmesh",
-	Long:  `Destroy and remove a cloud instance from your mmesh.`,
+	Long:  appHeader(`Destroy and remove a cloud instance from your mmesh.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Instance().Delete(compute.ImageClass_OS)
 	},
@@ -63,8 +75,11 @@ var cloudInstanceDeleteCmd = &cobra.Command{
 var cloudInstancePowerCycleCmd = &cobra.Command{
 	Use:   "power-cycle",
 	Short: "Power cycle a cloud instance",
-	Long:  `Power cycle a cloud instance.`,
+	Long:  appHeader(`Power cycle a cloud instance.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Instance().PowerCycle(compute.ImageClass_OS)
 	},
@@ -74,8 +89,11 @@ var cloudInstancePowerCycleCmd = &cobra.Command{
 var cloudInstancePowerOnCmd = &cobra.Command{
 	Use:   "power-on",
 	Short: "Power-On a cloud instance",
-	Long:  `Power-On a cloud instance.`,
+	Long:  appHeader(`Power-On a cloud instance.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Instance().PowerOn(compute.ImageClass_OS)
 	},
@@ -85,8 +103,11 @@ var cloudInstancePowerOnCmd = &cobra.Command{
 var cloudInstancePowerOffCmd = &cobra.Command{
 	Use:   "power-off",
 	Short: "Power-Off a cloud instance",
-	Long:  `Power-Off a cloud instance.`,
+	Long:  appHeader(`Power-Off a cloud instance.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Instance().PowerOff(compute.ImageClass_OS)
 	},
@@ -96,8 +117,11 @@ var cloudInstancePowerOffCmd = &cobra.Command{
 var cloudInstanceRebootCmd = &cobra.Command{
 	Use:   "reboot",
 	Short: "Reboot a cloud instance",
-	Long:  `Reboot a cloud instance.`,
+	Long:  appHeader(`Reboot a cloud instance.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Instance().Reboot(compute.ImageClass_OS)
 	},
@@ -107,8 +131,11 @@ var cloudInstanceRebootCmd = &cobra.Command{
 var cloudInstanceShutdownCmd = &cobra.Command{
 	Use:   "shutdown",
 	Short: "Shutdown a cloud instance",
-	Long:  `Shutdown a cloud instance.`,
+	Long:  appHeader(`Shutdown a cloud instance.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Services().Platform().Cloud().Instance().Shutdown(compute.ImageClass_OS)
 	},

@@ -10,15 +10,18 @@ import (
 var iamRolesCmd = &cobra.Command{
 	Use:   "role",
 	Short: "IAM roles adminstration",
-	Long:  `IAM roles adminstration operations.`,
+	Long:  appHeader(`IAM roles adminstration operations.`),
 }
 
 // iamRolesListCmd represents the iam/roles list verb
 var iamRolesListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List roles",
-	Long:  `List all roles.`,
+	Long:  appHeader(`List all roles.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Role().List()
 	},
@@ -28,8 +31,11 @@ var iamRolesListCmd = &cobra.Command{
 var iamRolesShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show role",
-	Long:  `Show role details.`,
+	Long:  appHeader(`Show role details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Role().Show()
 	},
@@ -39,8 +45,11 @@ var iamRolesShowCmd = &cobra.Command{
 var iamRolesSetCmd = &cobra.Command{
 	Use:   "set",
 	Short: "Create or update role",
-	Long:  `Create or update role.`,
+	Long:  appHeader(`Create or update role.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Role().Set()
 	},
@@ -50,8 +59,11 @@ var iamRolesSetCmd = &cobra.Command{
 var iamRolesDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete role",
-	Long:  `Delete role.`,
+	Long:  appHeader(`Delete role.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Role().Delete()
 	},

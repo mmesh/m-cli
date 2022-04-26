@@ -10,8 +10,11 @@ import (
 var execCmd = &cobra.Command{
 	Use:   "exec [flags] [-- <command>]",
 	Short: "Execute command on target node",
-	Long:  `Execute command on target node`,
+	Long:  appHeader(`Execute command on target node`),
 	Args:  cobra.MinimumNArgs(0),
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Command().Exec(args)
 	},

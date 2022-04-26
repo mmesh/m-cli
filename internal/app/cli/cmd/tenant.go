@@ -10,18 +10,19 @@ import (
 var tenantCmd = &cobra.Command{
 	Use:   "tenant",
 	Short: "Tenants administration",
-	Long:  `Tenants administration.`,
+	Long:  appHeader(`Tenants administration.`),
 }
 
 // tenantListCmd represents the admin/tenants list verb
 var tenantListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List tenants",
-	Long:  `List all tenants.`,
+	Long:  appHeader(`List all tenants.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		// fmt.Println(colors.Black(version.CLI_NAME + " " + version.GetVersion()))
-		// output.AppHeader(vars.AccountID, false)
 		client.Tenant().List()
 	},
 }
@@ -30,11 +31,12 @@ var tenantListCmd = &cobra.Command{
 var tenantShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show tenant",
-	Long:  `Show tenant details.`,
+	Long:  appHeader(`Show tenant details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		// fmt.Println(colors.Black(version.CLI_NAME + " " + version.GetVersion()))
-		// output.AppHeader(vars.AccountID, false)
 		client.Tenant().Show()
 	},
 }
@@ -43,8 +45,11 @@ var tenantShowCmd = &cobra.Command{
 var tenantSetCmd = &cobra.Command{
 	Use:   "set",
 	Short: "Create or update tenant",
-	Long:  `Create or update tenant interactively.`,
+	Long:  appHeader(`Create or update tenant interactively.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Tenant().Set()
 	},
@@ -54,15 +59,17 @@ var tenantSetCmd = &cobra.Command{
 var tenantDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Remove tenant",
-	Long:  `Remove tenant from database.`,
+	Long:  appHeader(`Remove tenant from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Tenant().Delete()
 	},
 }
 
 func init() {
-	// topologyCmd.AddCommand(tenantCmd)
 	tenantCmd.AddCommand(tenantListCmd)
 	tenantCmd.AddCommand(tenantShowCmd)
 	tenantCmd.AddCommand(tenantSetCmd)

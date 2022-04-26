@@ -10,15 +10,18 @@ import (
 var networkCmd = &cobra.Command{
 	Use:   "network",
 	Short: "Networks administration",
-	Long:  `Networks administration.`,
+	Long:  appHeader(`Networks administration.`),
 }
 
 // networkListCmd represents the admin/networks list verb
 var networkListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List networks",
-	Long:  `List all networks.`,
+	Long:  appHeader(`List all networks.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Network().List()
 	},
@@ -28,8 +31,11 @@ var networkListCmd = &cobra.Command{
 var networkShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show network",
-	Long:  `Show network details.`,
+	Long:  appHeader(`Show network details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Network().Show()
 	},
@@ -39,8 +45,11 @@ var networkShowCmd = &cobra.Command{
 var networkNewCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a network",
-	Long:  `Create a network interactively.`,
+	Long:  appHeader(`Create a network interactively.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Network().New()
 	},
@@ -50,8 +59,11 @@ var networkNewCmd = &cobra.Command{
 var networkUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "Update a network",
-	Long:  `Update a network interactively.`,
+	Long:  appHeader(`Update a network interactively.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Network().Update()
 	},
@@ -61,15 +73,17 @@ var networkUpdateCmd = &cobra.Command{
 var networkDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Remove network",
-	Long:  `Remove network from database.`,
+	Long:  appHeader(`Remove network from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Network().Delete()
 	},
 }
 
 func init() {
-	// topologyCmd.AddCommand(networkCmd)
 	networkCmd.AddCommand(networkListCmd)
 	networkCmd.AddCommand(networkShowCmd)
 	networkCmd.AddCommand(networkNewCmd)

@@ -10,15 +10,18 @@ import (
 var authCmd = &cobra.Command{
 	Use:   "auth",
 	Short: "Authentication commands",
-	Long:  `User session authentication commands.`,
+	Long:  appHeader(`User session authentication commands.`),
 }
 
 // authLoginCmd represents the login command
 var authLoginCmd = &cobra.Command{
 	Use:   "login",
 	Short: "Log in",
-	Long:  `Log in.`,
+	Long:  appHeader(`Log in.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Auth().Login(login.NewRequest(), true)
 	},
@@ -28,8 +31,11 @@ var authLoginCmd = &cobra.Command{
 var authLogoutCmd = &cobra.Command{
 	Use:   "logout",
 	Short: "Log out",
-	Long:  `Log out.`,
+	Long:  appHeader(`Log out.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Auth().Logout()
 	},
@@ -39,8 +45,11 @@ var authLogoutCmd = &cobra.Command{
 var authPasswordResetCmd = &cobra.Command{
 	Use:   "password-reset",
 	Short: "Request a password-reset",
-	Long:  `Request a password-reset.`,
+	Long:  appHeader(`Request a password-reset.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Auth().PasswordReset()
 	},
@@ -50,8 +59,11 @@ var authPasswordResetCmd = &cobra.Command{
 var authConfirmationMailResendCmd = &cobra.Command{
 	Use:   "resend-confirmation",
 	Short: "Request a new confirmation mail",
-	Long:  `Request a new confirmation mail.`,
+	Long:  appHeader(`Request a new confirmation mail.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Auth().ConfirmationMailResend()
 	},
@@ -62,8 +74,11 @@ var authConfirmationMailResendCmd = &cobra.Command{
 var authTokenCmd = &cobra.Command{
 	Use:   "token",
 	Short: "Generate an authorization token",
-	Long:  `Generate an authorization token.`,
+	Long:  appHeader(`Generate an authorization token.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Auth().Token()
 	},

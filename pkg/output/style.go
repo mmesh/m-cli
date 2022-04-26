@@ -16,7 +16,12 @@ func SectionHeader(s string) {
 }
 
 func Header(s string) {
-	fmt.Printf("\n%s\n\n", colors.InvertedMagenta(s))
+	n := len(s)
+	sep := strings.Repeat("-", n)
+	fmt.Println(colors.White(s))
+	fmt.Printf("%s\n\n", colors.Black(sep))
+
+	// fmt.Printf("\n%s\n\n", colors.InvertedMagenta(s))
 }
 
 func TitleT1(s string) {

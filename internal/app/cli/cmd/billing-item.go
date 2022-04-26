@@ -10,15 +10,18 @@ import (
 var billingItemCmd = &cobra.Command{
 	Use:   "item",
 	Short: "Billed Item administration",
-	Long:  `Billed Item administration.`,
+	Long:  appHeader(`Billed Item administration.`),
 }
 
 // billingItemListCmd represents the billing/invoices list verb
 var billingItemListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List billed items",
-	Long:  `List all your billed items.`,
+	Long:  appHeader(`List all your billed items.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Billing().Item().List()
 	},
@@ -28,8 +31,11 @@ var billingItemListCmd = &cobra.Command{
 var billingItemShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show billed item",
-	Long:  `Show billed item details.`,
+	Long:  appHeader(`Show billed item details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Billing().Item().Show()
 	},

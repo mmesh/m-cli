@@ -10,15 +10,18 @@ import (
 var opsWorkflowsCmd = &cobra.Command{
 	Use:   "workflow",
 	Short: "Automation workflows administration",
-	Long:  `Automation workflows administration.`,
+	Long:  appHeader(`Automation workflows administration.`),
 }
 
 // opsWorkflowsListCmd represents the ops/workflows list verb
 var opsWorkflowsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List workflows",
-	Long:  `List all workflows.`,
+	Long:  appHeader(`List all workflows.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Workflow().List()
 	},
@@ -28,8 +31,11 @@ var opsWorkflowsListCmd = &cobra.Command{
 var opsWorkflowsShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show workflow",
-	Long:  `Show workflow details.`,
+	Long:  appHeader(`Show workflow details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Workflow().Show()
 	},
@@ -39,8 +45,11 @@ var opsWorkflowsShowCmd = &cobra.Command{
 var opsWorkflowsSetCmd = &cobra.Command{
 	Use:   "set -f <yamlFile>",
 	Short: "Create or update workflow from YAML file",
-	Long:  `Create or update workflow from YAML file.`,
+	Long:  appHeader(`Create or update workflow from YAML file.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Workflow().Set(vars.YAMLFile)
 	},
@@ -50,8 +59,11 @@ var opsWorkflowsSetCmd = &cobra.Command{
 var opsWorkflowsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Remove workflow",
-	Long:  `Remove workflow from database.`,
+	Long:  appHeader(`Remove workflow from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Workflow().Delete()
 	},
@@ -61,8 +73,11 @@ var opsWorkflowsDeleteCmd = &cobra.Command{
 var opsWorkflowsEnableCmd = &cobra.Command{
 	Use:   "enable",
 	Short: "Enable workflow",
-	Long:  `Enable workflow.`,
+	Long:  appHeader(`Enable workflow.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Workflow().Enable()
 	},
@@ -72,8 +87,11 @@ var opsWorkflowsEnableCmd = &cobra.Command{
 var opsWorkflowsDisableCmd = &cobra.Command{
 	Use:   "disable",
 	Short: "Disable workflow",
-	Long:  `Disable workflow.`,
+	Long:  appHeader(`Disable workflow.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Workflow().Disable()
 	},

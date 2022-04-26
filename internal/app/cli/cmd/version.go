@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
+	"mmesh.dev/m-cli/pkg/output"
+	"mmesh.dev/m-cli/pkg/status"
 	"mmesh.dev/m-lib/pkg/update"
 	"mmesh.dev/m-lib/pkg/utils/msg"
 	"mmesh.dev/m-lib/pkg/version"
@@ -14,15 +15,18 @@ import (
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Update client and show version information",
-	Long:  "Update client and show version information.",
+	Long:  appHeader("Update client and show version information."),
 }
 
 // versionShowCmd represents the version/show command
 var versionShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show " + version.CLI_NAME + " version information",
-	Long:  "Show " + version.CLI_NAME + " version information",
+	Long:  appHeader("Show " + version.CLI_NAME + " version information"),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		header()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Client Info: " + version.CLI_NAME + " " + version.GetVersion() + "\n")
 	},
@@ -32,13 +36,18 @@ var versionShowCmd = &cobra.Command{
 var versionUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "Update " + version.CLI_NAME + " to the latest version",
-	Long:  "Update " + version.CLI_NAME + " to the latest version",
+	Long:  appHeader("Update " + version.CLI_NAME + " to the latest version"),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		header()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
+		output.Header("Software Update")
+
 		if err := update.Update(version.CLI_NAME); err != nil {
-			msg.Errorf("Unable to check for updates: %v", err)
-			os.Exit(1)
+			status.Error(err, "Update failed")
 		}
+
 		msg.Ok("Latest version installed")
 	},
 }

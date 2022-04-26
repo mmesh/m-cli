@@ -8,49 +8,49 @@ import (
 var iamCmd = &cobra.Command{
 	Use:   "iam",
 	Short: "Users administration and access management (RBAC)",
-	Long:  `Users administration and access management (RBAC).`,
+	Long:  appHeader(`Users administration and access management (RBAC).`),
 }
 
 // userCmd represents the iam command
 var userCmd = &cobra.Command{
 	Use:   "user",
 	Short: "User settings",
-	Long:  `User settings.`,
+	Long:  appHeader(`User settings.`),
 }
 
 // cloudCmd represents the k8s command
 var cloudCmd = &cobra.Command{
 	Use:   "cloud",
 	Short: "Integrate and manage cloud resources in mmesh",
-	Long:  `Integrate and manage cloud resources in mmesh.`,
+	Long:  appHeader(`Integrate and manage cloud resources in mmesh.`),
 }
 
 // opsCmd represents the ops command
 var opsCmd = &cobra.Command{
 	Use:   "ops",
 	Short: "Automation and GitOps: projects / workflows / logs",
-	Long:  `Automation and workflows management commands.`,
+	Long:  appHeader(`Automation and workflows management commands.`),
 }
 
 // auditCmd represents the audit command
 var auditCmd = &cobra.Command{
 	Use:   "audit",
 	Short: "Audit commands",
-	Long:  `Platform audit commands.`,
+	Long:  appHeader(`Platform audit commands.`),
 }
 
 // statusCmd represents the status command
 var statusCmd = &cobra.Command{
 	Use:   "status",
 	Short: "Platform status report",
-	Long:  `Platform status report.`,
+	Long:  appHeader(`Platform status report.`),
 }
 
 // runtimeCmd represents the runtime command
 var runtimeCmd = &cobra.Command{
 	Use:   "runtime",
 	Short: "Runtime configuration administration",
-	Long:  `Runtime configuration administration.`,
+	Long:  appHeader(`Runtime configuration administration.`),
 }
 
 func init() {
@@ -77,4 +77,6 @@ func init() {
 	// rootCmd.AddCommand(statusCmd)
 	// rootCmd.AddCommand(runtimeCmd)
 	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(setupCmd)
+	rootCmd.AddCommand(completionCmd)
 }

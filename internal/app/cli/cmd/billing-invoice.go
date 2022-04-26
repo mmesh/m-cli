@@ -10,15 +10,18 @@ import (
 var billingInvoiceCmd = &cobra.Command{
 	Use:   "invoice",
 	Short: "Invoice administration",
-	Long:  `Invoice administration.`,
+	Long:  appHeader(`Invoice administration.`),
 }
 
 // billingInvoiceListCmd represents the billing/invoices list verb
 var billingInvoiceListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List invoices",
-	Long:  `List all invoices.`,
+	Long:  appHeader(`List all invoices.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Billing().Invoice().List()
 	},
@@ -28,8 +31,11 @@ var billingInvoiceListCmd = &cobra.Command{
 var billingInvoiceShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show invoice",
-	Long:  `Show invoice details.`,
+	Long:  appHeader(`Show invoice details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Billing().Invoice().Show()
 	},
@@ -39,8 +45,11 @@ var billingInvoiceShowCmd = &cobra.Command{
 var billingInvoiceDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete invoice",
-	Long:  `Remove invoice from database.`,
+	Long:  appHeader(`Remove invoice from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Billing().Invoice().Delete()
 	},

@@ -10,28 +10,28 @@ import (
 var k8sCmd = &cobra.Command{
 	Use:   "k8s",
 	Short: "Connect kubernetes clusters to your mmesh",
-	Long:  `Connect kubernetes clusters to your mmesh.`,
+	Long:  appHeader(`Connect kubernetes clusters to your mmesh.`),
 }
 
 // k8sServicesCmd represents the node list-services verb
 var k8sServicesCmd = &cobra.Command{
 	Use:   "svc",
 	Short: "Connect kubernetes services to your mmesh",
-	Long:  `Connect kubernetes services to your mmesh.`,
+	Long:  appHeader(`Connect kubernetes services to your mmesh.`),
 }
 
 // k8sPodsCmd represents the node list-services verb
 var k8sPodsCmd = &cobra.Command{
 	Use:   "pod",
 	Short: "Connect kubernetes pods to your mmesh",
-	Long:  `Connect kubernetes pods to your mmesh.`,
+	Long:  appHeader(`Connect kubernetes pods to your mmesh.`),
 }
 
 // k8sCreateKubernetesGatewayCmd represents the node create verb
 // var k8sCreateKubernetesGatewayCmd = &cobra.Command{
 // 	Use:   "add-gw",
 // 	Short: "Add mmesh gateway to your kubernetes cluster",
-// 	Long:  `Add mmesh gateway to your kubernetes cluster.`,
+// 	Long:  appHeader(`Add mmesh gateway to your kubernetes cluster.`),
 // 	Args:  cobra.NoArgs,
 // 	Run: func(cmd *cobra.Command, args []string) {
 // 		client.Kubernetes().CreateKubernetesGateway()
@@ -42,8 +42,11 @@ var k8sPodsCmd = &cobra.Command{
 var k8sServicesListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List kubernetes services connected via mmesh ingress gateway",
-	Long:  `List kubernetes services connected via mmesh ingress gateway.`,
+	Long:  appHeader(`List kubernetes services connected via mmesh ingress gateway.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Kubernetes().Services()
 	},
@@ -53,8 +56,11 @@ var k8sServicesListCmd = &cobra.Command{
 var k8sServicesConnectCmd = &cobra.Command{
 	Use:   "connect",
 	Short: "Connect kubernetes services via mmesh ingress gateway",
-	Long:  `Connect kubernetes services via mmesh ingress gateway.`,
+	Long:  appHeader(`Connect kubernetes services via mmesh ingress gateway.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Kubernetes().ConnectService()
 	},
@@ -64,8 +70,11 @@ var k8sServicesConnectCmd = &cobra.Command{
 var k8sServicesDisconnectCmd = &cobra.Command{
 	Use:   "disconnect",
 	Short: "Disconnect kubernetes services from mmesh ingress gateway",
-	Long:  `Disconnect kubernetes services from mmesh ingress gateway.`,
+	Long:  appHeader(`Disconnect kubernetes services from mmesh ingress gateway.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Kubernetes().DisconnectService()
 	},
@@ -75,8 +84,11 @@ var k8sServicesDisconnectCmd = &cobra.Command{
 var k8sPodsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List kubernetes pods connected via mmesh sidecar",
-	Long:  `List kubernetes pods connected via mmesh sidecar.`,
+	Long:  appHeader(`List kubernetes pods connected via mmesh sidecar.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Kubernetes().Pods()
 	},
@@ -86,8 +98,11 @@ var k8sPodsListCmd = &cobra.Command{
 var k8sPodsConnectCmd = &cobra.Command{
 	Use:   "connect",
 	Short: "Add mmesh sidecar to your kubernetes pods",
-	Long:  `Add mmesh sidecar to your kubernetes pods.`,
+	Long:  appHeader(`Add mmesh sidecar to your kubernetes pods.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Kubernetes().ConnectPod()
 	},
@@ -97,15 +112,17 @@ var k8sPodsConnectCmd = &cobra.Command{
 var k8sPodsDisconnectCmd = &cobra.Command{
 	Use:   "disconnect",
 	Short: "Remove mmesh sidecar from your kubernetes pods",
-	Long:  `Remove mmesh sidecar from your kubernetes pods.`,
+	Long:  appHeader(`Remove mmesh sidecar from your kubernetes pods.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Kubernetes().DisconnectPod()
 	},
 }
 
 func init() {
-	// k8sCmd.AddCommand(k8sCreateKubernetesGatewayCmd)
 	k8sCmd.AddCommand(k8sServicesCmd)
 	k8sCmd.AddCommand(k8sPodsCmd)
 	k8sServicesCmd.AddCommand(k8sServicesListCmd)

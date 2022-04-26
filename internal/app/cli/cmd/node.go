@@ -10,15 +10,18 @@ import (
 var networkNodeCmd = &cobra.Command{
 	Use:   "node",
 	Short: "Network node operations",
-	Long:  `Network node operations for network administrators.`,
+	Long:  appHeader(`Network node operations for network administrators.`),
 }
 
 // networkNodeCreateGenericNodeCmd represents the node create verb
 var networkAddNodeCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Generate magic link to setup a new node",
-	Long:  `Generate magic link to setup a new node.`,
+	Long:  appHeader(`Generate magic link to setup a new node.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Node().AddNode()
 	},
@@ -28,8 +31,11 @@ var networkAddNodeCmd = &cobra.Command{
 var networkNodeListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List nodes",
-	Long:  `List nodes.`,
+	Long:  appHeader(`List nodes.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Node().List()
 	},
@@ -39,8 +45,11 @@ var networkNodeListCmd = &cobra.Command{
 var networkNodeShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show node",
-	Long:  `Show node details.`,
+	Long:  appHeader(`Show node details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Node().Show()
 	},
@@ -50,8 +59,11 @@ var networkNodeShowCmd = &cobra.Command{
 var networkNodeDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Remove node",
-	Long:  `Remove node from database.`,
+	Long:  appHeader(`Remove node from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Node().Delete()
 	},
@@ -61,8 +73,11 @@ var networkNodeDeleteCmd = &cobra.Command{
 var networkNodeMetricsCmd = &cobra.Command{
 	Use:   "metrics",
 	Short: "Show detailed metrics",
-	Long:  `Show detailed metrics.`,
+	Long:  appHeader(`Show detailed metrics.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Node().Metrics()
 	},
@@ -72,8 +87,11 @@ var networkNodeMetricsCmd = &cobra.Command{
 // var networkNodeResetTrafficMatrixCmd = &cobra.Command{
 // 	Use:   "reset-traffic-matrix",
 // 	Short: "Reset traffic matrix metrics",
-// 	Long:  `Reset traffic matrix metrics.`,
+// 	Long:  appHeader(`Reset traffic matrix metrics.`),
 // 	Args:  cobra.NoArgs,
+//  PreRun: func(cmd *cobra.Command, args []string) {
+// 	    preflight()
+//  },
 // 	Run: func(cmd *cobra.Command, args []string) {
 // 		client.Node().ResetNetworkTraffic()
 // 	},
@@ -83,8 +101,11 @@ var networkNodeMetricsCmd = &cobra.Command{
 var networkNodeShowEndpointCmd = &cobra.Command{
 	Use:   "show-endpoint",
 	Short: "Show network endpoint details",
-	Long:  `Show network endpoint details.`,
+	Long:  appHeader(`Show network endpoint details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Node().ShowEndpoint()
 	},
@@ -94,15 +115,17 @@ var networkNodeShowEndpointCmd = &cobra.Command{
 var networkNodeDeleteEndpointCmd = &cobra.Command{
 	Use:   "delete-endpoint",
 	Short: "Delete network endpoint",
-	Long:  `Remove network endpoint from database.`,
+	Long:  appHeader(`Remove network endpoint from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Node().DeleteEndpoint()
 	},
 }
 
 func init() {
-	// rootCmd.AddCommand(networkNodeCmd)
 	networkNodeCmd.AddCommand(networkAddNodeCmd)
 	networkNodeCmd.AddCommand(networkNodeListCmd)
 	networkNodeCmd.AddCommand(networkNodeShowCmd)

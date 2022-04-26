@@ -10,15 +10,18 @@ import (
 var subnetCmd = &cobra.Command{
 	Use:   "subnet",
 	Short: "Subnets administration",
-	Long:  `Subnets administration.`,
+	Long:  appHeader(`Subnets administration.`),
 }
 
 // subnetListCmd represents the subnet list verb
 var subnetListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List subnets",
-	Long:  `List all subnets.`,
+	Long:  appHeader(`List all subnets.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.VRF().List()
 	},
@@ -28,8 +31,11 @@ var subnetListCmd = &cobra.Command{
 var subnetShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show subnet",
-	Long:  `Show subnet details.`,
+	Long:  appHeader(`Show subnet details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.VRF().Show()
 	},
@@ -39,8 +45,11 @@ var subnetShowCmd = &cobra.Command{
 var subnetNewCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a new subnet",
-	Long:  `Create a new subnet interactively.`,
+	Long:  appHeader(`Create a new subnet interactively.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.VRF().New()
 	},
@@ -50,8 +59,11 @@ var subnetNewCmd = &cobra.Command{
 var subnetUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "Update a subnet",
-	Long:  `Update a subnet interactively.`,
+	Long:  appHeader(`Update a subnet interactively.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.VRF().Update()
 	},
@@ -61,8 +73,11 @@ var subnetUpdateCmd = &cobra.Command{
 var subnetDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Remove subnet",
-	Long:  `Remove subnet from database.`,
+	Long:  appHeader(`Remove subnet from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.VRF().Delete()
 	},
@@ -72,45 +87,23 @@ var subnetDeleteCmd = &cobra.Command{
 var subnetDeleteIPAMEntryCmd = &cobra.Command{
 	Use:   "delete-ipam-entry",
 	Short: "Delete IPAM entry",
-	Long:  `Remove IPAM entry from database.`,
+	Long:  appHeader(`Remove IPAM entry from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.VRF().DeleteIPAMEntry()
 	},
 }
 
-// // subnetEnableRelayServiceCmd represents the subnet enable-relay-service verb
-// var subnetEnableRelayServiceCmd = &cobra.Command{
-// 	Use:   "enable-relay-service",
-// 	Short: "Subscribe Subnet Managed Relay Service",
-// 	Long:  `Subscribe Subnet Managed Relay Service.`,
-// 	Args:  cobra.NoArgs,
-// 	Run: func(cmd *cobra.Command, args []string) {
-// 		client.VRF().EnableVRFRelayService()
-// 	},
-// }
-
-// // subnetDisableRelayServiceCmd represents the subnet disable-relay-service verb
-// var subnetDisableRelayServiceCmd = &cobra.Command{
-// 	Use:   "disable-relay-service",
-// 	Short: "Unsubscribe Subnet Managed Relay Service",
-// 	Long:  `Unsubscribe Subnet Managed Relay Service.`,
-// 	Args:  cobra.NoArgs,
-// 	Run: func(cmd *cobra.Command, args []string) {
-// 		client.VRF().DisableVRFRelayService()
-// 	},
-// }
-
 func init() {
-	// topologyCmd.AddCommand(subnetCmd)
 	subnetCmd.AddCommand(subnetListCmd)
 	subnetCmd.AddCommand(subnetShowCmd)
 	subnetCmd.AddCommand(subnetNewCmd)
 	subnetCmd.AddCommand(subnetUpdateCmd)
 	subnetCmd.AddCommand(subnetDeleteCmd)
 	subnetCmd.AddCommand(subnetDeleteIPAMEntryCmd)
-	// subnetCmd.AddCommand(subnetEnableRelayServiceCmd)
-	// subnetCmd.AddCommand(subnetDisableRelayServiceCmd)
 
 	subnetCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 	subnetCmd.PersistentFlags().StringVarP(&vars.TenantID, "tenant", "t", "", "tenant identifier")

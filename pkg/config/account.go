@@ -11,11 +11,12 @@ import (
 )
 
 func DefaultAccount(accountID, userEmail string) error {
-	if len(accountID) == 0 || accountID == "admin" || accountID == "master" {
+	if len(accountID) == 0 {
 		return nil
 	}
 
 	if len(viper.GetString("account.id")) > 0 && len(viper.GetString("user.email")) > 0 {
+		// account config already exists in mmeshctl.yml
 		return nil
 	}
 

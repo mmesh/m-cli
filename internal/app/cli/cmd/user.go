@@ -11,8 +11,11 @@ import (
 var userShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show user details",
-	Long:  `Show user details.`,
+	Long:  appHeader(`Show user details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.User().ShowLoggedUser(login.NewRequest())
 	},
@@ -22,8 +25,11 @@ var userShowCmd = &cobra.Command{
 var userSetEmailCmd = &cobra.Command{
 	Use:   "set-email",
 	Short: "Set user email",
-	Long:  `Set user email.`,
+	Long:  appHeader(`Set user email.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.User().SetEmail(login.NewRequest())
 	},
@@ -33,8 +39,11 @@ var userSetEmailCmd = &cobra.Command{
 var userSetPasswordCmd = &cobra.Command{
 	Use:   "set-password",
 	Short: "Set user password",
-	Long:  `Set user password.`,
+	Long:  appHeader(`Set user password.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.User().SetPassword(login.NewRequest())
 	},
@@ -44,8 +53,11 @@ var userSetPasswordCmd = &cobra.Command{
 var userSetSSHKeysCmd = &cobra.Command{
 	Use:   "set-ssh-keys",
 	Short: "Set user SSH keys",
-	Long:  `Set user SSH keys.`,
+	Long:  appHeader(`Set user SSH keys.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.User().SetSSHKeys(login.NewRequest())
 	},
@@ -55,8 +67,11 @@ var userSetSSHKeysCmd = &cobra.Command{
 var userSetTOTPCmd = &cobra.Command{
 	Use:   "set-2fa",
 	Short: "Set user 2-factor authentication",
-	Long:  `Set user 2-factor authentication.`,
+	Long:  appHeader(`Set user 2-factor authentication.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.User().SetTOTP(login.NewRequest())
 	},
@@ -66,8 +81,11 @@ var userSetTOTPCmd = &cobra.Command{
 var userPasswordResetCmd = &cobra.Command{
 	Use:   "password-reset",
 	Short: "Request a password-reset",
-	Long:  `Request a password-reset.`,
+	Long:  appHeader(`Request a password-reset.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Auth().PasswordReset()
 	},

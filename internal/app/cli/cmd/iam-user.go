@@ -10,15 +10,18 @@ import (
 var iamUsersCmd = &cobra.Command{
 	Use:   "user",
 	Short: "IAM users adminstration",
-	Long:  `IAM users adminstration operations.`,
+	Long:  appHeader(`IAM users adminstration operations.`),
 }
 
 // iamUsersListCmd represents the iam/users list verb
 var iamUsersListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List users",
-	Long:  `List all realm's users.`,
+	Long:  appHeader(`List all realm's users.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.User().List()
 	},
@@ -28,8 +31,11 @@ var iamUsersListCmd = &cobra.Command{
 var iamUsersShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show user",
-	Long:  `Show user details.`,
+	Long:  appHeader(`Show user details.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.User().Show()
 	},
@@ -39,8 +45,11 @@ var iamUsersShowCmd = &cobra.Command{
 var iamUsersCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a user",
-	Long:  `Create a user.`,
+	Long:  appHeader(`Create a user.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.User().Create()
 	},
@@ -50,8 +59,11 @@ var iamUsersCreateCmd = &cobra.Command{
 var iamUsersDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete user",
-	Long:  `Remove user from database.`,
+	Long:  appHeader(`Remove user from database.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.User().Delete()
 	},
@@ -61,8 +73,11 @@ var iamUsersDeleteCmd = &cobra.Command{
 var iamUsersSetPermissionsCmd = &cobra.Command{
 	Use:   "set-perms",
 	Short: "Set user RBAC permissions (admin only)",
-	Long:  `Set user RBAC permissions (admin only).`,
+	Long:  appHeader(`Set user RBAC permissions (admin only).`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.User().SetPermissions()
 	},
@@ -72,8 +87,11 @@ var iamUsersSetPermissionsCmd = &cobra.Command{
 var iamUsersEnableCmd = &cobra.Command{
 	Use:   "enable",
 	Short: "Enable user",
-	Long:  `Enable user.`,
+	Long:  appHeader(`Enable user.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.User().Enable()
 	},
@@ -83,8 +101,11 @@ var iamUsersEnableCmd = &cobra.Command{
 var iamUsersDisableCmd = &cobra.Command{
 	Use:   "disable",
 	Short: "Disable user",
-	Long:  `Disable user.`,
+	Long:  appHeader(`Disable user.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.User().Disable()
 	},

@@ -10,16 +10,17 @@ import (
 var networkRoutesCmd = &cobra.Command{
 	Use:   "routes",
 	Short: "Show network routes",
-	Long:  `Show network routes.`,
+	Long:  appHeader(`Show network routes.`),
 	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.RoutingTable().List()
 	},
 }
 
 func init() {
-	// rootCmd.AddCommand(networkRoutesCmd)
-
 	networkRoutesCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 	networkRoutesCmd.PersistentFlags().StringVarP(&vars.TenantID, "tenant", "t", "", "tenant identifier")
 	networkRoutesCmd.PersistentFlags().StringVarP(&vars.NetID, "network", "n", "", "network identifier")
