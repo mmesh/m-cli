@@ -17,95 +17,107 @@ before:
     # - go mod verify
     # - go generate $(go list ./... | grep -v /vendor/)
     # - go fmt $(go list ./... | grep -v '/vendor/' | grep -v '.pb.go' | grep -v '.twirp.go' | grep -v 'bindata.go') | tee /dev/stderr
+    - ./scripts/completions.sh
 
 builds:
-- id: "mmesh-cli"
-  main: cmd/cli/main.go
-  binary: mmeshctl
-  flags:
-    #- -tags=dev
-    - -tags="static_build,netgo"
-    - -v
-    - -a
-    - -mod=vendor
-    - -installsuffix=netgo
-    - -trimpath
-    #- -race # requires CGO_ENABLED=1
-  # Custom ldflags templates.
-  # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
-  ldflags:
-    - -s
-    - -w
-    - -X mmesh.dev/m-lib/pkg/version.GitRepository={{.GitURL}}
-    - -X mmesh.dev/m-lib/pkg/version.GitCommit={{.ShortCommit}}
-    - -X mmesh.dev/m-lib/pkg/version.VersionNumber={{.Tag}}
-    - -X mmesh.dev/m-lib/pkg/version.VersionDate={{.Env.VERSION_DATE}}
-    - -X mmesh.dev/m-lib/pkg/version.GoVersion={{.Env.GO_VERSION}}
-    - -extldflags -static
-    #- ./usemsan=-msan
-  env:
-    - CGO_ENABLED=0
-  goos:
-    - linux
-    - darwin
-    - windows
-  goarch:
-    - amd64
-    - arm64
-  goamd64:
-    - v1
-  # lang: go
+  - id: "mmesh-cli"
+    main: cmd/cli/main.go
+    binary: mmeshctl
+    flags:
+      #- -tags=dev
+      - -tags="static_build,netgo"
+      - -v
+      - -a
+      - -mod=vendor
+      - -installsuffix=netgo
+      - -trimpath
+      #- -race # requires CGO_ENABLED=1
+    # Custom ldflags templates.
+    # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
+    ldflags:
+      - -s
+      - -w
+      - -X mmesh.dev/m-lib/pkg/version.GitRepository={{.GitURL}}
+      - -X mmesh.dev/m-lib/pkg/version.GitCommit={{.ShortCommit}}
+      - -X mmesh.dev/m-lib/pkg/version.VersionNumber={{.Tag}}
+      - -X mmesh.dev/m-lib/pkg/version.VersionDate={{.Env.VERSION_DATE}}
+      - -X mmesh.dev/m-lib/pkg/version.GoVersion={{.Env.GO_VERSION}}
+      - -extldflags -static
+      #- ./usemsan=-msan
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    goamd64:
+      - v1
+    # lang: go
 
 snapshot:
   # name_template: '{{ .Tag }}-SNAPSHOT-{{.ShortCommit}}'
   # name_template: '{{ .Version }}-SNAPSHOT-{{.ShortCommit}}'
-  name_template: '{{ .Version }}-{{.Env.VERSION_DATE}}-SNAPSHOT-{{.ShortCommit}}'
+  name_template: "{{ .Version }}-{{.Env.VERSION_DATE}}-SNAPSHOT-{{.ShortCommit}}"
 
 checksum:
   # name_template: '{{ .ProjectName }}_{{ .Tag }}_checksums.txt'
   # name_template: '{{ .ProjectName }}_{{ .Version }}_checksums.txt'
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
   algorithm: sha256
 
 signs:
   - cmd: cosign
     env:
-    - COSIGN_EXPERIMENTAL=1
-    stdin: '{{ .Env.COSIGN_PWD }}'
-    certificate: '${artifact}.pem'
+      - COSIGN_EXPERIMENTAL=1
+    stdin: "{{ .Env.COSIGN_PWD }}"
+    certificate: "${artifact}.pem"
     args:
-      - 'sign-blob'
-      - '--key=/cosign/cosign.key'
-      - '--output-certificate=${certificate}'
-      - '--output-signature=${signature}'
-      - '${artifact}'
+      - "sign-blob"
+      - "--key=/cosign/cosign.key"
+      - "--output-certificate=${certificate}"
+      - "--output-signature=${signature}"
+      - "${artifact}"
     artifacts: checksum
     output: false
 
 docker_signs:
-- cmd: cosign
-  env:
-  - COSIGN_EXPERIMENTAL=1
-  artifacts: manifests
-  output: false
-  args:
-  - 'sign'
-  - '${artifact}'
+  - cmd: cosign
+    env:
+      - COSIGN_EXPERIMENTAL=1
+    artifacts: manifests
+    output: false
+    args:
+      - "sign"
+      - "${artifact}"
 
 sboms:
   - artifacts: archive
 
 archives:
-- id: mmesh-cli
-  builds:
-    - mmesh-cli
-  # name_template: "{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
-  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
-  wrap_in_directory: false
-  format: tar.gz
-  format_overrides:
-    - goos: windows
-      format: zip
+  - id: mmesh-cli
+    builds:
+      - mmesh-cli
+    # name_template: "{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    wrap_in_directory: false
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - ./README.md
+      - ./SECURITY.md
+      - ./LICENSE
+      - src: ./_build/completions/*
+        dst: completions
+        strip_parent: true
+        info:
+          owner: root
+          group: root
+          mode: 0644
 
 brews:
   - tap:
@@ -121,20 +133,26 @@ brews:
     homepage: https://mmesh.io
     description: mmesh-cli
     license: "Apache License 2.0"
+    test: |
+      system "#{bin}/mmeshctl version show"
     install: |-
       bin.install "mmeshctl"
+      bash_completion.install "completions/mmeshctl.bash" => "mmeshctl"
+      zsh_completion.install "completions/mmeshctl.zsh" => "_mmeshctl"
+      fish_completion.install "completions/mmeshctl.fish"
 
 nfpms:
   - id: mmesh-cli
     package_name: mmesh-cli
     # file_name_template: "{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
     # file_name_template: "{{ .ProjectName }}_{{ .Arch }}"
-    file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    # file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    file_name_template: "{{ .ConventionalFileName }}"
     builds:
       - mmesh-cli
     vendor: mmesh.io
     homepage: https://mmesh.io
-    maintainer: buildbot <no-reply@mmesh.io>
+    maintainer: mmeshbot <mmeshbot@mmesh.io>
     description: |-
       mmesh command line interface
       mmesh command line interface for interacting with the mmesh multi-cloud integration platform.
@@ -144,15 +162,33 @@ nfpms:
       - rpm
       - apk
     bindir: /usr/bin
-    section: default
-    priority: extra
+    section: misc
+    priority: optional
     meta: false
     contents:
       # basic files that apply to all packagers
       - src: ./README.md
         dst: /usr/share/doc/mmeshctl/README.md
+      - src: ./SECURITY.md
+        dst: /usr/share/doc/mmeshctl/SECURITY.md
       - src: ./LICENSE
         dst: /usr/share/doc/mmeshctl/LICENSE
+      - src: ./_build/completions/mmeshctl.bash
+        dst: /usr/share/bash-completion/completions/mmeshctl
+        file_info:
+          mode: 0644
+      - src: ./_build/completions/mmeshctl.fish
+        dst: /usr/share/fish/completions/mmeshctl.fish
+        file_info:
+          mode: 0644
+      - src: ./_build/completions/mmeshctl.zsh
+        dst: /usr/share/zsh/vendor-completions/_mmeshctl
+        file_info:
+          mode: 0644
+    deb:
+      lintian_overrides:
+        - statically-linked-binary
+        - changelog-file-missing-in-native-package
 
 dockers:
   - dockerfile: ./build/package/dockerfiles/Dockerfile
@@ -198,7 +234,7 @@ release:
     name: m-cli
   draft: false
   prerelease: auto # auto | true | false
-  name_template: '{{.Tag}}'
+  name_template: "{{.Tag}}"
   disable: false
   # extra_files:
   #   - glob: ./_dist/*.sig
@@ -219,7 +255,7 @@ changelog:
     - title: Features
       regexp: "^.*feat[(\\w)]*:+.*$"
       order: 0
-    - title: 'Bug fixes'
+    - title: "Bug fixes"
       regexp: "^.*fix[(\\w)]*:+.*$"
       order: 1
     - title: Others
@@ -232,7 +268,6 @@ changelog:
       - "^test"
       - "^typo"
       - "^Merge"
-
 # publishers:
 #   # dev repos
 #   - name: repo.mmesh.dev/apt
