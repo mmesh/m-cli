@@ -110,6 +110,7 @@ archives:
     files:
       - ./README.md
       - ./SECURITY.md
+      - ./SUPPORT.md
       - ./LICENSE
       - src: ./_build/completions/*
         dst: completions
@@ -171,6 +172,8 @@ nfpms:
         dst: /usr/share/doc/mmeshctl/README.md
       - src: ./SECURITY.md
         dst: /usr/share/doc/mmeshctl/SECURITY.md
+      - src: ./SUPPORT.md
+        dst: /usr/share/doc/mmeshctl/SUPPORT.md
       - src: ./LICENSE
         dst: /usr/share/doc/mmeshctl/LICENSE
       - src: ./_build/completions/mmeshctl.bash
@@ -268,6 +271,7 @@ changelog:
       - "^test"
       - "^typo"
       - "^Merge"
+
 # publishers:
 #   # dev repos
 #   - name: repo.mmesh.dev/apt
