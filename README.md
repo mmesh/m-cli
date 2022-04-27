@@ -118,6 +118,22 @@ EOF
 sudo yum install mmesh-cli
 ```
 
+#### Homebrew installation on Linux
+
+If you are on Linux and using [Homebrew](https://docs.brew.sh/Homebrew-on-Linux) package manager, you can install the mmesh CLI with Homebrew.
+
+1. Run the installation command:
+
+    ```shell
+    brew install mmesh/tap/mmesh-cli
+    ```
+
+2. Test to ensure the version you installed is up-to-date:
+
+    ```shell
+    mmeshctl version show
+    ```
+
 ### macOS Installation
 
 #### macOS binary installation with curl
@@ -186,6 +202,22 @@ sudo yum install mmesh-cli
     ```
 
     > **Note**: Make sure `/usr/local/bin` is in your `PATH` environment variable.
+
+#### Homebrew installation on macOS
+
+If you are on macOS and using [Homebrew](https://brew.sh/) package manager, you can install the mmesh CLI with Homebrew.
+
+1. Run the installation command:
+
+    ```shell
+    brew install mmesh/tap/mmesh-cli
+    ```
+
+2. Test to ensure the version you installed is up-to-date:
+
+    ```shell
+    mmeshctl version show
+    ```
 
 ### Windows Installation
 
