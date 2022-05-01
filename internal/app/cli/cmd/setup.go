@@ -9,7 +9,6 @@ import (
 	"mmesh.dev/m-cli/pkg/vars"
 )
 
-// setupCmd represents the networkRoutes command
 var setupCmd = &cobra.Command{
 	Use:   "setup",
 	Short: "First-time setup",

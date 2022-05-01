@@ -52,8 +52,8 @@ admin please check your inbox to find the confirmation email and
 follow the instructions to activate your account.
 
 If for any reason you didn't get the confirmation email, you can
-execute the command '%s' and a new email will be send to the
-account admin.
+execute the command '%s' and a
+new email will be send to the account admin.
 
 Have a nice day!`,
 		colors.White("mmeshctl auth resend-confirmation"))
@@ -65,7 +65,8 @@ inbox to find the confirmation email and follow the instructions
 to activate your account.
 
 If for any reason you didn't get the confirmation email, you can
-execute the command '%s' and a new email will be send.
+execute the command '%s' and a
+new email will be send.
 
 Have a nice day!`,
 		colors.White("mmeshctl auth resend-confirmation"))

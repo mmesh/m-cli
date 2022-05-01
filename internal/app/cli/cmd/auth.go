@@ -48,7 +48,7 @@ var authPasswordResetCmd = &cobra.Command{
 	Long:  appHeader(`Request a password-reset.`),
 	Args:  cobra.NoArgs,
 	PreRun: func(cmd *cobra.Command, args []string) {
-		preflight()
+		header()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Auth().PasswordReset()
@@ -62,7 +62,7 @@ var authConfirmationMailResendCmd = &cobra.Command{
 	Long:  appHeader(`Request a new confirmation mail.`),
 	Args:  cobra.NoArgs,
 	PreRun: func(cmd *cobra.Command, args []string) {
-		preflight()
+		header()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Auth().ConfirmationMailResend()

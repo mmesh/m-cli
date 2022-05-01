@@ -53,8 +53,12 @@ func Init() {
 func SetDefaults() {
 	var isDev bool
 
-	if viper.GetString("version.branch") == versionDev ||
-		os.Getenv("MMESH_VERSION") == versionDev {
+	if viper.GetString("version.branch") == versionDev {
+		isDev = true
+	}
+
+	if os.Getenv("MMESH_VERSION") == versionDev {
+		viper.Set("version.branch", versionDev)
 		isDev = true
 	}
 
