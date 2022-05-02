@@ -30,12 +30,6 @@ func getConfigFile(cfgFile string) string {
 			os.Exit(1)
 		}
 
-		// home, err := homedir.Dir()
-		// if err != nil {
-		// 	msg.Error(err)
-		// 	os.Exit(1)
-		// }
-
 		// Search config in home directory with name ".mmesh" (without extension).
 		// viper.AddConfigPath(home)
 		// configName := strings.TrimSuffix(config.DefaultConfigFile, filepath.Ext(config.DefaultConfigFile))

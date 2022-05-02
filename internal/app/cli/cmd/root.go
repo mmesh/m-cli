@@ -52,17 +52,14 @@ func Init() {
 
 	cobra.EnableCommandSorting = false
 
-	// cobra.OnInitialize(initConfig, adminOpts)
 	cobra.OnInitialize()
 
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
-	// rootCmd.CompletionOptions.DisableDescriptions = true
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", defaultConfigFileHelp())
-	// rootCmd.PersistentFlags().BoolP("insecure", "", false, "insecure mode (TLS disabled)")
 	// rootCmd.PersistentFlags().StringVarP(&outputFormat, "output", "o", "table", "output format (table, json)")
 	rootCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 

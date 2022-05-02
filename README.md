@@ -8,6 +8,7 @@ Open source projects from [mmesh](https://mmesh.io).
 
 # mmesh-cli
 
+[![Go Report Card](https://goreportcard.com/badge/mmesh.dev/m-cli)](https://goreportcard.com/report/mmesh.dev/m-cli)
 [![Release](https://img.shields.io/github/v/release/mmesh/m-cli?display_name=tag&style=flat)](https://github.com/mmesh/m-cli/releases/latest)
 [![GitHub](https://img.shields.io/github/license/mmesh/m-cli?style=flat)](/LICENSE)
 
