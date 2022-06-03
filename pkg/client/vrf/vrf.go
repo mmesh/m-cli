@@ -81,6 +81,7 @@ func vrfs() map[string]*network_pb.VRF {
 	for {
 		vl, err := nxc.ListVRFs(context.TODO(), lr)
 		if err != nil {
+			s.Stop()
 			status.Error(err, "Unable to list subnets")
 		}
 

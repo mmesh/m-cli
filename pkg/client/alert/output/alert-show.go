@@ -86,7 +86,8 @@ func alertComments(a *events.Alert) {
 	for _, tm := range tmSort {
 		c := a.Comments[tm]
 		m++
-		author := output.UserLocal(fmt.Sprintf("%s @%s", c.UserEmail, a.AccountID))
+		userNickname := strings.Split(c.UserEmail, "@")[0]
+		author := output.UserLocal(fmt.Sprintf("%s @%s", userNickname, a.AccountID))
 		timestamp := time.Unix(tm, 0).String()
 		hdr := fmt.Sprintf("%s %s", colors.Black(timestamp), author)
 		t.AddRow(hdr)

@@ -1,5 +1,11 @@
 package alert
 
-func (api *API) Show() {
-	Output().Show(GetAlert())
+import "mmesh.dev/m-api-go/grpc/resources/events"
+
+func (api *API) Show() *events.Alert {
+	a := getAlert()
+
+	Output().Show(a)
+
+	return a
 }

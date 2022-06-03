@@ -13,7 +13,19 @@ var accountCmd = &cobra.Command{
 	Long:  appHeader(`Account administration for platform admins.`),
 }
 
-// accountCreateCmd represents the account create verb
+var accountShowCmd = &cobra.Command{
+	Use:   "show",
+	Short: "Show account details",
+	Long:  appHeader(`Show all account details.`),
+	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		client.Account().Show()
+	},
+}
+
 var accountCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create new account",
@@ -27,7 +39,6 @@ var accountCreateCmd = &cobra.Command{
 	},
 }
 
-// accountSettingsCmd represents the account settings verb
 var accountSettingsCmd = &cobra.Command{
 	Use:   "settings",
 	Short: "Edit account settings and integrations",
@@ -41,42 +52,12 @@ var accountSettingsCmd = &cobra.Command{
 	},
 }
 
-// accountShowCmd represents the account get verb
-var accountShowCmd = &cobra.Command{
-	Use:   "show",
-	Short: "Show all account details",
-	Long:  appHeader(`Show all account details.`),
-	Args:  cobra.NoArgs,
-	PreRun: func(cmd *cobra.Command, args []string) {
-		preflight()
-	},
-	Run: func(cmd *cobra.Command, args []string) {
-		client.Account().Show()
-	},
-}
-
-// accountStatsCmd represents the account stats verb
-var accountStatsCmd = &cobra.Command{
-	Use:   "stats",
-	Short: "Show account stats and usage",
-	Long:  appHeader(`Show account stats and usage.`),
-	Args:  cobra.NoArgs,
-	PreRun: func(cmd *cobra.Command, args []string) {
-		preflight()
-	},
-	Run: func(cmd *cobra.Command, args []string) {
-		client.Account().Stats()
-	},
-}
-
-// accountSubscriptionCmd represents the billing command
 var accountSubscriptionCmd = &cobra.Command{
 	Use:   "subscription",
 	Short: "Manage service subscription",
 	Long:  appHeader(`Manage service subscription.`),
 }
 
-// accountSubscriptionShowCmd represents the account subscription show verb
 var accountSubscriptionShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show and update service subscription",
@@ -86,11 +67,10 @@ var accountSubscriptionShowCmd = &cobra.Command{
 		preflight()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		client.Account().Subscription()
+		client.Account().Subscription(nil, true)
 	},
 }
 
-// accountSubscriptionApplyPromotionCmd represents the account subscription promo-code verb
 var accountSubscriptionApplyPromotionCmd = &cobra.Command{
 	Use:   "promo-code",
 	Short: "Apply promotion code",
@@ -104,7 +84,6 @@ var accountSubscriptionApplyPromotionCmd = &cobra.Command{
 	},
 }
 
-// accountSubscriptionCancelCmd represents the account subscription delete verb
 var accountSubscriptionCancelCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Cancel subscription and delete account",
@@ -118,25 +97,35 @@ var accountSubscriptionCancelCmd = &cobra.Command{
 	},
 }
 
-// billingCmd represents the billing command
 var billingCmd = &cobra.Command{
 	Use:   "billing",
 	Short: "Manage invoices and billable items",
 	Long:  appHeader(`Manage invoices and billable items.`),
 }
 
+var accountBillingPortalCmd = &cobra.Command{
+	Use:   "portal",
+	Short: "Open the Billing Portal",
+	Long:  appHeader(`Open the Billing Portal.`),
+	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		client.Account().BillingPortal(nil)
+	},
+}
+
 func init() {
+	accountCmd.AddCommand(accountShowCmd)
 	accountCmd.AddCommand(accountCreateCmd)
 	accountCmd.AddCommand(accountSettingsCmd)
-
-	accountCmd.AddCommand(accountShowCmd)
-	accountCmd.AddCommand(accountStatsCmd)
 	accountCmd.AddCommand(accountSubscriptionCmd)
 	accountSubscriptionCmd.AddCommand(accountSubscriptionShowCmd)
 	accountSubscriptionCmd.AddCommand(accountSubscriptionApplyPromotionCmd)
 	accountSubscriptionCmd.AddCommand(accountSubscriptionCancelCmd)
-
 	accountCmd.AddCommand(billingCmd)
+	billingCmd.AddCommand(accountBillingPortalCmd)
 
 	accountCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 }

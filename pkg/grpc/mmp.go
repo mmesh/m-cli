@@ -19,7 +19,7 @@ func Control(client rpc.NetworkAPIClient, wg *sync.WaitGroup, waitc chan struct{
 	// defer cancel()
 	stream, err := client.Control(context.TODO())
 	if err != nil {
-		msg.Errorf("%v.Exec(_) = _, %v", client, err)
+		// msg.Errorf("%v.Exec(_) = _, %v", client, err)
 		wg.Done()
 		return err
 	}
@@ -34,7 +34,7 @@ func Control(client rpc.NetworkAPIClient, wg *sync.WaitGroup, waitc chan struct{
 				return
 			}
 			if err != nil {
-				msg.Tracef("Failed to receive mmp payload: %v", err)
+				// msg.Tracef("Failed to receive mmp payload: %v", err)
 				waitc <- struct{}{}
 				return
 			}
@@ -53,7 +53,7 @@ func Control(client rpc.NetworkAPIClient, wg *sync.WaitGroup, waitc chan struct{
 		for {
 			payload := <-mmp.TxControlQueue
 			if err := stream.Send(payload); err != nil {
-				msg.Tracef("Failed to send mmp payload: %v", errors.Cause(err))
+				// msg.Tracef("Failed to send mmp payload: %v", errors.Cause(err))
 				waitc <- struct{}{}
 				return
 			}

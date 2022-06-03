@@ -11,6 +11,8 @@ import (
 )
 
 func (a *API) Slack(slck *thirdParty.Slack) *thirdParty.Slack {
+	fmt.Println()
+
 	output.Header("Slack Setup")
 
 	if slck == nil {

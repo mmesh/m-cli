@@ -13,6 +13,7 @@ import (
 	"mmesh.dev/m-cli/pkg/client/account"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
+	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
 	"mmesh.dev/m-cli/pkg/vars"
 	"mmesh.dev/m-lib/pkg/utils/msg"
@@ -54,6 +55,8 @@ func GetInvoice() *billing.Invoice {
 func invoices() map[string]*billing.Invoice {
 	a := account.GetAccount()
 
+	s := output.Spinner()
+
 	nxc, grpcConn := grpc.GetBillingAPIClient(true)
 	defer grpcConn.Close()
 
@@ -67,6 +70,7 @@ func invoices() map[string]*billing.Invoice {
 	for {
 		il, err := nxc.ListInvoices(context.TODO(), lr)
 		if err != nil {
+			s.Stop()
 			status.Error(err, "Unable to list invoices")
 		}
 
@@ -80,6 +84,8 @@ func invoices() map[string]*billing.Invoice {
 			break
 		}
 	}
+
+	s.Stop()
 
 	return invoices
 }

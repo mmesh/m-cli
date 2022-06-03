@@ -15,7 +15,6 @@ import (
 )
 
 func (api *API) PasswordReset() {
-	// nxc, grpcConn := grpc.GetCoreAPIClient()
 	nxc, grpcConn := grpc.GetManagerProviderAPIClient(false)
 	defer grpcConn.Close()
 

@@ -47,71 +47,74 @@ func (api *API) Show(i *cloud.Instance) {
 	t.Render()
 	fmt.Println()
 
-	if i.LastAction == nil && len(i.Actions) == 0 {
-		return
-	}
-
-	output.SubTitleT2("Instance History")
-
-	t = table.New()
-
-	j := 0
-	if i.LastAction != nil {
-		j++
-
-		var actionID uint64
-		if i.LastAction.ActionID == 0 {
-			actionID = uint64(j)
-		} else {
-			actionID = i.LastAction.ActionID
+	/*
+		if i.LastAction == nil && len(i.Actions) == 0 {
+			return
 		}
 
-		aID := fmt.Sprintf("%s%s%s %s", colors.DarkMagenta("["), colors.Magenta(fmt.Sprintf("%d", j)), colors.DarkMagenta("]"), colors.Black("Action ID"))
-		t.AddRow(aID, colors.DarkWhite(fmt.Sprintf("%d", actionID)))
-		t.AddRow(colors.Black("    Action Type"), colors.White(strings.ToUpper(i.LastAction.Type)))
-		t.AddRow(colors.Black("    Status"), actionStatus(i.LastAction.Status))
+		output.SubTitleT2("Instance History")
 
-		if i.LastAction.StartDate != 0 {
-			tm := time.Unix(i.LastAction.StartDate, 0).String()
-			t.AddRow(colors.Black("    Started"), colors.DarkWhite(tm))
+		t = table.New()
+
+		j := 0
+		if i.LastAction != nil {
+			j++
+
+			var actionID uint64
+			if i.LastAction.ActionID == 0 {
+				actionID = uint64(j)
+			} else {
+				actionID = i.LastAction.ActionID
+			}
+
+			aID := fmt.Sprintf("%s%s%s %s", colors.DarkMagenta("["), colors.Magenta(fmt.Sprintf("%d", j)), colors.DarkMagenta("]"), colors.Black("Action ID"))
+			t.AddRow(aID, colors.DarkWhite(fmt.Sprintf("%d", actionID)))
+			t.AddRow(colors.Black("    Action Type"), colors.White(strings.ToUpper(i.LastAction.Type)))
+			t.AddRow(colors.Black("    Status"), actionStatus(i.LastAction.Status))
+
+			if i.LastAction.StartDate != 0 {
+				tm := time.Unix(i.LastAction.StartDate, 0).String()
+				t.AddRow(colors.Black("    Started"), colors.DarkWhite(tm))
+			}
+			if i.LastAction.CompletionDate != 0 {
+				tm := time.Unix(i.LastAction.CompletionDate, 0).String()
+				t.AddRow(colors.Black("    Completed"), colors.DarkWhite(tm))
+			}
+			t.AddRow("", "")
 		}
-		if i.LastAction.CompletionDate != 0 {
-			tm := time.Unix(i.LastAction.CompletionDate, 0).String()
-			t.AddRow(colors.Black("    Completed"), colors.DarkWhite(tm))
+
+		for _, a := range i.Actions {
+			j++
+
+			var actionID uint64
+			if a.ActionID == 0 {
+				actionID = uint64(j)
+			} else {
+				actionID = a.ActionID
+			}
+
+			aID := fmt.Sprintf("%s%s%s %s", colors.DarkMagenta("["), colors.Magenta(fmt.Sprintf("%d", j)), colors.DarkMagenta("]"), colors.Black("Action ID"))
+			t.AddRow(aID, colors.DarkWhite(fmt.Sprintf("%d", actionID)))
+			t.AddRow(colors.Black("    Action Type"), colors.White(strings.ToUpper(a.Type)))
+			t.AddRow(colors.Black("    Status"), actionStatus(a.Status))
+
+			if a.StartDate != 0 {
+				tm := time.Unix(a.StartDate, 0).String()
+				t.AddRow(colors.Black("    Started"), colors.DarkWhite(tm))
+			}
+			if a.CompletionDate != 0 {
+				tm := time.Unix(a.CompletionDate, 0).String()
+				t.AddRow(colors.Black("    Completed"), colors.DarkWhite(tm))
+			}
+			t.AddRow("", "")
 		}
-		t.AddRow("", "")
-	}
 
-	for _, a := range i.Actions {
-		j++
-
-		var actionID uint64
-		if a.ActionID == 0 {
-			actionID = uint64(j)
-		} else {
-			actionID = a.ActionID
-		}
-
-		aID := fmt.Sprintf("%s%s%s %s", colors.DarkMagenta("["), colors.Magenta(fmt.Sprintf("%d", j)), colors.DarkMagenta("]"), colors.Black("Action ID"))
-		t.AddRow(aID, colors.DarkWhite(fmt.Sprintf("%d", actionID)))
-		t.AddRow(colors.Black("    Action Type"), colors.White(strings.ToUpper(a.Type)))
-		t.AddRow(colors.Black("    Status"), actionStatus(a.Status))
-
-		if a.StartDate != 0 {
-			tm := time.Unix(a.StartDate, 0).String()
-			t.AddRow(colors.Black("    Started"), colors.DarkWhite(tm))
-		}
-		if a.CompletionDate != 0 {
-			tm := time.Unix(a.CompletionDate, 0).String()
-			t.AddRow(colors.Black("    Completed"), colors.DarkWhite(tm))
-		}
-		t.AddRow("", "")
-	}
-
-	t.Render()
-	fmt.Println()
+		t.Render()
+		fmt.Println()
+	*/
 }
 
+/*
 func actionStatus(s string) string {
 	switch s {
 	case "in-progress":
@@ -124,3 +127,4 @@ func actionStatus(s string) string {
 
 	return output.StrNormal(s)
 }
+*/

@@ -10,28 +10,39 @@ import (
 	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
-func (api *API) Show(np *network.Policy) {
-	output.SectionHeader("Network Policy Details")
-	output.TitleT1("Network Policy")
+func (api *API) Show(tenantID, netID, vrfID string, np *network.Policy) {
+	output.SectionHeader("Security Policy Details")
+	output.TitleT1("Security Policy")
+
+	t := table.New()
+
+	t.AddRow(colors.Black("Tenant ID"), colors.DarkWhite(tenantID))
+	t.AddRow(colors.Black("Network ID"), colors.DarkWhite(netID))
+	t.AddRow(colors.Black("Subnet ID"), colors.DarkWhite(vrfID))
+
+	t.Render()
 
 	ShowNetworkPolicy(np)
 }
 
 func ShowNetworkPolicy(np *network.Policy) {
-	var p string
+	t := table.New()
+
 	switch np.DefaultPolicy {
 	case ipnet.Policy_ACCEPT:
-		p = output.StrEnabled(np.DefaultPolicy)
+		t.AddRow(colors.Black("Default Policy"), output.StrEnabled(np.DefaultPolicy))
 	case ipnet.Policy_DROP:
-		p = output.StrDisabled(np.DefaultPolicy)
+		t.AddRow(colors.Black("Default Policy"), output.StrDisabled(np.DefaultPolicy))
 	}
 
-	fmt.Printf("%s %s\n\n", colors.Black("Default Policy"), p)
+	t.Render()
+	fmt.Println()
 
-	t := table.New()
+	t = table.New()
 	// t.Header(colors.Black("Index"), colors.Black("Source"), colors.Black("Destination"), colors.Black("Port/Proto"), colors.Black("Policy"))
 
 	// t.AddRow(output.TableHeader("Index"), output.TableHeader("Source"), output.TableHeader("Destination"), output.TableHeader("Port/Proto"), output.TableHeader("Policy"))
+
 	t.AddRow(colors.Black("Index"), colors.Black("Source"), colors.Black("Destination"), colors.Black("Port/Proto"), colors.Black("Policy"))
 	t.AddRow(colors.Black("-----"), colors.Black("------"), colors.Black("-----------"), colors.Black("----------"), colors.Black("------"))
 

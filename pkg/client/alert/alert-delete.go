@@ -75,7 +75,7 @@ func (api *API) multiDelete() {
 }
 
 func (api *API) singleDelete() {
-	a := GetAlert()
+	a := getAlert()
 
 	nxc, grpcConn := grpc.GetCoreAPIClient()
 	defer grpcConn.Close()
@@ -86,6 +86,7 @@ func (api *API) singleDelete() {
 
 	sr, err := nxc.DeleteAlert(context.TODO(), a)
 	if err != nil {
+		s.Stop()
 		status.Error(err, "Unable to delete alert")
 	}
 

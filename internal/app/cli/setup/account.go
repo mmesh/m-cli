@@ -15,16 +15,23 @@ import (
 	"mmesh.dev/m-cli/pkg/vars"
 )
 
-func setupExistingAccount(configFile string) {
+func setupExistingAccount() {
 	client.Auth().Login(login.NewRequest(), true)
 
 	accountID := viper.GetString("logged.realm")
 	userEmail := viper.GetString("logged.email")
-	if len(accountID) > 0 && len(userEmail) > 0 {
-		vars.AccountID = accountID
-		viper.Set("account.id", accountID)
-		viper.Set("user.email", userEmail)
+
+	if len(accountID) == 0 {
+		status.Error(fmt.Errorf("missing accountID"), "Invalid accountID")
 	}
+
+	if len(userEmail) == 0 {
+		status.Error(fmt.Errorf("missing email"), "Invalid email")
+	}
+
+	viper.Set("account.id", accountID)
+
+	vars.AccountID = accountID
 
 	a := account.GetAccount()
 
@@ -46,17 +53,16 @@ func setupExistingAccount(configFile string) {
 		status.Error(err, "Unable to get federation")
 	}
 
-	var controllerAuthServer, controllerEndpoint string
+	var cAuthServer, cEndpoint string
 	for _, c := range f.Controllers {
-		controllerAuthServer = fmt.Sprintf("https://%s", c.VirtualHost)
-		controllerEndpoint = fmt.Sprintf("%s:%d", c.VirtualHost, c.Port)
+		cAuthServer = fmt.Sprintf("https://%s", c.VirtualHost)
+		cEndpoint = fmt.Sprintf("%s:%d", c.VirtualHost, c.Port)
 		break
 	}
 
-	viper.Set("controller.authServer", controllerAuthServer)
-	viper.Set("controller.endpoint", controllerEndpoint)
+	if err := config.DefaultAccount(cAuthServer, cEndpoint, accountID, userEmail); err != nil {
+		status.Error(err, "Unable to write configuration file")
+	}
 
-	config.WriteCLIConfig(configFile)
-
-	fmt.Printf("Ready to go :-)\n\n")
+	fmt.Printf("Ready to go :)\n\n")
 }

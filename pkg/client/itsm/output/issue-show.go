@@ -15,15 +15,15 @@ import (
 const mBot string = "m-bot"
 
 func (api *API) Show(i *itsm.Issue) {
-	output.SectionHeader("ITSM: Issue Details")
-	output.TitleT1("Issue Information")
+	output.SectionHeader("Support: Ticket Details")
+	output.TitleT1("Ticket Information")
 
 	issueID := strings.Split(i.IssueID, "_")[1]
 
 	t := table.New()
 	t.BulkData([][]string{
 		{colors.Black("Account ID"), colors.DarkWhite(i.AccountID)},
-		{colors.Black("Issue ID"), colors.DarkWhite(issueID)},
+		{colors.Black("Ticket ID"), colors.DarkWhite(issueID)},
 		{colors.Black("Service ID"), colors.DarkWhite(i.ServiceID)},
 		{colors.Black("Provider ID"), colors.DarkWhite(i.ProviderID)},
 		{colors.Black("Owner"), colors.DarkWhite(i.OwnerUserEmail)},
@@ -76,9 +76,8 @@ func issueComments(i *itsm.Issue) {
 
 	output.SubTitleT2("Activity")
 
-	msg := fmt.Sprintf("There are %d comments related to this issue. Show?", n)
-	ok := input.GetConfirm(msg, true)
-	if !ok {
+	msg := fmt.Sprintf("There are %d comments related to this ticket. Show?", n)
+	if !input.GetConfirm(msg, true) {
 		fmt.Println()
 		return
 	}

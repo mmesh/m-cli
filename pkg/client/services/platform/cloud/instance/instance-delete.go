@@ -24,8 +24,11 @@ func (api *API) Delete(imgClass compute.ImageClass) {
 
 	s := output.Spinner()
 
+	msg.Info("This action might take 1-5 minutes...")
+
 	sr, err := nxc.DeleteCloudInstance(context.TODO(), i)
 	if err != nil {
+		s.Stop()
 		status.Error(err, "Unable to delete cloud instance")
 	}
 

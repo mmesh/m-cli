@@ -34,15 +34,12 @@ func AppHeader(accountID string, output bool) string {
 	if len(endpoint) == 0 {
 		endpoint = colors.Black("[not-configured]")
 	} else {
-		if strings.HasSuffix(endpoint, "mmesh.dev") ||
-			strings.HasSuffix(endpoint, "mmesh.network") {
-			endpoint = fmt.Sprintf(
-				"%s.%s.%s",
-				strings.Split(endpoint, ".")[1],
-				strings.Split(endpoint, ".")[2],
-				strings.Split(endpoint, ".")[3],
-			)
+		if strings.HasSuffix(endpoint, "dev.mmesh.network") {
+			endpoint = "dev.mmesh.network"
+		} else if strings.HasSuffix(endpoint, "mmesh.network") {
+			endpoint = "mmesh.network"
 		}
+
 		endpoint = colors.DarkWhite(Fit(endpoint, 28))
 	}
 

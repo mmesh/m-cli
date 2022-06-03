@@ -1,63 +1,32 @@
 package auth
 
 import (
+	"fmt"
 	"os"
-	"path/filepath"
 	"time"
 
+	"mmesh.dev/m-cli/pkg/auth"
 	"mmesh.dev/m-cli/pkg/status"
 )
 
-func (api *API) LoginRequired() bool {
-	homeDir, err := os.UserHomeDir()
+func (api *API) LoginRequired(accountID string) bool {
+	if len(accountID) == 0 {
+		status.Error(fmt.Errorf("missing accountID"), "Invalid accountID")
+	}
+
+	apiKeyFile, err := auth.GetAPIKeyFile(accountID)
 	if err != nil {
-		status.Error(err, "Unable to get home directory")
+		status.Error(err, "Unable to find API key")
 	}
 
-	mmeshDir := filepath.Join(homeDir, ".mmesh")
-
-	if err := os.MkdirAll(mmeshDir, 0700); err != nil {
-		status.Error(err, "Unable to create .mmesh config directory")
-	}
-
-	apikeyFile := filepath.Join(mmeshDir, "apikey")
-
-	apikeyInfo, err := os.Stat(apikeyFile)
+	apiKeyInfo, err := os.Stat(apiKeyFile)
 	if os.IsNotExist(err) {
 		return true
 	}
 
-	if time.Since(apikeyInfo.ModTime()) > time.Duration(time.Hour) {
+	if time.Since(apiKeyInfo.ModTime()) > time.Hour {
 		return true
 	}
 
 	return false
 }
-
-/*
-func (api *API) AutoLogin(req *auth.LoginRequest) {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		status.Error(err, "Unable to get home directory")
-	}
-
-	mmeshDir := filepath.Join(homeDir, ".mmesh")
-
-	if err := os.MkdirAll(mmeshDir, 0700); err != nil {
-		status.Error(err, "Unable to create .mmesh config directory")
-	}
-
-	apikeyFile := filepath.Join(mmeshDir, "apikey")
-
-	apikeyInfo, err := os.Stat(apikeyFile)
-	if os.IsNotExist(err) {
-		api.Login(req, true)
-		return
-	}
-
-	if time.Since(apikeyInfo.ModTime()) > time.Duration(time.Hour) {
-		// msg.Info("Refreshing auth session..")
-		api.Login(req, true)
-	}
-}
-*/

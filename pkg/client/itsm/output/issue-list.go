@@ -10,8 +10,8 @@ import (
 )
 
 func (api *API) List(issues map[string]*itsm.Issue) {
-	output.SectionHeader("ITSM: Issues")
-	output.TitleT1("Issue List")
+	output.SectionHeader("Support: Tickets")
+	output.TitleT1("Ticket List")
 
 	if len(issues) == 0 {
 		fmt.Println(colors.Black("No data"))

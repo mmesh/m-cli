@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"fmt"
 
 	"mmesh.dev/m-api-go/grpc/resources/iam"
 	auth_pb "mmesh.dev/m-api-go/grpc/resources/iam/auth"
@@ -15,7 +16,7 @@ import (
 )
 
 func (api *API) SetEmail(loginReq *auth_pb.LoginRequest) {
-	auth.Resource().Login(loginReq, false)
+	auth.Resource().Login(loginReq, true)
 
 	lu := getLoggedUser()
 
@@ -35,10 +36,11 @@ func (api *API) SetEmail(loginReq *auth_pb.LoginRequest) {
 	suer := &iam.SetUserEmailRequest{
 		AccountID: u.AccountID,
 		Email:     u.Email,
-		NewEmail:  input.GetInput("Email:", "", u.Email, input.ValidEmail),
+		NewEmail:  input.GetInput("New Email:", "", u.Email, input.ValidEmail),
 	}
 
 	if suer.NewEmail == u.Email {
+		msg.Info("Already configured")
 		return
 	}
 
@@ -54,5 +56,16 @@ func (api *API) SetEmail(loginReq *auth_pb.LoginRequest) {
 
 	Output().Show(u)
 
-	msg.Infof("User %v configured :-)", colors.White(u.Email))
+	fmt.Printf(`
+A confirmation email has been sent the new email address, please
+check your inbox and follow the instructions to activate it.
+
+If for any reason you didn't get the confirmation email, you can
+execute the command '%s' and a
+new email will be send.
+
+Have a nice day!
+
+`,
+		colors.White("mmeshctl auth resend-confirmation"))
 }

@@ -8,14 +8,14 @@ import (
 	"mmesh.dev/m-cli/pkg/output"
 )
 
-func Configure(configFile string) bool {
-	output.Header("Setup")
+func Configure() bool {
+	output.SubTitleT1("Setup")
 
 	var isConfigured bool
 
 	if input.GetConfirm("Want to configure the CLI for an existing account?", false) {
 		fmt.Println()
-		setupExistingAccount(configFile)
+		setupExistingAccount()
 		return true
 	}
 

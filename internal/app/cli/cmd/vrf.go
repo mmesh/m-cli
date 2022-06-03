@@ -86,8 +86,8 @@ var subnetDeleteCmd = &cobra.Command{
 // subnetDeleteIPAMEntryCmd represents the subnet delete-ipam-endpoint verb
 var subnetDeleteIPAMEntryCmd = &cobra.Command{
 	Use:   "delete-ipam-entry",
-	Short: "Delete IPAM entry",
-	Long:  appHeader(`Remove IPAM entry from database.`),
+	Short: "Delete IPAM entry manually",
+	Long:  appHeader(`Remove manually an IPAM entry from database.`),
 	Args:  cobra.NoArgs,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		preflight()

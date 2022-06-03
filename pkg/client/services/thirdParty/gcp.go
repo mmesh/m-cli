@@ -11,6 +11,8 @@ import (
 )
 
 func (a *API) GCP(gcp *thirdParty.GCP) *thirdParty.GCP {
+	fmt.Println()
+
 	output.Header("Google Cloud Setup")
 
 	if gcp == nil {

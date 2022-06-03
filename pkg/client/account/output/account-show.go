@@ -48,7 +48,6 @@ func (api *API) show(a *account.Account) {
 		} else {
 			status = output.StrDisabled("disabled")
 		}
-
 	} else {
 		status = output.StrInactive("not-activated")
 	}

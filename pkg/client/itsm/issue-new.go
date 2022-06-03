@@ -55,7 +55,7 @@ func (api *issueAPI) New() {
 	i, err := nxc.NewIssue(context.TODO(), i)
 	if err != nil {
 		s.Stop()
-		status.Error(err, "Unable to submit issue")
+		status.Error(err, "Unable to submit ticket")
 	}
 
 	s.Stop()

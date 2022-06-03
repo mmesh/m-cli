@@ -39,5 +39,5 @@ func (api *API) Import(yamlFile string) {
 	s.Stop()
 
 	// output.Show(np)
-	Output().Show(np)
+	Output().Show(npc.Tenant, npc.Network, npc.Subnet, np)
 }

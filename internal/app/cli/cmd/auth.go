@@ -1,9 +1,13 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"mmesh.dev/m-cli/internal/app/cli/auth/login"
 	"mmesh.dev/m-cli/pkg/client"
+	"mmesh.dev/m-cli/pkg/status"
 )
 
 // authCmd represents the auth command
@@ -20,7 +24,7 @@ var authLoginCmd = &cobra.Command{
 	Long:  appHeader(`Log in.`),
 	Args:  cobra.NoArgs,
 	PreRun: func(cmd *cobra.Command, args []string) {
-		preflight()
+		preflightNoLogin()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Auth().Login(login.NewRequest(), true)
@@ -34,10 +38,15 @@ var authLogoutCmd = &cobra.Command{
 	Long:  appHeader(`Log out.`),
 	Args:  cobra.NoArgs,
 	PreRun: func(cmd *cobra.Command, args []string) {
-		preflight()
+		preflightNoLogin()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		client.Auth().Logout()
+		accountID := viper.GetString("account.id")
+		if len(accountID) == 0 {
+			status.Error(fmt.Errorf("missing account.id"), "Unable to get configured account")
+		}
+
+		client.Auth().Logout(accountID)
 	},
 }
 
@@ -48,7 +57,7 @@ var authPasswordResetCmd = &cobra.Command{
 	Long:  appHeader(`Request a password-reset.`),
 	Args:  cobra.NoArgs,
 	PreRun: func(cmd *cobra.Command, args []string) {
-		header()
+		preflightNoLogin()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Auth().PasswordReset()
@@ -62,7 +71,7 @@ var authConfirmationMailResendCmd = &cobra.Command{
 	Long:  appHeader(`Request a new confirmation mail.`),
 	Args:  cobra.NoArgs,
 	PreRun: func(cmd *cobra.Command, args []string) {
-		header()
+		preflightNoLogin()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Auth().ConfirmationMailResend()

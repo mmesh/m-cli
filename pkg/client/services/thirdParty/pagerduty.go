@@ -11,6 +11,8 @@ import (
 )
 
 func (a *API) PagerDuty(pd *thirdParty.PagerDuty) *thirdParty.PagerDuty {
+	fmt.Println()
+
 	output.Header("PagerDuty Setup")
 
 	if pd == nil {
