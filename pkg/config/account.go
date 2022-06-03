@@ -44,10 +44,15 @@ func DefaultAccount(cAuthServer, cEndpoint, accountID, userEmail string) error {
 }
 
 func writeCLIConfig(filename, cAuthServer, cEndpoint, accountID, userEmail string) {
+	versionBranch := os.Getenv("MMESH_VERSION")
+	if len(versionBranch) == 0 {
+		versionBranch = "stable"
+	}
+
 	cfg := `# mmeshctl configuration
 
 version:
-  branch: ` + os.Getenv("MMESH_VERSION") + `
+  branch: ` + versionBranch + `
 
 controller:
   authServer: ` + cAuthServer + `
