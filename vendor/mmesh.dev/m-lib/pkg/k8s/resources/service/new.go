@@ -49,8 +49,18 @@ func (a *API) New(i interface{}, appLabel config.AppLabel) *corev1.Service {
 			},
 			Ports: []corev1.ServicePort{
 				{
-					Name:     "mmesh-p2p",
+					Name:     "mmesh-p2p-tcp",
 					Protocol: corev1.ProtocolTCP,
+					Port:     ni.ExternalPort,
+					TargetPort: intstr.IntOrString{
+						Type:   intstr.Int,
+						IntVal: ni.Node.Agent.Port,
+					},
+					NodePort: ni.ExternalPort,
+				},
+				{
+					Name:     "mmesh-p2p-quic",
+					Protocol: corev1.ProtocolUDP,
 					Port:     ni.ExternalPort,
 					TargetPort: intstr.IntOrString{
 						Type:   intstr.Int,

@@ -86,8 +86,13 @@ func (a *API) New(i interface{}, appLabel config.AppLabel) *appsv1.StatefulSet {
 							},
 							Ports: []corev1.ContainerPort{
 								{
-									Name:          "mmesh-p2p",
+									Name:          "mmesh-p2p-tcp",
 									Protocol:      corev1.ProtocolTCP,
+									ContainerPort: ni.Node.Agent.Port,
+								},
+								{
+									Name:          "mmesh-p2p-quic",
+									Protocol:      corev1.ProtocolUDP,
 									ContainerPort: ni.Node.Agent.Port,
 								},
 							},
