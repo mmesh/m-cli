@@ -6,6 +6,7 @@ import (
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/skratchdot/open-golang/open"
+	"mmesh.dev/m-api-go/grpc/resources/account"
 	"mmesh.dev/m-api-go/grpc/resources/billing"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
@@ -14,46 +15,74 @@ import (
 	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
-func (api *API) Subscription() {
-	a := FetchAccount()
+func (api *API) Subscription(a *account.Account, interactive bool) {
+	if a == nil {
+		a = FetchAccount()
+	}
 
-	Output().Subscriptions(a)
+	Output().Service(a)
 
-	if !input.GetConfirm("Update subscription now?", false) {
-		fmt.Println()
+	if a.Service == nil {
 		return
 	}
 
-	s := output.Spinner()
+	requiresPaymentMethod := false
 
-	nxc, grpcConn := grpc.GetBillingAPIClient(true)
-	defer grpcConn.Close()
+	n := 0
+	for _, s := range a.Service.Subscriptions {
+		Output().Subscription(s, n)
 
-	customerPortalRequest := &billing.CustomerPortalRequest{
-		AccountID:  a.AccountID,
-		CustomerID: a.Owner.Customer.StripeCustomerID,
+		if !interactive {
+			continue
+		}
+
+		switch s.LatestStripeInvoicePaymentIntentStatus {
+		case "requires_payment_method":
+			requiresPaymentMethod = true
+		case "requires_action":
+			if len(s.LatestStripeHostedInvoiceURL) > 0 {
+				if input.GetConfirm(`Your bank/card issuer is requesting additional authentication
+  to authorize an ongoing payment.
+
+  Open the payment form now?`, true) {
+					if err := open.Start(s.LatestStripeHostedInvoiceURL); err != nil {
+						status.Error(err, "Unable to open URL in your browser")
+					}
+
+					fmt.Printf("\n%s %s\n\n", colors.DarkWhite("🢂"), colors.Black("Opening URL in your browser..."))
+				} else {
+					fmt.Println()
+				}
+			}
+		}
+
+		n++
 	}
 
-	r, err := nxc.GetCustomerPortal(context.TODO(), customerPortalRequest)
-	if err != nil {
-		s.Stop()
-		status.Error(err, "Unable to get customer portal URL")
+	if !interactive {
+		return
 	}
 
-	if err := open.Start(r.URL); err != nil {
-		s.Stop()
-		status.Error(err, "Unable to open URL in your browser")
+	if requiresPaymentMethod {
+		if input.GetConfirm("A failed payment attempt requires your attention, open the Billing Portal now?", true) {
+			api.BillingPortal(a)
+		} else {
+			fmt.Println()
+		}
+	} else {
+		if !input.GetConfirm("Upgrade subscription now?", false) {
+			fmt.Println()
+			return
+		}
+
+		api.BillingPortal(a)
 	}
-
-	s.Stop()
-
-	fmt.Printf("\n%s %s\n\n", colors.DarkWhite("🢂"), colors.Black("Opening Billing Portal URL in your browser..."))
 }
 
 func (api *API) ApplyPromotion() {
 	a := FetchAccount()
 
-	Output().Subscriptions(a)
+	api.Subscription(a, false)
 
 	var sID string
 	for _, s := range a.Service.Subscriptions {
@@ -81,4 +110,35 @@ func (api *API) ApplyPromotion() {
 	s.Stop()
 
 	output.Show(sr)
+}
+
+func (api *API) BillingPortal(a *account.Account) {
+	if a == nil {
+		a = FetchAccount()
+	}
+
+	s := output.Spinner()
+
+	nxc, grpcConn := grpc.GetBillingAPIClient(true)
+	defer grpcConn.Close()
+
+	customerPortalRequest := &billing.CustomerPortalRequest{
+		AccountID:  a.AccountID,
+		CustomerID: a.Owner.Customer.StripeCustomerID,
+	}
+
+	r, err := nxc.GetCustomerPortal(context.TODO(), customerPortalRequest)
+	if err != nil {
+		s.Stop()
+		status.Error(err, "Unable to get customer portal URL")
+	}
+
+	if err := open.Start(r.URL); err != nil {
+		s.Stop()
+		status.Error(err, "Unable to open URL in your browser")
+	}
+
+	s.Stop()
+
+	fmt.Printf("\n%s %s\n\n", colors.DarkWhite("🢂"), colors.Black("Opening Billing Portal URL in your browser..."))
 }

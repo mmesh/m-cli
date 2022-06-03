@@ -16,8 +16,8 @@ import (
 	"mmesh.dev/m-lib/pkg/errors"
 )
 
-func (api *API) SSHAuth() bool {
-	if _, err := getSSHPrivKey(); err != nil {
+func (api *API) SSHAuth(accountID string) bool {
+	if _, err := getSSHPrivKey(accountID); err != nil {
 		return false
 	}
 
@@ -25,7 +25,7 @@ func (api *API) SSHAuth() bool {
 }
 
 // getSSHPrivKey gets the configured ssh key
-func getSSHPrivKey() (string, error) {
+func getSSHPrivKey(accountID string) (string, error) {
 	privKeyFile := viper.GetString("auth.ssh.privateKey")
 
 	if len(privKeyFile) == 0 {
@@ -34,7 +34,7 @@ func getSSHPrivKey() (string, error) {
 			return "", errors.Wrapf(err, "[%v] function os.UserHomeDir()", errors.Trace())
 		}
 
-		privKeyFile = filepath.Join(homeDir, ".mmesh", "id_rsa")
+		privKeyFile = filepath.Join(homeDir, ".mmesh", accountID, "id_rsa")
 	}
 
 	if !fileExists(privKeyFile) {
@@ -57,8 +57,8 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 
-func rsaDecrypt(data string) (string, error) {
-	priv, err := getSSHPrivKey()
+func rsaDecrypt(accountID, data string) (string, error) {
+	priv, err := getSSHPrivKey(accountID)
 	if err != nil {
 		return "", errors.Wrapf(err, "[%v] function getSSHPrivKey()", errors.Trace())
 	}

@@ -77,7 +77,7 @@ func (api *API) Show(v *network.VRF) {
 	}
 
 	if v.NetworkPolicy != nil {
-		output.SubTitleT2("Network Policy")
+		output.SubTitleT2("Security Policy")
 		np_output.ShowNetworkPolicy(v.NetworkPolicy)
 	}
 

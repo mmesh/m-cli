@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/spf13/viper"
@@ -11,7 +12,6 @@ import (
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
 	"mmesh.dev/m-lib/pkg/utils/colors"
-	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
 func (api *API) ConfirmationMailResend() {
@@ -34,7 +34,8 @@ func (api *API) ConfirmationMailResend() {
 
 	// output.Show(sr)
 
-	msg.Infof(`A confirmation email has been sent to %s.
+	fmt.Printf(`
+A confirmation email has been sent to %s.
 
 Please follow the instructions you will find in the email to confirm
 your account.
@@ -42,12 +43,15 @@ your account.
 If for any reason you don't get the confirmation email, you can
 execute this command again and a new email will be send.
 
-Have a nice day!`,
+Have a nice day!
+
+`,
 		colors.White(ur.Email))
 }
 
 func unconfirmedAccount() {
-	msg.Infof(`Your mmesh account is not confirmed, if you are the account
+	fmt.Printf(`
+Your mmesh account is not confirmed, if you are the account
 admin please check your inbox to find the confirmation email and
 follow the instructions to activate your account.
 
@@ -55,12 +59,15 @@ If for any reason you didn't get the confirmation email, you can
 execute the command '%s' and a
 new email will be send to the account admin.
 
-Have a nice day!`,
+Have a nice day!
+
+`,
 		colors.White("mmeshctl auth resend-confirmation"))
 }
 
 func unconfirmedUser() {
-	msg.Infof(`Your mmesh user email is not confirmed, please check your
+	fmt.Printf(`
+Your mmesh user email is not confirmed, please check your
 inbox to find the confirmation email and follow the instructions
 to activate your account.
 
@@ -68,6 +75,8 @@ If for any reason you didn't get the confirmation email, you can
 execute the command '%s' and a
 new email will be send.
 
-Have a nice day!`,
+Have a nice day!
+
+`,
 		colors.White("mmeshctl auth resend-confirmation"))
 }

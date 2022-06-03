@@ -13,8 +13,10 @@ import (
 	"mmesh.dev/m-cli/pkg/status"
 )
 
-func (api *API) NewComment() {
-	a := GetAlert()
+func (api *API) NewNote(a *events.Alert) {
+	if a == nil {
+		a = getAlert()
+	}
 
 	userEmail := viper.GetString("user.email")
 	if len(userEmail) == 0 {
@@ -28,14 +30,15 @@ func (api *API) NewComment() {
 		AccountID: a.AccountID,
 		AlertID:   a.AlertID,
 		UserEmail: userEmail,
-		Text:      input.GetMultiline("Comment:", "", "", survey.Required),
+		Text:      input.GetMultiline("Note:", "", "", survey.Required),
 	}
 
 	s := output.Spinner()
 
 	_, err := nxc.NewAlertComment(context.TODO(), acr)
 	if err != nil {
-		status.Error(err, "Unable to add alert comment")
+		s.Stop()
+		status.Error(err, "Unable to add alert note")
 	}
 
 	s.Stop()

@@ -216,12 +216,12 @@ func (api *API) Metrics(n *network.Node) {
 	t.MaxColWidth = 60
 	t.Wrap = false
 
-	var rmConns int32
-	for _, rm := range n.Agent.Metrics.RelayMetrics {
-		rmConns += rm.Connections
-	}
-	t.AddRow(colors.Black("Indirect Connections"), colors.DarkWhite(fmt.Sprintf("%d", rmConns)))
-	t.AddRow()
+	// var rmConns int32
+	// for _, rm := range n.Agent.Metrics.RelayMetrics {
+	// 	rmConns += rm.Connections
+	// }
+	// t.AddRow(colors.Black("Indirect Connections"), colors.DarkWhite(fmt.Sprintf("%d", rmConns)))
+	// t.AddRow()
 
 	if n.Agent.Metrics.LastUpdated > 0 {
 		tm := time.Unix(n.Agent.Metrics.LastUpdated, 0)

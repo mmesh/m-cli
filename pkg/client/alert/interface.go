@@ -1,12 +1,15 @@
 package alert
 
-import "mmesh.dev/m-cli/pkg/client/alert/output"
+import (
+	"mmesh.dev/m-api-go/grpc/resources/events"
+	"mmesh.dev/m-cli/pkg/client/alert/output"
+)
 
 type Interface interface {
 	List()
-	Show()
+	Show() *events.Alert
 	Delete()
-	NewComment()
+	NewNote(a *events.Alert)
 }
 type API struct{}
 

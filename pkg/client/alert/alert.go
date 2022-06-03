@@ -19,7 +19,7 @@ import (
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
-func GetAlert() *events.Alert {
+func getAlert() *events.Alert {
 	al := alerts()
 
 	if len(al) == 0 {
@@ -60,7 +60,7 @@ func alerts() map[string]*events.Alert {
 	a := account.GetAccount()
 
 	s := output.Spinner()
-	defer s.Stop()
+	// defer s.Stop()
 
 	nxc, grpcConn := grpc.GetCoreAPIClient()
 	defer grpcConn.Close()
@@ -75,6 +75,7 @@ func alerts() map[string]*events.Alert {
 	for {
 		al, err := nxc.ListAlerts(context.TODO(), lr)
 		if err != nil {
+			s.Stop()
 			status.Error(err, "Unable to list alerts")
 		}
 
@@ -88,6 +89,8 @@ func alerts() map[string]*events.Alert {
 			break
 		}
 	}
+
+	s.Stop()
 
 	return alerts
 }

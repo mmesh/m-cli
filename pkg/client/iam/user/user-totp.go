@@ -15,7 +15,7 @@ import (
 )
 
 func (api *API) SetTOTP(loginReq *auth_pb.LoginRequest) {
-	auth.Resource().Login(loginReq, false)
+	auth.Resource().Login(loginReq, true)
 
 	lu := getLoggedUser()
 

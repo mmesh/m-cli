@@ -30,10 +30,7 @@ func Init() {
 		os.Exit(1)
 	}
 
-	// viper.Set("clientID", clientID)
-
-	mmID := mmid.NewMMCLIID(hostID)
-
+	mmID := mmid.NewMMCLIID(viper.GetString("account.id"), hostID)
 	viper.Set("mm.id", mmID.String())
 
 	viper.Set("mm.app", version.CLI_NAME)

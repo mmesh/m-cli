@@ -8,7 +8,6 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/AlecAivazis/survey/v2"
 	"github.com/spf13/viper"
 	"mmesh.dev/m-cli/pkg/auth"
 	"mmesh.dev/m-cli/pkg/client/node"
@@ -16,6 +15,7 @@ import (
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
+	"mmesh.dev/m-lib/pkg/mmid"
 	"mmesh.dev/m-lib/pkg/mmp"
 	"mmesh.dev/m-lib/pkg/mmp/cli"
 	"mmesh.dev/m-lib/pkg/utils/msg"
@@ -29,30 +29,26 @@ func (api *API) PortFwd() {
 	nxnc, grpcConn := grpc.GetNetworkAPIClient()
 	defer grpcConn.Close()
 
-	var lp, rp string
 	helpText := "Remote TCP port on target node"
-	prompt := &survey.Input{Message: "Remote TCP Port:", Help: helpText}
-	if err := survey.AskOne(prompt, &rp, survey.WithValidator(input.ValidPort), survey.WithIcons(input.SurveySetIcons)); err != nil {
-		status.Error(err, "Unable to get response")
-	}
+	rp := input.GetInput("Remote TCP Port:", helpText, "", input.ValidPort)
 
-	helpText = "Local TCP port"
-	prompt = &survey.Input{Message: "Local TCP Port:", Help: helpText}
-	if err := survey.AskOne(prompt, &lp, survey.WithValidator(input.ValidPort), survey.WithIcons(input.SurveySetIcons)); err != nil {
-		status.Error(err, "Unable to get response")
-	}
-
-	srcP, err := strconv.Atoi(lp)
-	if err != nil {
-		status.Error(err, "Invalid local port")
-	}
 	dstP, err := strconv.Atoi(rp)
 	if err != nil {
+		grpcConn.Close()
 		status.Error(err, "Invalid destination port")
 	}
 
+	helpText = "Local TCP port"
+	lp := input.GetInput("Local TCP Port:", helpText, "", input.ValidPort)
+
+	srcP, err := strconv.Atoi(lp)
+	if err != nil {
+		grpcConn.Close()
+		status.Error(err, "Invalid local port")
+	}
+
 	srcID := viper.GetString("mm.id")
-	dstID := fmt.Sprintf("%s:%s:%s:%s:%s", n.AccountID, n.TenantID, n.NetID, n.VRFID, n.NodeID)
+	dstID := mmid.GetMMIDFromNode(n).String()
 
 	var wg sync.WaitGroup
 	portFwdWaitc := make(chan struct{}, 2)
@@ -63,6 +59,7 @@ func (api *API) PortFwd() {
 	authKey, err := auth.GetAuthKey()
 	if err != nil {
 		msg.Alert("Invalid or inexistent authorization key. Login to refresh your token.")
+		grpcConn.Close()
 		os.Exit(1)
 	}
 
@@ -72,7 +69,7 @@ func (api *API) PortFwd() {
 
 	cli.Connected()
 
-	output.CmdLog(fmt.Sprintf("Activating mmesh port fowarding to node %s (%s/%s)", n.NodeID, proto, rp))
+	output.CmdLog(fmt.Sprintf("Activating port forwarding to %s (%s/%s)", n.NodeID, proto, rp))
 
 	go pfClose(portFwdWaitc, srcP, dstP, proto, srcID, dstID)
 

@@ -11,6 +11,8 @@ import (
 )
 
 func (a *API) GitHub(gh *thirdParty.GitHub) *thirdParty.GitHub {
+	fmt.Println()
+
 	output.Header("Github Setup")
 
 	if gh == nil {

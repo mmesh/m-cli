@@ -84,6 +84,7 @@ func Tenants() map[string]*tenant.Tenant {
 	for {
 		tl, err := nxc.ListTenants(context.TODO(), lr)
 		if err != nil {
+			s.Stop()
 			status.Error(err, "Unable to list tenants")
 		}
 

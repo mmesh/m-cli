@@ -71,6 +71,7 @@ var cloudAppDeleteCmd = &cobra.Command{
 	},
 }
 
+/*
 // cloudAppPowerCycleCmd represents the cloud/app power-cycle verb
 var cloudAppPowerCycleCmd = &cobra.Command{
 	Use:   "power-cycle",
@@ -140,6 +141,7 @@ var cloudAppShutdownCmd = &cobra.Command{
 		client.Services().Platform().Cloud().Instance().Shutdown(compute.ImageClass_APP)
 	},
 }
+*/
 
 func init() {
 	cloudCmd.AddCommand(cloudAppCmd)
@@ -147,11 +149,11 @@ func init() {
 	cloudAppCmd.AddCommand(cloudAppListCmd)
 	cloudAppCmd.AddCommand(cloudAppShowCmd)
 	cloudAppCmd.AddCommand(cloudAppDeleteCmd)
-	cloudAppCmd.AddCommand(cloudAppPowerCycleCmd)
-	cloudAppCmd.AddCommand(cloudAppPowerOnCmd)
-	cloudAppCmd.AddCommand(cloudAppPowerOffCmd)
-	cloudAppCmd.AddCommand(cloudAppRebootCmd)
-	cloudAppCmd.AddCommand(cloudAppShutdownCmd)
+	// cloudAppCmd.AddCommand(cloudAppPowerCycleCmd)
+	// cloudAppCmd.AddCommand(cloudAppPowerOnCmd)
+	// cloudAppCmd.AddCommand(cloudAppPowerOffCmd)
+	// cloudAppCmd.AddCommand(cloudAppRebootCmd)
+	// cloudAppCmd.AddCommand(cloudAppShutdownCmd)
 
 	cloudAppCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 	cloudAppAddCmd.Flags().StringVarP(&vars.TenantID, "tenant", "t", "", "tenant identifier")

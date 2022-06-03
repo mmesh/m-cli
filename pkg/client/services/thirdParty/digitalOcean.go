@@ -11,6 +11,8 @@ import (
 )
 
 func (a *API) DigitalOcean(dgo *thirdParty.DigitalOcean) *thirdParty.DigitalOcean {
+	fmt.Println()
+
 	output.Header("DigitalOcean Setup")
 
 	if dgo == nil {

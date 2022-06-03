@@ -2,6 +2,7 @@ package output
 
 import (
 	"mmesh.dev/m-api-go/grpc/resources/account"
+	"mmesh.dev/m-api-go/grpc/resources/billing"
 	user_output "mmesh.dev/m-cli/pkg/client/iam/user/output"
 	"mmesh.dev/m-cli/pkg/output"
 )
@@ -9,23 +10,24 @@ import (
 type Interface interface {
 	show(a *account.Account)
 
-	Show(a *account.Account)
+	// Show(a *account.Account)
 
 	Basic(a *account.Account)
 	Admin(a *account.Account)
-	Subscriptions(a *account.Account)
+	Service(a *account.Account)
+	Subscription(s *billing.Subscription, n int)
 	Configuration(a *account.Account)
 	Stats(a *account.Account)
 }
 type API struct{}
 
-func (api *API) Show(a *account.Account) {
-	api.show(a)
-	showServiceSubscription(a)
-	showIntegrations(a.Integrations)
-	// showTraffic(a.Traffic)
-	showUsage(a.Usage)
-}
+// func (api *API) Show(a *account.Account) {
+// 	api.show(a)
+// 	showServiceSubscription(a)
+// 	showIntegrations(a.Integrations)
+// 	// showTraffic(a.Traffic)
+// 	showUsage(a.Usage)
+// }
 
 func (api *API) Basic(a *account.Account) {
 	api.show(a)
@@ -40,9 +42,13 @@ func (api *API) Admin(a *account.Account) {
 	user_output.ShowUser(a.Owner.Admin)
 }
 
-func (api *API) Subscriptions(a *account.Account) {
+func (api *API) Service(a *account.Account) {
 	api.show(a)
-	showServiceSubscription(a)
+	showService(a)
+}
+
+func (api *API) Subscription(s *billing.Subscription, n int) {
+	showServiceSubscription(s, n)
 }
 
 func (api *API) Configuration(a *account.Account) {

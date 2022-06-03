@@ -11,6 +11,8 @@ import (
 )
 
 func (a *API) Crisp(crisp *thirdParty.Crisp) *thirdParty.Crisp {
+	fmt.Println()
+
 	output.Header("Crisp Setup")
 
 	if crisp == nil {

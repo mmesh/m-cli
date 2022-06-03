@@ -49,5 +49,5 @@ func setPolicyRule(set bool) {
 	s.Stop()
 
 	// output.Show(np)
-	Output().Show(np)
+	Output().Show(npc.Tenant, npc.Network, npc.Subnet, np)
 }

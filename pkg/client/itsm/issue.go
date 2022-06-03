@@ -102,11 +102,11 @@ func getIssue(hideClosed bool) *itsm.Issue {
 	}
 
 	if len(issuesOpts) == 0 {
-		msg.Info("No open issues found")
+		msg.Info("No open tickets found")
 		os.Exit(1)
 	}
 
-	issueID := input.GetSelect("Issue:", "", issuesOpts, survey.Required)
+	issueID := input.GetSelect("Ticket:", "", issuesOpts, survey.Required)
 
 	vars.IssueID = issueMap[issueID].IssueID
 
@@ -115,6 +115,9 @@ func getIssue(hideClosed bool) *itsm.Issue {
 
 func issues() map[string]*itsm.Issue {
 	a := account.GetAccount()
+
+	s := output.Spinner()
+	defer s.Stop()
 
 	nxc, grpcConn := grpc.GetServicesAPIClient(true)
 	defer grpcConn.Close()
@@ -129,6 +132,7 @@ func issues() map[string]*itsm.Issue {
 	for {
 		il, err := nxc.ListIssues(context.TODO(), lr)
 		if err != nil {
+			s.Stop()
 			status.Error(err, "Unable to list ITSM issues")
 		}
 

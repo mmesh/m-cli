@@ -2,9 +2,11 @@ package auth
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 
+	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/resources/iam/auth"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/utils"
@@ -21,12 +23,15 @@ func GetNoAuthKey() *auth.AuthKey {
 func GetAuthKey() (*auth.AuthKey, error) {
 	var authKey auth.AuthKey
 
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return nil, errors.Wrapf(err, "[%v] function os.UserHomeDir()", errors.Trace())
+	accountID := viper.GetString("account.id")
+	if len(accountID) == 0 {
+		return nil, fmt.Errorf("missing account.id in configuration file")
 	}
 
-	apiKeyFile := filepath.Join(homeDir, ".mmesh", "apikey")
+	apiKeyFile, err := GetAPIKeyFile(accountID)
+	if err != nil {
+		return nil, errors.Wrapf(err, "[%v] function getAPIKeyFile()", errors.Trace())
+	}
 
 	jsonBlob, err := utils.ReadJsonFile(apiKeyFile)
 	if err != nil {
@@ -38,6 +43,25 @@ func GetAuthKey() (*auth.AuthKey, error) {
 	}
 
 	return &authKey, nil
+}
+
+func GetAPIKeyFile(accountID string) (string, error) {
+	if len(accountID) == 0 {
+		return "", fmt.Errorf("missing accountID")
+	}
+
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", errors.Wrapf(err, "[%v] function os.UserHomeDir()", errors.Trace())
+	}
+
+	mmeshAccountDir := filepath.Join(homeDir, ".mmesh", accountID)
+
+	if err := os.MkdirAll(mmeshAccountDir, 0700); err != nil {
+		return "", errors.Wrapf(err, "[%v] function os.MkdirAll()", errors.Trace())
+	}
+
+	return filepath.Join(mmeshAccountDir, "apikey"), nil
 }
 
 /*

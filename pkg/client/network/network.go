@@ -84,6 +84,7 @@ func networks() map[string]*network.Network {
 	for {
 		nl, err := nxc.ListNetworks(context.TODO(), lr)
 		if err != nil {
+			s.Stop()
 			status.Error(err, "Unable to list networks")
 		}
 

@@ -19,7 +19,7 @@ func Header(s string) {
 	n := len(s)
 	sep := strings.Repeat("-", n)
 	fmt.Println(colors.White(s))
-	fmt.Printf("%s\n\n", colors.Black(sep))
+	fmt.Printf("%s\n", colors.Black(sep))
 
 	// fmt.Printf("\n%s\n\n", colors.InvertedMagenta(s))
 }
@@ -109,6 +109,10 @@ func endOfTransmission() {
 }
 */
 
+func AuthenticationRequired() {
+	fmt.Printf("%s\n\n", colors.DarkYellow("Authentication Required"))
+}
+
 func CmdLog(text string) {
 	fmt.Printf("%s %s\n", colors.DarkGreen("🢂"), colors.Black(text))
 }
@@ -158,6 +162,10 @@ func StrOnline() string {
 func StrOffline() string {
 	// return colors.DarkRed("offline")
 	return StrDisabled("offline")
+}
+
+func StrID(s string) string {
+	return colors.DarkBlue("[") + colors.Cyan(s) + colors.DarkBlue("]")
 }
 
 func StrEnabled(s string) string {

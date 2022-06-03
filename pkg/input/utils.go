@@ -67,7 +67,7 @@ func GetSelect(inputMsg, helpMsg string, opts []string, v survey.Validator) stri
 		Message:  inputMsg,
 		Options:  opts,
 		Help:     helpMsg,
-		PageSize: 10,
+		PageSize: 8,
 	}
 
 	if v == nil {
@@ -97,7 +97,7 @@ func GetMultiSelect(inputMsg, helpMsg string, opts, defaultOpts []string, v surv
 		Options:  opts,
 		Default:  defaultOpts,
 		Help:     helpMsg,
-		PageSize: 10,
+		PageSize: 8,
 	}
 
 	if v == nil {

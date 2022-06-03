@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"fmt"
 
 	"mmesh.dev/m-api-go/grpc/resources/iam"
 	auth_pb "mmesh.dev/m-api-go/grpc/resources/iam/auth"
@@ -15,7 +16,7 @@ import (
 )
 
 func (api *API) SetSSHKeys(loginReq *auth_pb.LoginRequest) {
-	auth.Resource().Login(loginReq, false)
+	auth.Resource().Login(loginReq, true)
 
 	lu := getLoggedUser()
 
@@ -70,11 +71,17 @@ func (api *API) SetSSHKeys(loginReq *auth_pb.LoginRequest) {
 
 	Output().Show(u)
 
-	msg.Infof("SSH keys configured for user %v :-)", colors.White(u.Email))
+	msg.Infof("SSH keys configured for user %v :-)", colors.DarkWhite(u.Email))
+
+	if u.Credentials.SSH != nil {
+		if u.Credentials.SSH.Enabled && u.Credentials.SSH.Key != nil {
+			sshAuthHelp(u.AccountID)
+		}
+	}
 }
 
 func (api *API) GetSSHKey(loginReq *auth_pb.LoginRequest) *iam.SSHKey {
-	auth.Resource().Login(loginReq, false)
+	auth.Resource().Login(loginReq, true)
 
 	lu := getLoggedUser()
 
@@ -92,4 +99,20 @@ func (api *API) GetSSHKey(loginReq *auth_pb.LoginRequest) *iam.SSHKey {
 	}
 
 	return credentials.GetSSHKey(userSSHKeys)
+}
+
+func sshAuthHelp(accountID string) {
+	sshKeyFile := fmt.Sprintf("$HOME/.mmesh/%s/id_rsa", accountID)
+	q := colors.DarkBlue("'")
+
+	fmt.Printf(`Please, remember that mmeshctl will look for the private key
+for authentication at %s%s%s.
+
+For security, it is highly recommended to limit the r/w permissions
+of that file (%s%s%s).
+
+`,
+		q, colors.DarkWhite(sshKeyFile), q,
+		q, colors.DarkWhite(fmt.Sprintf("chmod 0400 %s", sshKeyFile)), q,
+	)
 }

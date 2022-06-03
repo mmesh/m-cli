@@ -14,6 +14,7 @@ import (
 	"mmesh.dev/m-cli/pkg/auth"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/output"
+	"mmesh.dev/m-lib/pkg/mmid"
 	"mmesh.dev/m-lib/pkg/mmp"
 	"mmesh.dev/m-lib/pkg/mmp/cli"
 	"mmesh.dev/m-lib/pkg/utils/msg"
@@ -186,11 +187,11 @@ func checkTransferArg(arg string) (string, string, error) {
 	}
 
 	if _, err := nxc2.GetNode(context.TODO(), n); err != nil {
-		msg.Errorf("Invalid subnet %s", vrfID)
+		msg.Errorf("Invalid node %s", nodeID)
 		return "", "", err
 	}
 
-	nodeURI := fmt.Sprintf("%s:%s:%s:%s:%s", accountID, tenantID, netID, vrfID, nodeID)
+	nodeMMID := mmid.GetMMIDFromNode(n).String()
 
-	return nodeURI, filePath, nil
+	return nodeMMID, filePath, nil
 }

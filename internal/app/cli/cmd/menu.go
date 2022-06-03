@@ -60,7 +60,7 @@ func init() {
 	rootCmd.AddCommand(networkPolicyCmd)
 	rootCmd.AddCommand(k8sCmd)
 	rootCmd.AddCommand(cloudCmd)
-	rootCmd.AddCommand(serviceCmd)
+	// rootCmd.AddCommand(serviceCmd)
 	rootCmd.AddCommand(opsCmd)
 	rootCmd.AddCommand(execCmd)
 	rootCmd.AddCommand(transferCmd)

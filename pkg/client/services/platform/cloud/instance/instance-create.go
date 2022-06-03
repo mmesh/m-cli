@@ -18,6 +18,7 @@ import (
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
 	"mmesh.dev/m-cli/pkg/vars"
+	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
 func (api *API) Create(loginReq *auth.LoginRequest, imgClass compute.ImageClass) {
@@ -63,10 +64,13 @@ func (api *API) Create(loginReq *auth.LoginRequest, imgClass compute.ImageClass)
 		},
 	}
 
+	msg.Info("This action might take 1-5 minutes...")
+
 	s := output.Spinner()
 
 	ci, err := nxc.CreateCloudInstance(context.TODO(), ciReq)
 	if err != nil {
+		s.Stop()
 		status.Error(err, "Unable to create cloud instance")
 	}
 

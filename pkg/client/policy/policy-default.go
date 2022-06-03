@@ -34,5 +34,5 @@ func (api *API) SetDefault() {
 	s.Stop()
 
 	// output.Show(np)
-	Output().Show(np)
+	Output().Show(v.TenantID, v.NetID, v.VRFID, np)
 }

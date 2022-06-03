@@ -1,10 +1,7 @@
 package cmd
 
 import (
-	"strings"
-
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"mmesh.dev/m-cli/internal/app/cli/setup"
 	"mmesh.dev/m-cli/pkg/vars"
 )
@@ -18,17 +15,7 @@ var setupCmd = &cobra.Command{
 		header()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		viper.SetConfigType("yaml") // or viper.SetConfigType("YAML")
-		cfgFile = getConfigFile(cfgFile)
-
-		viper.SetConfigFile(cfgFile)
-
-		viper.SetEnvPrefix("mm") // will be uppercased automatically
-		viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-
-		viper.AutomaticEnv() // read in environment variables that match
-
-		setup.Configure(cfgFile)
+		setup.Configure()
 	},
 }
 

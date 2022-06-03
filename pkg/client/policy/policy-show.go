@@ -7,5 +7,5 @@ import (
 func (api *API) Show() {
 	v := vrf.GetVRF(false)
 
-	Output().Show(v.NetworkPolicy)
+	Output().Show(v.TenantID, v.NetID, v.VRFID, v.NetworkPolicy)
 }

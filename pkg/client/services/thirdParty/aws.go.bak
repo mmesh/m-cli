@@ -11,6 +11,8 @@ import (
 )
 
 func (a *API) AWS(aws *thirdParty.AWS) *thirdParty.AWS {
+    fmt.Println()
+    
 	output.Header("Amazon Web Services Setup")
 
 	if aws == nil {

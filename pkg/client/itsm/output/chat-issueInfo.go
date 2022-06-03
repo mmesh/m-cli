@@ -16,7 +16,7 @@ func (api *API) ChatIssueInfo(w io.Writer, i *itsm.Issue) {
 	fmt.Fprintln(w)
 	fmt.Fprintf(w, "[gray::]Account ID\n")
 	fmt.Fprintf(w, " [silver::b]%s\n", i.AccountID)
-	fmt.Fprintf(w, "[gray::]Issue ID\n")
+	fmt.Fprintf(w, "[gray::]Ticket ID\n")
 	fmt.Fprintf(w, " [silver::b]%s\n", i.IssueID)
 	fmt.Fprintf(w, "[gray::]Service ID\n")
 	fmt.Fprintf(w, " [silver::b]%s\n", i.ServiceID)
