@@ -7,7 +7,7 @@ replace mmesh.dev/m-api-go => ../m-api/_dist/mmesh.dev/m-api-go
 replace mmesh.dev/m-lib => ../m-lib
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.3.4
+	github.com/AlecAivazis/survey/v2 v2.3.5
 	github.com/Baozisoftware/qrcode-terminal-go v0.0.0-20170407111555-c0650d8dff0f
 	github.com/biter777/countries v1.3.4
 	github.com/briandowns/spinner v1.13.0
