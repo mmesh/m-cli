@@ -27,6 +27,16 @@ func showIntegrations(i *thirdParty.Integrations) {
 
 	t := table.New()
 
+	if i.Clickup != nil {
+		if i.Clickup.Enabled {
+			t.AddRow(colors.Black("ClickUp"), output.StrEnabled("enabled"))
+			// t.AddRow(colors.Black("ClickUp API Key"), colors.DarkWhite(i.Clickup.ApiKey), colors.Black(" "))
+			// t.AddRow(colors.Black("ClickUp Settings List URL"), colors.DarkWhite(i.Clickup.SettingsListURL), colors.Black(" "))
+		} else {
+			t.AddRow(colors.Black("ClickUp"), output.StrDisabled("not-configured"))
+		}
+		// t.AddRow()
+	}
 	if i.Github != nil {
 		if i.Github.Enabled {
 			t.AddRow(colors.Black("GitHub"), output.StrEnabled("enabled"))

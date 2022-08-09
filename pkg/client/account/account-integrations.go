@@ -37,6 +37,7 @@ func (api *API) Settings() {
 
 	if a.Integrations == nil {
 		a.Integrations = &thirdParty_pb.Integrations{
+			Clickup:   &thirdParty_pb.ClickUp{},
 			Github:    &thirdParty_pb.GitHub{},
 			Pagerduty: &thirdParty_pb.PagerDuty{},
 			Slack:     &thirdParty_pb.Slack{},
@@ -50,6 +51,7 @@ func (api *API) Settings() {
 		}
 	}
 
+	a.Integrations.Clickup = thirdParty.Setup().ClickUp(a.Integrations.Clickup)
 	a.Integrations.Github = thirdParty.Setup().GitHub(a.Integrations.Github)
 	a.Integrations.Pagerduty = thirdParty.Setup().PagerDuty(a.Integrations.Pagerduty)
 	a.Integrations.Slack = thirdParty.Setup().Slack(a.Integrations.Slack)
