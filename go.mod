@@ -1,6 +1,6 @@
 module mmesh.dev/m-cli
 
-go 1.18
+go 1.19
 
 replace mmesh.dev/m-api-go => ../m-api/_dist/mmesh.dev/m-api-go
 
