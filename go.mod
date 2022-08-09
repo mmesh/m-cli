@@ -9,8 +9,8 @@ replace mmesh.dev/m-lib => ../m-lib
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.4
 	github.com/Baozisoftware/qrcode-terminal-go v0.0.0-20170407111555-c0650d8dff0f
-	github.com/biter777/countries v1.3.4
-	github.com/briandowns/spinner v1.13.0
+	github.com/biter777/countries v1.5.6
+	github.com/briandowns/spinner v1.19.0
 	github.com/gosuri/uitable v0.0.4
 	github.com/hokaccha/go-prettyjson v0.0.0-20210113012101-fb4e108d2519
 	github.com/olekukonko/tablewriter v0.0.5
@@ -91,10 +91,10 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0 // indirect
-	k8s.io/api v0.24.1 // indirect
-	k8s.io/apimachinery v0.24.1 // indirect
-	k8s.io/client-go v0.24.1 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
+	k8s.io/api v0.24.3 // indirect
+	k8s.io/apimachinery v0.24.3 // indirect
+	k8s.io/client-go v0.24.3 // indirect
 	k8s.io/klog/v2 v2.60.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20220328201542-3ee0da9b0b42 // indirect
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9 // indirect
