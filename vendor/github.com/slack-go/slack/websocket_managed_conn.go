@@ -13,7 +13,6 @@ import (
 
 	"github.com/slack-go/slack/internal/backoff"
 	"github.com/slack-go/slack/internal/errorsx"
-	"github.com/slack-go/slack/internal/misc"
 	"github.com/slack-go/slack/internal/timex"
 )
 

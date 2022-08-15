@@ -11,7 +11,6 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	status "mmesh.dev/m-api-go/grpc/common/status"
 	network "mmesh.dev/m-api-go/grpc/resources/network"
-	services "mmesh.dev/m-api-go/grpc/resources/services"
 	reflect "reflect"
 	sync "sync"
 )
@@ -897,51 +896,49 @@ func file_mmesh_protobuf_network_v1_mmnp_routing_proto_rawDescGZIP() []byte {
 var file_mmesh_protobuf_network_v1_mmnp_routing_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_mmesh_protobuf_network_v1_mmnp_routing_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_mmesh_protobuf_network_v1_mmnp_routing_proto_goTypes = []interface{}{
-	(Scope)(0),                     // 0: routing.Scope
-	(RouteType)(0),                 // 1: routing.RouteType
-	(*RTRequest)(nil),              // 2: routing.RTRequest
-	(*RTResponse)(nil),             // 3: routing.RTResponse
-	(*RoutingTableOpts)(nil),       // 4: routing.RoutingTableOpts
-	(*RoutingTable)(nil),           // 5: routing.RoutingTable
-	(*RoutingEntry)(nil),           // 6: routing.RoutingEntry
-	(*NetRelay)(nil),               // 7: routing.NetRelay
-	(*NetHop)(nil),                 // 8: routing.NetHop
-	(*LinkStatus)(nil),             // 9: routing.LinkStatus
-	nil,                            // 10: routing.RoutingTable.REEntry
-	nil,                            // 11: routing.RoutingTable.PolicyEntry
-	nil,                            // 12: routing.RoutingTable.MRSEntry
-	nil,                            // 13: routing.RoutingEntry.GwEntry
-	(*network.Node)(nil),           // 14: network.Node
-	(*status.StatusResponse)(nil),  // 15: status.StatusResponse
-	(*services.NetworkLimits)(nil), // 16: services.NetworkLimits
-	(*network.Agent)(nil),          // 17: network.Agent
-	(*network.Policy)(nil),         // 18: network.Policy
-	(*network.NodeInstance)(nil),   // 19: network.NodeInstance
+	(Scope)(0),                    // 0: routing.Scope
+	(RouteType)(0),                // 1: routing.RouteType
+	(*RTRequest)(nil),             // 2: routing.RTRequest
+	(*RTResponse)(nil),            // 3: routing.RTResponse
+	(*RoutingTableOpts)(nil),      // 4: routing.RoutingTableOpts
+	(*RoutingTable)(nil),          // 5: routing.RoutingTable
+	(*RoutingEntry)(nil),          // 6: routing.RoutingEntry
+	(*NetRelay)(nil),              // 7: routing.NetRelay
+	(*NetHop)(nil),                // 8: routing.NetHop
+	(*LinkStatus)(nil),            // 9: routing.LinkStatus
+	nil,                           // 10: routing.RoutingTable.REEntry
+	nil,                           // 11: routing.RoutingTable.PolicyEntry
+	nil,                           // 12: routing.RoutingTable.MRSEntry
+	nil,                           // 13: routing.RoutingEntry.GwEntry
+	(*network.Node)(nil),          // 14: network.Node
+	(*status.StatusResponse)(nil), // 15: status.StatusResponse
+	(*network.Agent)(nil),         // 16: network.Agent
+	(*network.Policy)(nil),        // 17: network.Policy
+	(*network.NodeInstance)(nil),  // 18: network.NodeInstance
 }
 var file_mmesh_protobuf_network_v1_mmnp_routing_proto_depIdxs = []int32{
 	14, // 0: routing.RTRequest.node:type_name -> network.Node
 	15, // 1: routing.RTResponse.status:type_name -> status.StatusResponse
 	5,  // 2: routing.RTResponse.RT:type_name -> routing.RoutingTable
 	0,  // 3: routing.RoutingTableOpts.scope:type_name -> routing.Scope
-	16, // 4: routing.RoutingTableOpts.limits:type_name -> services.NetworkLimits
-	0,  // 5: routing.RoutingTable.scope:type_name -> routing.Scope
-	10, // 6: routing.RoutingTable.RE:type_name -> routing.RoutingTable.REEntry
-	7,  // 7: routing.RoutingTable.relays:type_name -> routing.NetRelay
-	11, // 8: routing.RoutingTable.policy:type_name -> routing.RoutingTable.PolicyEntry
-	12, // 9: routing.RoutingTable.MRS:type_name -> routing.RoutingTable.MRSEntry
-	1,  // 10: routing.RoutingEntry.type:type_name -> routing.RouteType
-	13, // 11: routing.RoutingEntry.gw:type_name -> routing.RoutingEntry.GwEntry
-	17, // 12: routing.NetHop.agent:type_name -> network.Agent
-	9,  // 13: routing.NetHop.linkStatus:type_name -> routing.LinkStatus
-	6,  // 14: routing.RoutingTable.REEntry.value:type_name -> routing.RoutingEntry
-	18, // 15: routing.RoutingTable.PolicyEntry.value:type_name -> network.Policy
-	19, // 16: routing.RoutingTable.MRSEntry.value:type_name -> network.NodeInstance
-	8,  // 17: routing.RoutingEntry.GwEntry.value:type_name -> routing.NetHop
-	18, // [18:18] is the sub-list for method output_type
-	18, // [18:18] is the sub-list for method input_type
-	18, // [18:18] is the sub-list for extension type_name
-	18, // [18:18] is the sub-list for extension extendee
-	0,  // [0:18] is the sub-list for field type_name
+	0,  // 4: routing.RoutingTable.scope:type_name -> routing.Scope
+	10, // 5: routing.RoutingTable.RE:type_name -> routing.RoutingTable.REEntry
+	7,  // 6: routing.RoutingTable.relays:type_name -> routing.NetRelay
+	11, // 7: routing.RoutingTable.policy:type_name -> routing.RoutingTable.PolicyEntry
+	12, // 8: routing.RoutingTable.MRS:type_name -> routing.RoutingTable.MRSEntry
+	1,  // 9: routing.RoutingEntry.type:type_name -> routing.RouteType
+	13, // 10: routing.RoutingEntry.gw:type_name -> routing.RoutingEntry.GwEntry
+	16, // 11: routing.NetHop.agent:type_name -> network.Agent
+	9,  // 12: routing.NetHop.linkStatus:type_name -> routing.LinkStatus
+	6,  // 13: routing.RoutingTable.REEntry.value:type_name -> routing.RoutingEntry
+	17, // 14: routing.RoutingTable.PolicyEntry.value:type_name -> network.Policy
+	18, // 15: routing.RoutingTable.MRSEntry.value:type_name -> network.NodeInstance
+	8,  // 16: routing.RoutingEntry.GwEntry.value:type_name -> routing.NetHop
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_mmesh_protobuf_network_v1_mmnp_routing_proto_init() }
