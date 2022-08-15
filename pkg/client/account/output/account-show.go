@@ -51,7 +51,15 @@ func (api *API) show(a *account.Account) {
 	} else {
 		status = output.StrInactive("not-activated")
 	}
-	t.AddRow(colors.Black("Account Status"), confirmed+" "+status)
+	var overLimit string
+	if a.Usage != nil {
+		if a.Usage.Limit != nil {
+			if a.Usage.Limit.OverLimit {
+				overLimit = output.StrWarning("over-limit")
+			}
+		}
+	}
+	t.AddRow(colors.Black("Account Status"), confirmed+" "+status+" "+overLimit)
 
 	t.Render()
 	fmt.Println()

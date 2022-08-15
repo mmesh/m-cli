@@ -3,7 +3,6 @@ package account
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/biter777/countries"
@@ -11,7 +10,6 @@ import (
 	"mmesh.dev/m-api-go/grpc/resources/billing"
 	"mmesh.dev/m-api-go/grpc/resources/services"
 	"mmesh.dev/m-cli/pkg/client/iam/user/credentials"
-	"mmesh.dev/m-cli/pkg/client/pricingplan"
 	"mmesh.dev/m-cli/pkg/config"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
@@ -37,43 +35,49 @@ func (api *API) New() {
 	req.Email = input.GetInput("Admin Email:", "", "", input.ValidEmail)
 	req.Password = credentials.SetCredentialsPassword(true)
 
-	pp := pricingplan.GetPricingPlan()
+	// pp := pricingplan.GetPricingPlan()
 
-	var priceID string
-	var priceOpts []string
-	prices := make(map[string]*services.Price)
-	for _, p := range pp.Prices {
-		// priceID = fmt.Sprintf("%s %s/%s", strings.Title(p.PriceID), output.AmountMoney(p.UnitAmount, p.Currency), pp.UnitLabel)
-		priceID = fmt.Sprintf("%s %s (15-day free trial)", strings.Title(p.PriceID), output.AmountMoney(p.UnitAmount, p.Currency))
-		priceOpts = append(priceOpts, priceID)
-		prices[priceID] = p
-	}
-	if len(prices) > 0 {
-		priceID = input.GetSelect("Price:", "", priceOpts, survey.Required)
-	}
+	// var priceID string
+	// var priceOpts []string
+	// prices := make(map[string]*services.Price)
+	// for _, p := range pp.Prices {
+	// 	// priceID = fmt.Sprintf("%s %s/%s", strings.Title(p.PriceID), output.AmountMoney(p.UnitAmount, p.Currency), pp.UnitLabel)
+	// 	priceID = fmt.Sprintf("%s %s (15-day free trial)", strings.Title(p.PriceID), output.AmountMoney(p.UnitAmount, p.Currency))
+	// 	priceOpts = append(priceOpts, priceID)
+	// 	prices[priceID] = p
+	// }
+	// if len(prices) > 0 {
+	// 	priceID = input.GetSelect("Price:", "", priceOpts, survey.Required)
+	// }
 
 	// nUsers := input.GetInputInt("Users:", "Number of users", "1", input.ValidUint)
 
-	if pp.Type != services.PlanType_NETWORK {
-		status.Error(fmt.Errorf("subscription plan type not supported"), "Unable to create account")
-	}
+	// if pp.Type != services.PlanType_NETWORK {
+	// 	status.Error(fmt.Errorf("subscription plan type not supported"), "Unable to create account")
+	// }
 
-	// paymentRequired := false
-	if prices[priceID].UnitAmount > 0 || prices[priceID].UnitAmountDecimal > 0 {
-		// paymentRequired = true
-		fmt.Println()
-		output.Header("Billing Information")
-		req.Name = input.GetInput("Full Name:", "", "", survey.Required)
-		req.Address = getAddress()
-	} else {
-		req.Address.Country = getCountry()
-	}
+	/*
+		// paymentRequired := false
+		if prices[priceID].UnitAmount > 0 || prices[priceID].UnitAmountDecimal > 0 {
+			// paymentRequired = true
+			fmt.Println()
+			output.Header("Billing Information")
+			req.Name = input.GetInput("Full Name:", "", "", survey.Required)
+			req.Address = getAddress()
+		} else {
+			req.Address.Country = getCountry()
+		}
+	*/
 
-	req.PlanType = pp.Type
+	fmt.Println()
+	output.Header("Billing Information")
+	req.Name = input.GetInput("Full Name:", "", "", survey.Required)
+	req.Address = getAddress()
+
+	// req.PlanType = pp.Type
+	req.PlanType = services.PlanType_NETWORK
 	req.Subscription = &billing.Subscription{
-		// ServiceID:     pp.ServiceID,
-		// PricingPlanID: pp.PricingPlanID,
-		StripePriceID: prices[priceID].StripePriceID,
+		// StripePriceID: prices[priceID].StripePriceID,
 		// Quantity:      int64(nUsers),
 		Quantity: int64(1),
 	}
