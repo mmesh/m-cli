@@ -1,7 +1,26 @@
 package account
 
+import (
+	"fmt"
+
+	"mmesh.dev/m-cli/pkg/input"
+)
+
 func (api *API) Show() {
-	Output().Stats(fetchAccountStats())
+	a := fetchAccountStats()
+
+	Output().Stats(a)
+
+	if checkLimit(a) {
+		return
+	}
+
+	if !input.GetConfirm("Upgrade subscription now?", true) {
+		fmt.Println()
+		return
+	}
+
+	api.BillingPortal(a)
 }
 
 /*

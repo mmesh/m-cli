@@ -62,7 +62,8 @@ func showService(a *account.Account) {
 		// ps := fmt.Sprintf("%d", len(a.Owner.Customer.StripePaymentSources))
 		// t.AddRow(colors.Black("Saved Payment Sources"), colors.DarkWhite(ps))
 		t.AddRow(colors.Black("Customer Balance"),
-			output.CustomerBalance(a.Owner.Customer.Balance, a.Owner.Customer.Currency))
+			output.AmountMoney(a.Owner.Customer.Balance, a.Owner.Customer.Currency))
+		// output.CustomerBalance(a.Owner.Customer.Balance, a.Owner.Customer.Currency))
 	}
 
 	t.Render()

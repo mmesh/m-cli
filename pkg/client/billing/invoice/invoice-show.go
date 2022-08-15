@@ -32,7 +32,7 @@ func (api *API) Show() {
 					status.Error(err, "Unable to open URL in your browser")
 				}
 
-				fmt.Printf("\n%s %s\n\n", colors.DarkWhite("🢂"), colors.Black("Opening URL in your browser..."))
+				fmt.Printf("\n%s %s\n\n", colors.DarkWhite("🢂"), colors.Black("Opening payment form in your browser..."))
 			} else {
 				fmt.Println()
 			}
@@ -46,7 +46,7 @@ func (api *API) Show() {
 					status.Error(err, "Unable to open URL in your browser")
 				}
 
-				fmt.Printf("\n%s %s\n\n", colors.DarkWhite("🢂"), colors.Black("Opening URL in your browser..."))
+				fmt.Printf("\n%s %s\n\n", colors.DarkWhite("🢂"), colors.Black("Opening invoice in your browser..."))
 			} else {
 				fmt.Println()
 			}

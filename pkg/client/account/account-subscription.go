@@ -13,11 +13,12 @@ import (
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
 	"mmesh.dev/m-lib/pkg/utils/colors"
+	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
 func (api *API) Subscription(a *account.Account, interactive bool) {
 	if a == nil {
-		a = FetchAccount()
+		a = fetchAccountStats()
 	}
 
 	Output().Service(a)
@@ -70,7 +71,8 @@ func (api *API) Subscription(a *account.Account, interactive bool) {
 			fmt.Println()
 		}
 	} else {
-		if !input.GetConfirm("Upgrade subscription now?", false) {
+		opt := !checkLimit(a)
+		if !input.GetConfirm("Upgrade subscription now?", opt) {
 			fmt.Println()
 			return
 		}
@@ -140,5 +142,23 @@ func (api *API) BillingPortal(a *account.Account) {
 
 	s.Stop()
 
-	fmt.Printf("\n%s %s\n\n", colors.DarkWhite("🢂"), colors.Black("Opening Billing Portal URL in your browser..."))
+	fmt.Printf("\n%s %s\n\n", colors.DarkWhite("🢂"), colors.Black("Opening Billing Portal in your browser..."))
+}
+
+func checkLimit(a *account.Account) bool {
+	if a.Usage == nil {
+		return true
+	}
+
+	if a.Usage.Limit == nil {
+		return true
+	}
+
+	if !a.Usage.Limit.OverLimit {
+		return true
+	}
+
+	msg.Warn("Your Free account is over limits, upgrade recommended.")
+
+	return false
 }

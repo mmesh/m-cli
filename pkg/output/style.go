@@ -244,12 +244,14 @@ func AmountMoney(cents int64, currency string) string {
 	if cents >= 0 {
 		amount = colors.DarkGreen(fmt.Sprintf("%s%.2f", symbol, float64(cents)/100))
 	} else {
-		amount = colors.DarkRed(fmt.Sprintf("%s%.2f", symbol, float64(cents)/100))
+		// amount = colors.DarkRed(fmt.Sprintf("%s%.2f", symbol, float64(cents)/100))
+		amount = colors.DarkGreen(fmt.Sprintf("(%s%.2f)", symbol, float64(cents*-1)/100))
 	}
 
 	return fmt.Sprintf("%s", amount)
 }
 
+/*
 func CustomerBalance(cents int64, currency string) string {
 	var symbol string
 
@@ -269,3 +271,4 @@ func CustomerBalance(cents int64, currency string) string {
 
 	return fmt.Sprintf("%s", amount)
 }
+*/
