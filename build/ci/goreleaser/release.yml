@@ -155,7 +155,6 @@ nfpms:
     homepage: https://mmesh.io
     maintainer: mmeshbot <mmeshbot@mmesh.io>
     description: |-
-      mmesh command line interface
       mmesh command line interface for interacting with the mmesh multi-cloud integration platform.
     license: "Apache License 2.0"
     formats:
