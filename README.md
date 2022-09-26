@@ -27,11 +27,11 @@ This repository contains `mmeshctl`, a tool for managing the [mmesh](https://mme
 
 ## Getting Started
 
-See [Quick Start](https://mmesh.io/docs/platform/getting-started/quickstart) to learn how to start building your mmesh.
+See [Quick Start](https://mmesh.io/docs/platform/getting-started/quickstart/) to learn how to start building your mmesh.
 
 ## Documentation
 
-For the complete mmesh platform documentation visit [mmesh.io/docs](https://mmesh.io/docs).
+For the complete mmesh platform documentation visit [mmesh.io/docs](https://mmesh.io/docs/).
 
 ## Installation
 
@@ -98,7 +98,7 @@ You can download the pre-compiled binaries and install them with the appropriate
 
 mmesh provides a package repository that contains both DEB and RPM downloads.
 
-For DEB-based platforms (e.g. Ubuntu and Debian) run the following to setup a new APT sources.list entry and install `mmesh-cli`:
+For DEB-based platforms (e.g. Ubuntu and Debian) run the following to set up a new APT sources.list entry and install `mmesh-cli`:
 
 ```shell
 echo 'deb [trusted=yes] https://repo.mmesh.io/apt/ /' | sudo tee /etc/apt/sources.list.d/mmesh.list
@@ -283,7 +283,7 @@ All artifacts are checksummed and the checksum file is signed with [cosign](http
         checksums.txt
     ```
 
-3. If the signature is valid, you can then verify the SHA256 sums match with the downloaded binary:
+3. If the signature is valid, you can then verify the SHA256 sums match the downloaded binary:
 
     ```shell
     sha256sum --ignore-missing -c checksums.txt
@@ -303,7 +303,7 @@ COSIGN_EXPERIMENTAL=1 cosign verify mmeshdev/mmeshctl
 
 The first time you run `mmeshctl`, you will be assisted to generate your `mmeshctl.yml`. This config file will be located by default at the `$HOME/.mmesh` directory.
 
-See the [mmeshctl configuration reference](/docs/platform/reference/mmeshctl.yml) to find all the configuration options.
+See the [mmeshctl configuration reference](https://mmesh.io/docs/platform/reference/mmeshctl.yml/) to find all the configuration options.
 
 ## Usage
 
@@ -315,7 +315,7 @@ mmeshctl help
 
 ## Running with Docker
 
-You can also run `mmeshctl` as a Docker container. See examples below.
+You can also run `mmeshctl` as a Docker container. See the example below.
 
 Registries:
 
