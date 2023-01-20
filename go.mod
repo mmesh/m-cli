@@ -19,15 +19,15 @@ require (
 	github.com/rivo/tview v0.0.0-20211001102648-5508f4b00266
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/spf13/cobra v1.4.0
-	github.com/spf13/viper v1.13.0
-	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4
-	google.golang.org/grpc v1.49.0
+	github.com/spf13/viper v1.15.0
+	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
+	google.golang.org/grpc v1.52.0
 	mmesh.dev/m-api-go v0.0.0-00010101000000-000000000000
 	mmesh.dev/m-lib v0.0.0-00010101000000-000000000000
 )
 
 require (
-	cloud.google.com/go/compute v1.6.1 // indirect
+	cloud.google.com/go/compute v1.14.0 // indirect
 	github.com/Azure/go-autorest v14.2.0+incompatible // indirect
 	github.com/Azure/go-autorest/autorest v0.11.27 // indirect
 	github.com/Azure/go-autorest/autorest/adal v0.9.20 // indirect
@@ -43,7 +43,7 @@ require (
 	github.com/dchest/blake2b v1.0.0 // indirect
 	github.com/emicklei/go-restful/v3 v3.8.0 // indirect
 	github.com/fatih/color v1.13.0 // indirect
-	github.com/fsnotify/fsnotify v1.5.4 // indirect
+	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gdamore/encoding v1.0.0 // indirect
 	github.com/gdamore/tcell/v2 v2.4.1-0.20210905002822-f057f0a857a1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
@@ -67,7 +67,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
-	github.com/magiconair/properties v1.8.6 // indirect
+	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
@@ -78,24 +78,24 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
-	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e // indirect
 	github.com/slack-go/slack v0.11.2 // indirect
-	github.com/spf13/afero v1.8.2 // indirect
+	github.com/spf13/afero v1.9.3 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/subosito/gotenv v1.4.1 // indirect
-	golang.org/x/net v0.0.0-20220722155237-a158d28d115b // indirect
-	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5 // indirect
-	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
-	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
-	golang.org/x/text v0.3.7 // indirect
-	golang.org/x/time v0.0.0-20220210224613-90d013bbcef8 // indirect
+	github.com/subosito/gotenv v1.4.2 // indirect
+	golang.org/x/net v0.4.0 // indirect
+	golang.org/x/oauth2 v0.0.0-20221014153046-6fdb5e3db783 // indirect
+	golang.org/x/sys v0.3.0 // indirect
+	golang.org/x/term v0.3.0 // indirect
+	golang.org/x/text v0.5.0 // indirect
+	golang.org/x/time v0.1.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20220519153652-3a47de7e79bd // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
+	google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
