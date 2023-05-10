@@ -14,10 +14,10 @@ func (api *API) List(users map[string]*iam.User) {
 	output.TitleT1("User List")
 
 	t := table.New()
-	t.Header(colors.Black("ACCOUNT ID"), colors.Black("EMAIL"))
+	t.Header(colors.Black("ACCOUNT ID"), colors.Black("USER ID"))
 
 	for _, u := range users {
-		t.AddRow(u.AccountID, colors.DarkWhite(u.Email))
+		t.AddRow(u.AccountID, colors.DarkWhite(u.UserID))
 	}
 
 	t.Render()

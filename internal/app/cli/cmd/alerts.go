@@ -1,12 +1,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 	"mmesh.dev/m-cli/pkg/client"
-	"mmesh.dev/m-cli/pkg/input"
-	"mmesh.dev/m-cli/pkg/vars"
 )
 
 var alertsCmd = &cobra.Command{
@@ -37,13 +33,14 @@ var alertShowCmd = &cobra.Command{
 		preflight()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		a := client.Alert().Show()
+		// a := client.Alert().Show()
+		client.Alert().Show()
 
-		if input.GetConfirm("Add note to this alert?", false) {
-			client.Alert().NewNote(a)
-		} else {
-			fmt.Println()
-		}
+		// if input.GetConfirm("Add note to this alert?", false) {
+		// 	client.Alert().NewNote(a)
+		// } else {
+		// 	fmt.Println()
+		// }
 	},
 }
 
@@ -64,6 +61,4 @@ func init() {
 	alertsCmd.AddCommand(alertListCmd)
 	alertsCmd.AddCommand(alertShowCmd)
 	alertsCmd.AddCommand(alertDeleteCmd)
-
-	alertsCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 }

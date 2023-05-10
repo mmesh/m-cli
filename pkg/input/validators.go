@@ -8,8 +8,21 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/ssh"
 )
+
+func ValidUUID(id string) error {
+	if len(id) == 0 {
+		return fmt.Errorf("missing UUID")
+	}
+
+	if _, err := uuid.Parse(id); err != nil {
+		return fmt.Errorf("invalid UUID: %v", err)
+	}
+
+	return nil
+}
 
 func ValidID(val interface{}) error {
 	id := val.(string)

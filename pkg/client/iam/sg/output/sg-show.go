@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	"mmesh.dev/m-api-go/grpc/resources/iam"
+	"mmesh.dev/m-api-go/grpc/resources/tenant"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/output/table"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
-func (api *API) Show(sg *iam.SecurityGroup) {
+func (api *API) Show(sg *iam.SecurityGroup, tenantMap map[string]*tenant.Tenant) {
 	output.SectionHeader("IAM: Security Group Details")
 	output.TitleT1("Security Group Information")
 
@@ -21,11 +22,19 @@ func (api *API) Show(sg *iam.SecurityGroup) {
 	t.Render()
 	fmt.Println()
 
-	if len(sg.Tenants) > 0 {
+	if len(sg.TenantIDs) > 0 {
 		output.SubTitleT2("Tenants")
 
-		for _, tenant := range sg.Tenants {
-			fmt.Printf(" ■ %s\n", colors.DarkGreen(tenant))
+		for _, tenantID := range sg.TenantIDs {
+			if tenantID == ".*" {
+				fmt.Printf(" ■ %s\n", colors.DarkGreen(tenantID))
+				continue
+			}
+
+			if t, ok := tenantMap[tenantID]; ok {
+				tenantStr := fmt.Sprintf("%s: %s", t.Name, t.Description)
+				fmt.Printf(" ■ %s\n", colors.DarkGreen(tenantStr))
+			}
 		}
 		fmt.Println()
 	}

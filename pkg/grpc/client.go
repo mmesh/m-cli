@@ -38,35 +38,54 @@ func getManagerAPIClientParams(reqAuth bool) *apiClientParameters {
 
 	return p
 }
-func getControllerAPIClientParams(reqAuth bool) *apiClientParameters {
+func getControllerAPIClientParams() *apiClientParameters {
 	p := &apiClientParameters{}
 
-	if reqAuth {
-		authKey, err := auth.GetAuthKey()
-		if err != nil {
-			msg.Alert("Invalid or inexistent authorization key. Login to refresh your token.")
-			os.Exit(1)
-		}
-		p.authKey = authKey
-	} else {
-		p.authKey = auth.GetNoAuthKey()
+	authKey, err := auth.GetAuthKey()
+	if err != nil {
+		msg.Alert("Invalid or inexistent authorization key. Login to refresh your token.")
+		os.Exit(1)
 	}
+	p.authKey = authKey
 
 	// p.authSecret = viper.GetString("controller.authSecret")
 
-	p.grpcServer = viper.GetString("controller.endpoint")
-	if len(p.grpcServer) == 0 {
-		msg.Error("Missing configuration. Check config file.")
+	controllerEndpoint, err := auth.GetControllerEndpoint()
+	if err != nil {
+		msg.Alert("Unable to get controller endpoint.")
+		msg.Alert("Invalid or inexistent api key. Login to refresh your token.")
 		os.Exit(1)
 	}
+
+	p.grpcServer = controllerEndpoint
+
+	// p.grpcServer = viper.GetString("controller.endpoint")
+	// if len(p.grpcServer) == 0 {
+	// 	msg.Error("Missing configuration. Check config file.")
+	// 	os.Exit(1)
+	// }
 
 	return p
 }
 
-func GetBillingAPIClient(reqAuth bool) (rpc.BillingAPIClient, *grpc.ClientConn) {
+// manager
+
+func GetManagerAPIClient(reqAuth bool) (rpc.ManagerAPIClient, *grpc.ClientConn) {
 	p := getManagerAPIClientParams(reqAuth)
 
-	nxc, conn, err := client.NewBillingAPIClient(p.grpcServer, p.authKey, p.authSecret)
+	nxc, conn, err := client.NewManagerAPIClient(p.grpcServer, p.authKey, p.authSecret)
+	if err != nil {
+		msg.Errorf("Unable to connect to gRPC server: %v", errors.Cause(err))
+		os.Exit(1)
+	}
+
+	return nxc, conn
+}
+
+func GetAccountAPIClient(reqAuth bool) (rpc.AccountAPIClient, *grpc.ClientConn) {
+	p := getManagerAPIClientParams(reqAuth)
+
+	nxc, conn, err := client.NewAccountAPIClient(p.grpcServer, p.authKey, p.authSecret)
 	if err != nil {
 		msg.Errorf("Unable to connect to gRPC server: %v", errors.Cause(err))
 		os.Exit(1)
@@ -87,10 +106,10 @@ func GetServicesAPIClient(reqAuth bool) (rpc.ServicesAPIClient, *grpc.ClientConn
 	return nxc, conn
 }
 
-func GetManagerProviderAPIClient(reqAuth bool) (rpc.ProviderAPIClient, *grpc.ClientConn) {
+func GetBillingAPIClient(reqAuth bool) (rpc.BillingAPIClient, *grpc.ClientConn) {
 	p := getManagerAPIClientParams(reqAuth)
 
-	nxc, conn, err := client.NewProviderAPIClient(p.grpcServer, p.authKey, p.authSecret)
+	nxc, conn, err := client.NewBillingAPIClient(p.grpcServer, p.authKey, p.authSecret)
 	if err != nil {
 		msg.Errorf("Unable to connect to gRPC server: %v", errors.Cause(err))
 		os.Exit(1)
@@ -99,10 +118,12 @@ func GetManagerProviderAPIClient(reqAuth bool) (rpc.ProviderAPIClient, *grpc.Cli
 	return nxc, conn
 }
 
-func GetControllerProviderAPIClient(reqAuth bool) (rpc.ProviderAPIClient, *grpc.ClientConn) {
-	p := getControllerAPIClientParams(reqAuth)
+// controller
 
-	nxc, conn, err := client.NewProviderAPIClient(p.grpcServer, p.authKey, p.authSecret)
+func GetControllerAPIClient() (rpc.ControllerAPIClient, *grpc.ClientConn) {
+	p := getControllerAPIClientParams()
+
+	nxc, conn, err := client.NewControllerAPIClient(p.grpcServer, p.authKey, p.authSecret)
 	if err != nil {
 		msg.Errorf("Unable to connect to gRPC server: %v", errors.Cause(err))
 		os.Exit(1)
@@ -111,10 +132,40 @@ func GetControllerProviderAPIClient(reqAuth bool) (rpc.ProviderAPIClient, *grpc.
 	return nxc, conn
 }
 
-func GetCoreAPIClient() (rpc.CoreAPIClient, *grpc.ClientConn) {
-	p := getControllerAPIClientParams(true)
+func GetNetworkAPIClient(controllerHost string) (rpc.NetworkAPIClient, *grpc.ClientConn) {
+	serverEndpoint := controllerHost
 
-	nxc, conn, err := client.NewCoreAPIClient(p.grpcServer, p.authKey, p.authSecret)
+	p := getControllerAPIClientParams()
+
+	if len(serverEndpoint) == 0 {
+		serverEndpoint = p.grpcServer
+	}
+
+	nxc, conn, err := client.NewNetworkAPIClient(serverEndpoint, p.authKey, p.authSecret)
+	if err != nil {
+		msg.Errorf("Unable to connect to gRPC server: %v", errors.Cause(err))
+		os.Exit(1)
+	}
+
+	return nxc, conn
+}
+
+func GetIAMAPIClient() (rpc.IAMAPIClient, *grpc.ClientConn) {
+	p := getControllerAPIClientParams()
+
+	nxc, conn, err := client.NewIAMAPIClient(p.grpcServer, p.authKey, p.authSecret)
+	if err != nil {
+		msg.Errorf("Unable to connect to gRPC server: %v", errors.Cause(err))
+		os.Exit(1)
+	}
+
+	return nxc, conn
+}
+
+func GetTenantAPIClient() (rpc.TenantAPIClient, *grpc.ClientConn) {
+	p := getControllerAPIClientParams()
+
+	nxc, conn, err := client.NewTenantAPIClient(p.grpcServer, p.authKey, p.authSecret)
 	if err != nil {
 		// msg.Errorf("Unable to connect to gRPC server. Check configuration and connectivity: %v", err)
 		msg.Errorf("Unable to connect to gRPC server: %v", errors.Cause(err))
@@ -124,11 +175,38 @@ func GetCoreAPIClient() (rpc.CoreAPIClient, *grpc.ClientConn) {
 	return nxc, conn
 }
 
-func GetNetworkAPIClient() (rpc.NetworkAPIClient, *grpc.ClientConn) {
-	p := getControllerAPIClientParams(true)
+func GetTopologyAPIClient() (rpc.TopologyAPIClient, *grpc.ClientConn) {
+	p := getControllerAPIClientParams()
 
-	nxc, conn, err := client.NewNetworkAPIClient(p.grpcServer, p.authKey, p.authSecret)
+	nxc, conn, err := client.NewTopologyAPIClient(p.grpcServer, p.authKey, p.authSecret)
 	if err != nil {
+		// msg.Errorf("Unable to connect to gRPC server. Check configuration and connectivity: %v", err)
+		msg.Errorf("Unable to connect to gRPC server: %v", errors.Cause(err))
+		os.Exit(1)
+	}
+
+	return nxc, conn
+}
+
+func GetMonitoringAPIClient() (rpc.MonitoringAPIClient, *grpc.ClientConn) {
+	p := getControllerAPIClientParams()
+
+	nxc, conn, err := client.NewMonitoringAPIClient(p.grpcServer, p.authKey, p.authSecret)
+	if err != nil {
+		// msg.Errorf("Unable to connect to gRPC server. Check configuration and connectivity: %v", err)
+		msg.Errorf("Unable to connect to gRPC server: %v", errors.Cause(err))
+		os.Exit(1)
+	}
+
+	return nxc, conn
+}
+
+func GetOpsAPIClient() (rpc.OpsAPIClient, *grpc.ClientConn) {
+	p := getControllerAPIClientParams()
+
+	nxc, conn, err := client.NewOpsAPIClient(p.grpcServer, p.authKey, p.authSecret)
+	if err != nil {
+		// msg.Errorf("Unable to connect to gRPC server. Check configuration and connectivity: %v", err)
 		msg.Errorf("Unable to connect to gRPC server: %v", errors.Cause(err))
 		os.Exit(1)
 	}

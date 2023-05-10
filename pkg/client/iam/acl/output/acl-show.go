@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	"mmesh.dev/m-api-go/grpc/resources/iam"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/output/table"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
-func (api *API) Show(acl *iam.ACL) {
+func (api *API) Show(acl *iam.ACL, nsm *topology.NodeSummaryMap) {
 	output.SectionHeader("IAM: ACL Details")
 	output.TitleT1("ACL Information")
 
@@ -22,11 +23,14 @@ func (api *API) Show(acl *iam.ACL) {
 
 	fmt.Println()
 
-	if len(acl.MMIDs) > 0 {
+	if len(acl.NodeIDs) > 0 {
 		output.SubTitleT2("Allowed Nodes")
 
-		for _, mmID := range acl.MMIDs {
-			fmt.Printf(" ■ %s\n", colors.DarkGreen(mmID))
+		for _, nodeID := range acl.NodeIDs {
+			if n, ok := nsm.Nodes[nodeID]; ok {
+				nodeStr := fmt.Sprintf("[%s] %s: %s", n.TenantName, n.SubnetID, n.NodeName)
+				fmt.Printf(" ■ %s\n", colors.DarkGreen(nodeStr))
+			}
 		}
 		fmt.Println()
 	}

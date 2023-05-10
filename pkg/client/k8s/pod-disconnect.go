@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/AlecAivazis/survey/v2"
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/client/k8s/resource"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
@@ -54,6 +54,7 @@ func (api *API) DisconnectPod() {
 	for _, rID := range selectedIDs {
 		r, ok := resources[rID]
 		if !ok {
+			s.Stop()
 			msg.Error("Unable to parse response")
 			os.Exit(1)
 		}
@@ -62,27 +63,31 @@ func (api *API) DisconnectPod() {
 			continue
 		}
 
-		ni, err := r.GetPodNodeInstance(&network.VRF{
+		ni, err := r.GetPodNodeInstance(&topology.Subnet{
 			AccountID: r.AccountID,
 			TenantID:  r.TenantID,
 			NetID:     r.NetID,
-			VRFID:     r.VRFID,
+			SubnetID:  r.SubnetID,
 		})
 		if err != nil {
+			s.Stop()
 			status.Error(err, "Unable to get node instance")
 		}
 
 		switch r.KubernetesResourceType {
 		case resource.KubernetesResourceTypeStatefulSet:
 			if err := k8s.API(api.kubeConfig).Objects().Node().DisconnectStatefulSet(r.Namespace, r.Name, ni); err != nil {
+				s.Stop()
 				status.Error(err, "Unable to disconnect kubernetes statefulSet")
 			}
 		case resource.KubernetesResourceTypeDeployment:
 			if err := k8s.API(api.kubeConfig).Objects().Node().DisconnectDeployment(r.Namespace, r.Name, ni); err != nil {
+				s.Stop()
 				status.Error(err, "Unable to disconnect kubernetes deployment")
 			}
 		case resource.KubernetesResourceTypeDaemonSet:
 			if err := k8s.API(api.kubeConfig).Objects().Node().DisconnectDaemonSet(r.Namespace, r.Name, ni); err != nil {
+				s.Stop()
 				status.Error(err, "Unable to disconnect kubernetes daemonSet")
 			}
 		}

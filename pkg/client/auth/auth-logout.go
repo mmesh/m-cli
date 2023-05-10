@@ -8,8 +8,8 @@ import (
 	"mmesh.dev/m-cli/pkg/status"
 )
 
-func (api *API) Logout(accountID string) {
-	apiKeyFile, err := auth.GetAPIKeyFile(accountID)
+func (api *API) Logout() {
+	apiKeyFile, err := auth.GetAPIKeyFile()
 	if err != nil {
 		status.Error(err, "Unable to find API key")
 	}

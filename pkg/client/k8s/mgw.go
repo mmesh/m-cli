@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/client/k8s/resource"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
@@ -16,26 +16,26 @@ import (
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
-func (api *API) validKubernetesGateway(v *network.VRF, gateways map[string]*resource.KubernetesResource) bool {
+func (api *API) validKubernetesGateway(s *topology.Subnet, gateways map[string]*resource.KubernetesResource) bool {
 	for _, sgw := range gateways {
-		if sgw.AccountID == v.AccountID &&
-			sgw.TenantID == v.TenantID &&
-			sgw.NetID == v.NetID &&
-			sgw.VRFID == v.VRFID {
+		if sgw.AccountID == s.AccountID &&
+			sgw.TenantID == s.TenantID &&
+			sgw.NetID == s.NetID &&
+			sgw.SubnetID == s.SubnetID {
 			// kubernetes gateway found for this subnet
 			return true
 		}
 	}
 
-	msg.Infof("No mmesh ingress gateway found to route the %s in your cluster.", colors.DarkWhite(v.VRFID))
+	msg.Infof("No mmesh ingress gateway found to route the %s in your cluster.", colors.DarkWhite(s.SubnetID))
 
 	fmt.Println()
 
 	mgwMsg := "Want to create one?"
 	if input.GetConfirm(mgwMsg, true) {
-		s := output.Spinner()
-		api.createKubernetesGateway(v)
-		s.Stop()
+		ss := output.Spinner()
+		api.createKubernetesGateway(s)
+		ss.Stop()
 
 		return false
 	} else {
@@ -49,7 +49,7 @@ func (api *API) validKubernetesGateway(v *network.VRF, gateways map[string]*reso
 	return false
 }
 
-func (api *API) createKubernetesGateway(v *network.VRF) {
+func (api *API) createKubernetesGateway(s *topology.Subnet) {
 	if api.kubeConfig == nil {
 		kubeConfig, err := getKubeConfig()
 		if err != nil {
@@ -65,10 +65,10 @@ func (api *API) createKubernetesGateway(v *network.VRF) {
 
 	r := &resource.KubernetesResource{
 		Namespace: config.NamespaceDefault,
-		Name:      fmt.Sprintf("mgw-%s-%s-%s-%s-%d", v.VRFID, v.NetID, v.TenantID, v.AccountID, time.Now().Unix()),
+		Name:      fmt.Sprintf("mgw-%s-%d", s.SubnetID, time.Now().Unix()),
 	}
 
-	ni, err := r.GetGatewayNodeInstance(v, int32(port))
+	ni, err := r.GetGatewayNodeInstance(s, int32(port))
 	if err != nil {
 		status.Error(err, "Unable to get node instance")
 	}

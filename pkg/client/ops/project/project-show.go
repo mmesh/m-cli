@@ -1,5 +1,5 @@
 package project
 
 func (api *API) Show() {
-	Output().Show(GetProject(false))
+	Output().Show(GetProject())
 }

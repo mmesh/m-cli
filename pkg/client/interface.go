@@ -6,22 +6,20 @@ import (
 	"mmesh.dev/m-cli/pkg/client/auth"
 	"mmesh.dev/m-cli/pkg/client/billing"
 	"mmesh.dev/m-cli/pkg/client/command"
-	"mmesh.dev/m-cli/pkg/client/iam/acl"
-	"mmesh.dev/m-cli/pkg/client/iam/role"
-	"mmesh.dev/m-cli/pkg/client/iam/sg"
+	// "mmesh.dev/m-cli/pkg/client/iam/acl"
+	// "mmesh.dev/m-cli/pkg/client/iam/role"
+	// "mmesh.dev/m-cli/pkg/client/iam/sg"
 	"mmesh.dev/m-cli/pkg/client/iam/user"
-	"mmesh.dev/m-cli/pkg/client/itsm"
 	"mmesh.dev/m-cli/pkg/client/k8s"
 	"mmesh.dev/m-cli/pkg/client/network"
 	"mmesh.dev/m-cli/pkg/client/node"
 	"mmesh.dev/m-cli/pkg/client/ops/project"
 	"mmesh.dev/m-cli/pkg/client/ops/workflow"
-	"mmesh.dev/m-cli/pkg/client/ops/workflow/operation"
+	"mmesh.dev/m-cli/pkg/client/ops/workflow/tasklog"
 	"mmesh.dev/m-cli/pkg/client/policy"
-	"mmesh.dev/m-cli/pkg/client/rt"
 	"mmesh.dev/m-cli/pkg/client/services"
+	"mmesh.dev/m-cli/pkg/client/subnet"
 	"mmesh.dev/m-cli/pkg/client/tenant"
-	"mmesh.dev/m-cli/pkg/client/vrf"
 )
 
 func Auth() auth.Interface {
@@ -30,10 +28,6 @@ func Auth() auth.Interface {
 
 func Billing() billing.Interface {
 	return &billing.API{}
-}
-
-func ITSM() itsm.Interface {
-	return &itsm.API{}
 }
 
 func Services() services.Interface {
@@ -52,22 +46,19 @@ func Network() network.Interface {
 	return &network.API{}
 }
 
-func VRF() vrf.Interface {
-	return &vrf.API{}
+func Subnet() subnet.Interface {
+	return &subnet.API{}
 }
 
 func Node() node.Interface {
 	return &node.API{}
 }
 
-func RoutingTable() rt.Interface {
-	return &rt.API{}
-}
-
 func NetworkPolicy() policy.Interface {
 	return &policy.API{}
 }
 
+/*
 func ACL() acl.Interface {
 	return &acl.API{}
 }
@@ -79,6 +70,7 @@ func Role() role.Interface {
 func SecurityGroup() sg.Interface {
 	return &sg.API{}
 }
+*/
 
 func User() user.Interface {
 	return &user.API{}
@@ -92,8 +84,8 @@ func Workflow() workflow.Interface {
 	return &workflow.API{}
 }
 
-func Operation() operation.Interface {
-	return &operation.API{}
+func TaskLog() tasklog.Interface {
+	return &tasklog.API{}
 }
 
 func Alert() alert.Interface {

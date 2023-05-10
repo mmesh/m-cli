@@ -1,5 +1,6 @@
 package policy
 
+/*
 import (
 	"fmt"
 	"os"
@@ -8,9 +9,9 @@ import (
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
-	"mmesh.dev/m-api-go/grpc/resources/network"
-	"mmesh.dev/m-api-go/grpc/resources/ops/object"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/client/node"
+	"mmesh.dev/m-cli/pkg/client/subnet"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
@@ -32,24 +33,8 @@ type ruleEndpoint struct {
 	addr       string
 }
 
-func setDefaultNetworkPolicy(v *network.VRF) *object.NetworkPolicyConfig {
-	np := v.NetworkPolicy
-
-	promptSelect := &survey.Select{Message: "Default Policy:", Options: vars.Policies}
-	if err := survey.AskOne(promptSelect, &np.DefaultPolicy, survey.WithValidator(survey.Required), survey.WithIcons(input.SurveySetIcons)); err != nil {
-		status.Error(err, "Unable to get response")
-	}
-
-	return &object.NetworkPolicyConfig{
-		Tenant:        v.TenantID,
-		Network:       v.NetID,
-		Subnet:        v.VRFID,
-		NetworkPolicy: np,
-	}
-}
-
-func setNetworkPolicyRule(v *network.VRF) *object.NetworkPolicyConfig {
-	np := v.NetworkPolicy
+func setNetworkPolicyRule(s *topology.Subnet) *topology.SetNetworkPolicyRequest {
+	np := s.NetworkPolicy
 
 	i, nf := getNetworkFilter(np, true)
 	if nf != nil && i != -1 { // editing existing resource
@@ -57,15 +42,12 @@ func setNetworkPolicyRule(v *network.VRF) *object.NetworkPolicyConfig {
 	} else { // <new> resource
 		output.Choice("New Object")
 
-		nf = &network.Filter{}
+		nf = &topology.Filter{}
 	}
 
 	nf.Index = getPolicyIndex(nf.Index)
 
-	prompt := &survey.Input{Message: "Description (optional):", Default: nf.Description}
-	if err := survey.AskOne(prompt, &nf.Description, survey.WithIcons(input.SurveySetIcons)); err != nil {
-		status.Error(err, "Unable to get response")
-	}
+	nf.Description = input.GetInput("Description (optional):", "", nf.Description, nil)
 
 	af := getAddressFamily()
 
@@ -81,19 +63,14 @@ func setNetworkPolicyRule(v *network.VRF) *object.NetworkPolicyConfig {
 	case ipnet.AddressFamilyIPv6:
 		protocols = []string{"TCP", "UDP", "ICMPv6", "ANY"}
 	}
-	promptSelect := &survey.Select{Message: "Protocol:", Options: protocols}
-	if err := survey.AskOne(promptSelect, &nf.Proto, survey.WithValidator(survey.Required), survey.WithIcons(input.SurveySetIcons)); err != nil {
-		status.Error(err, "Unable to get response")
-	}
+
+	nf.Proto = input.GetSelect("Protocol:", "", protocols, survey.Required)
 
 	if nf.Proto == "TCP" || nf.Proto == "UDP" {
 		helpText := "Destination TCP or UDP port"
 		defaultPort := fmt.Sprintf("%d", nf.DstPort)
-		var dstP string
-		prompt = &survey.Input{Message: "Destination Port:", Default: defaultPort, Help: helpText}
-		if err := survey.AskOne(prompt, &dstP, survey.WithValidator(input.ValidPort), survey.WithIcons(input.SurveySetIcons)); err != nil {
-			status.Error(err, "Unable to get response")
-		}
+
+		dstP := input.GetInput("Destination Port:", helpText, defaultPort, input.ValidPort)
 
 		p, err := strconv.Atoi(dstP)
 		if err != nil {
@@ -102,13 +79,10 @@ func setNetworkPolicyRule(v *network.VRF) *object.NetworkPolicyConfig {
 		nf.DstPort = int32(p)
 	}
 
-	promptSelect = &survey.Select{Message: "Policy:", Options: vars.Policies}
-	if err := survey.AskOne(promptSelect, &nf.Policy, survey.WithValidator(survey.Required), survey.WithIcons(input.SurveySetIcons)); err != nil {
-		status.Error(err, "Unable to get response")
-	}
+	nf.Policy = subnet.GetSecurityPolicy("Security Policy:")
 
 	if np.NetworkFilters == nil {
-		np.NetworkFilters = make([]*network.Filter, 0)
+		np.NetworkFilters = make([]*topology.Filter, 0)
 	}
 
 	if i == -1 { // new element
@@ -117,21 +91,22 @@ func setNetworkPolicyRule(v *network.VRF) *object.NetworkPolicyConfig {
 		np.NetworkFilters[i] = nf
 	}
 
-	return &object.NetworkPolicyConfig{
-		Tenant:        v.TenantID,
-		Network:       v.NetID,
-		Subnet:        v.VRFID,
+	return &topology.SetNetworkPolicyRequest{
+		AccountID:     s.AccountID,
+		TenantID:      s.TenantID,
+		NetID:         s.NetID,
+		SubnetID:      s.SubnetID,
 		NetworkPolicy: np,
 	}
 }
 
-func unsetNetworkPolicyRule(v *network.VRF) *object.NetworkPolicyConfig {
-	np := v.NetworkPolicy
+func unsetNetworkPolicyRule(s *topology.Subnet) *topology.SetNetworkPolicyRequest {
+	np := s.NetworkPolicy
 
 	i, _ := getNetworkFilter(np, false)
 
 	if np.NetworkFilters == nil {
-		np.NetworkFilters = make([]*network.Filter, 0)
+		np.NetworkFilters = make([]*topology.Filter, 0)
 	}
 
 	// Remove the element at index i from np.NetworkFilters
@@ -139,17 +114,17 @@ func unsetNetworkPolicyRule(v *network.VRF) *object.NetworkPolicyConfig {
 	np.NetworkFilters[len(np.NetworkFilters)-1] = nil                // Erase last element (write nil value).
 	np.NetworkFilters = np.NetworkFilters[:len(np.NetworkFilters)-1] // Truncate slice.
 
-	return &object.NetworkPolicyConfig{
-		Tenant:        v.TenantID,
-		Network:       v.NetID,
-		Subnet:        v.VRFID,
+	return &topology.SetNetworkPolicyRequest{
+		AccountID:     s.AccountID,
+		TenantID:      s.TenantID,
+		NetID:         s.NetID,
+		SubnetID:      s.SubnetID,
 		NetworkPolicy: np,
 	}
 }
 
-func getNetworkFilter(np *network.Policy, edit bool) (int, *network.Filter) {
+func getNetworkFilter(np *topology.Policy, edit bool) (int, *topology.Filter) {
 	var objects []string
-	var objID string
 
 	nfilters := make(map[string]int)
 
@@ -169,10 +144,7 @@ func getNetworkFilter(np *network.Policy, edit bool) (int, *network.Filter) {
 		os.Exit(1)
 	}
 
-	promptSelect := &survey.Select{Message: "Network Policy:", Options: objects}
-	if err := survey.AskOne(promptSelect, &objID, survey.WithValidator(survey.Required), survey.WithIcons(input.SurveySetIcons)); err != nil {
-		status.Error(err, "Unable to get response")
-	}
+	objID := input.GetSelect("Network Policy", "", objects, survey.Required)
 
 	if objID == input.NewResource {
 		return -1, nil
@@ -191,12 +163,8 @@ func ipNetHelp() string {
 }
 
 func getPolicyIndex(defIdx uint32) uint32 {
-	var index string
+	index := input.GetInput("Policy Index:", "", fmt.Sprintf("%d", defIdx), input.ValidUint)
 
-	prompt := &survey.Input{Message: "Policy Index:", Default: fmt.Sprintf("%d", defIdx)}
-	if err := survey.AskOne(prompt, &index, survey.WithValidator(input.ValidUint), survey.WithIcons(input.SurveySetIcons)); err != nil {
-		status.Error(err, "Unable to get response")
-	}
 	i, err := strconv.Atoi(index)
 	if err != nil {
 		status.Error(err, "Invalid index")
@@ -217,13 +185,10 @@ func getRuleEndpoint(dst bool, def string, af ipnet.AddressFamily) *ruleEndpoint
 
 	var endpObj string
 	endpOpts := []string{string(endpointObject), string(ipNetCIDRObject)}
-	endpSelect := &survey.Select{
-		Message: "Select " + endpMsg + ":",
-		Options: endpOpts,
-	}
-	if err := survey.AskOne(endpSelect, &endpObj, survey.WithValidator(survey.Required), survey.WithIcons(input.SurveySetIcons)); err != nil {
-		status.Error(err, "Unable to get response")
-	}
+
+	inputText := fmt.Sprintf("Select %s:", endpMsg)
+
+	endpObj = input.GetSelect(inputText, "", endpOpts, survey.Required)
 
 	if endpObj == string(endpointObject) {
 		n := node.GetNode(false)
@@ -241,15 +206,12 @@ func getRuleEndpoint(dst bool, def string, af ipnet.AddressFamily) *ruleEndpoint
 	} else { // endpObj == ipNetCIDRObject
 		var ok bool
 		var addr string
-		prompt := &survey.Input{
-			Message: endpMsg + " " + af.String() + " CIDR:",
-			Default: def,
-			Help:    ipNetHelp(),
-		}
+
+		inputMsg := fmt.Sprintf("%s %s CIDR:", endpMsg, af.String())
+
 		for !ok {
-			if err := survey.AskOne(prompt, &addr, survey.WithValidator(input.ValidIPNetCIDR), survey.WithIcons(input.SurveySetIcons)); err != nil {
-				status.Error(err, "Unable to get response")
-			}
+			addr = input.GetInput(inputMsg, ipNetHelp(), def, input.ValidIPNetCIDR)
+
 			switch af {
 			case ipnet.AddressFamilyIPv4:
 				if strings.Contains(addr, ":") {
@@ -276,18 +238,12 @@ func getRuleEndpoint(dst bool, def string, af ipnet.AddressFamily) *ruleEndpoint
 }
 
 func getAddressFamily() ipnet.AddressFamily {
-	var afOpt string
+	opts := []string{
+		ipnet.AddressFamilyIPv4.String(),
+		ipnet.AddressFamilyIPv6.String(),
+	}
 
-	afSelect := &survey.Select{
-		Message: "Protocol:",
-		Options: []string{
-			ipnet.AddressFamilyIPv4.String(),
-			ipnet.AddressFamilyIPv6.String(),
-		},
-	}
-	if err := survey.AskOne(afSelect, &afOpt, survey.WithValidator(survey.Required), survey.WithIcons(input.SurveySetIcons)); err != nil {
-		status.Error(err, "Unable to get response")
-	}
+	afOpt := input.GetSelect("Protocol:", "", opts, survey.Required)
 
 	switch afOpt {
 	case ipnet.AddressFamilyIPv4.String():
@@ -298,3 +254,4 @@ func getAddressFamily() ipnet.AddressFamily {
 
 	return ipnet.AddressFamilyUnspec
 }
+*/

@@ -5,13 +5,13 @@ import (
 	"os"
 	"strconv"
 
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
-func agentInfo(na *network.Agent) {
+func agentInfo(na *topology.Agent) {
 	if na == nil {
 		msg.Alert("No data found, agent is not registered yet")
 		os.Exit(0)

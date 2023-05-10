@@ -5,7 +5,8 @@ import "mmesh.dev/m-cli/pkg/client/ops/workflow/output"
 type Interface interface {
 	List()
 	Show()
-	Set(yamlFile string)
+	Create(yamlFile string)
+	Update(yamlFile string)
 	Delete()
 	Enable()
 	Disable()

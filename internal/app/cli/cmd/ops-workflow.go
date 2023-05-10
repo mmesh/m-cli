@@ -6,14 +6,12 @@ import (
 	"mmesh.dev/m-cli/pkg/vars"
 )
 
-// opsWorkflowsCmd represents the opsWorkflows command
 var opsWorkflowsCmd = &cobra.Command{
 	Use:   "workflow",
 	Short: "Automation workflows administration",
 	Long:  appHeader(`Automation workflows administration.`),
 }
 
-// opsWorkflowsListCmd represents the ops/workflows list verb
 var opsWorkflowsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List workflows",
@@ -27,7 +25,6 @@ var opsWorkflowsListCmd = &cobra.Command{
 	},
 }
 
-// opsWorkflowsShowCmd represents the ops/workflows get verb
 var opsWorkflowsShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show workflow",
@@ -41,21 +38,32 @@ var opsWorkflowsShowCmd = &cobra.Command{
 	},
 }
 
-// opsWorkflowsSetCmd represents the ops/workflows set verb
-var opsWorkflowsSetCmd = &cobra.Command{
-	Use:   "set -f <yamlFile>",
-	Short: "Create or update workflow from YAML file",
-	Long:  appHeader(`Create or update workflow from YAML file.`),
+var opsWorkflowsCreateCmd = &cobra.Command{
+	Use:   "create -f <yamlFile>",
+	Short: "Create workflow from YAML file",
+	Long:  appHeader(`Create workflow from YAML file.`),
 	Args:  cobra.NoArgs,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		preflight()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		client.Workflow().Set(vars.YAMLFile)
+		client.Workflow().Create(vars.YAMLFile)
 	},
 }
 
-// opsWorkflowsDeleteCmd represents the ops/workflows delete verb
+var opsWorkflowsUpdateCmd = &cobra.Command{
+	Use:   "update -f <yamlFile>",
+	Short: "Update workflow from YAML file",
+	Long:  appHeader(`Update workflow from YAML file.`),
+	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		client.Workflow().Update(vars.YAMLFile)
+	},
+}
+
 var opsWorkflowsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Remove workflow",
@@ -69,7 +77,6 @@ var opsWorkflowsDeleteCmd = &cobra.Command{
 	},
 }
 
-// opsWorkflowsEnableCmd represents the ops/workflows enable verb
 var opsWorkflowsEnableCmd = &cobra.Command{
 	Use:   "enable",
 	Short: "Enable workflow",
@@ -83,7 +90,6 @@ var opsWorkflowsEnableCmd = &cobra.Command{
 	},
 }
 
-// opsWorkflowsDisableCmd represents the ops/workflows disable verb
 var opsWorkflowsDisableCmd = &cobra.Command{
 	Use:   "disable",
 	Short: "Disable workflow",
@@ -101,15 +107,17 @@ func init() {
 	opsCmd.AddCommand(opsWorkflowsCmd)
 	opsWorkflowsCmd.AddCommand(opsWorkflowsListCmd)
 	opsWorkflowsCmd.AddCommand(opsWorkflowsShowCmd)
-	opsWorkflowsCmd.AddCommand(opsWorkflowsSetCmd)
+	opsWorkflowsCmd.AddCommand(opsWorkflowsCreateCmd)
+	opsWorkflowsCmd.AddCommand(opsWorkflowsUpdateCmd)
 	opsWorkflowsCmd.AddCommand(opsWorkflowsDeleteCmd)
 	opsWorkflowsCmd.AddCommand(opsWorkflowsEnableCmd)
 	opsWorkflowsCmd.AddCommand(opsWorkflowsDisableCmd)
 
-	opsWorkflowsCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 	opsWorkflowsCmd.PersistentFlags().StringVarP(&vars.ProjectID, "project", "p", "", "project identifier")
 	opsWorkflowsCmd.PersistentFlags().StringVarP(&vars.WorkflowID, "workflow", "w", "", "workflow identifier")
 
-	opsWorkflowsSetCmd.Flags().StringVarP(&vars.YAMLFile, "yamlFile", "f", "", "yaml workflow file")
-	opsWorkflowsSetCmd.MarkFlagRequired("yamlFile")
+	opsWorkflowsCreateCmd.Flags().StringVarP(&vars.YAMLFile, "yamlFile", "f", "", "yaml workflow file")
+	opsWorkflowsCreateCmd.MarkFlagRequired("yamlFile")
+	opsWorkflowsUpdateCmd.Flags().StringVarP(&vars.YAMLFile, "yamlFile", "f", "", "yaml workflow file")
+	opsWorkflowsUpdateCmd.MarkFlagRequired("yamlFile")
 }

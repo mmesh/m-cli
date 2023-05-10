@@ -3,15 +3,13 @@ package auth
 import "mmesh.dev/m-api-go/grpc/resources/iam/auth"
 
 type Interface interface {
-	LoginRequired(accountID string) bool
+	LoginRequired() bool
 	// AutoLogin(req *auth.LoginRequest)
 	Login(req *auth.LoginRequest, verbose bool)
-	Logout(accountID string)
-	PasswordReset()
-	ConfirmationMailResend()
+	Logout()
+	// PasswordReset()
+	// ConfirmationMailResend()
 	// Token()
-
-	SSHAuth(accountID string) bool
 }
 type API struct{}
 

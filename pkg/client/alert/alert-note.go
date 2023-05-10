@@ -3,9 +3,9 @@ package alert
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/resources/events"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
@@ -18,19 +18,18 @@ func (api *API) NewNote(a *events.Alert) {
 		a = getAlert()
 	}
 
-	userEmail := viper.GetString("user.email")
-	if len(userEmail) == 0 {
-		userEmail = input.GetInput("User Email:", "", "", input.ValidEmail)
-	}
-
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetMonitoringAPIClient()
 	defer grpcConn.Close()
 
 	acr := &events.AlertNewCommentRequest{
 		AccountID: a.AccountID,
 		AlertID:   a.AlertID,
-		UserEmail: userEmail,
-		Text:      input.GetMultiline("Note:", "", "", survey.Required),
+		Comment: &events.AlertComment{
+			Timestamp: time.Now().UnixMilli(),
+			// UserID: userID,
+			// UserEmail: userEmail,
+			Text: input.GetMultiline("Note:", "", "", survey.Required),
+		},
 	}
 
 	s := output.Spinner()

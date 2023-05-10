@@ -6,7 +6,7 @@ import (
 
 	"github.com/AlecAivazis/survey/v2"
 	"mmesh.dev/m-cli/pkg/client/k8s/resource"
-	"mmesh.dev/m-cli/pkg/client/vrf"
+	"mmesh.dev/m-cli/pkg/client/subnet"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
@@ -15,8 +15,8 @@ import (
 )
 
 func (api *API) ConnectPod() {
-	v := vrf.GetVRF(false)
-	if v == nil {
+	s := subnet.GetSubnet(false)
+	if s == nil {
 		msg.Alert("No subnet found.")
 		msg.Alert("Please, configure at least one.")
 		os.Exit(1)
@@ -30,11 +30,11 @@ func (api *API) ConnectPod() {
 		api.kubeConfig = kubeConfig
 	}
 
-	s := output.Spinner()
+	ss := output.Spinner()
 
 	resources, allIDs := api.getK8sResourceList(api.getKubernetesPods(), false)
 
-	s.Stop()
+	ss.Stop()
 
 	if len(allIDs) == 0 {
 		msg.Info("All pods already connected")
@@ -43,7 +43,7 @@ func (api *API) ConnectPod() {
 
 	var selectedIDs []string
 
-	selectMsg := fmt.Sprintf("Connect to %s", v.VRFID)
+	selectMsg := fmt.Sprintf("Connect to %s", s.SubnetID)
 	if err := survey.AskOne(
 		&survey.MultiSelect{
 			Message:  selectMsg,
@@ -56,11 +56,12 @@ func (api *API) ConnectPod() {
 		status.Error(err, "Unable to get response")
 	}
 
-	s = output.Spinner()
+	ss = output.Spinner()
 
 	for _, rID := range selectedIDs {
 		r, ok := resources[rID]
 		if !ok {
+			ss.Stop()
 			msg.Error("Unable to parse response")
 			os.Exit(1)
 		}
@@ -69,28 +70,32 @@ func (api *API) ConnectPod() {
 			continue
 		}
 
-		ni, err := r.GetPodNodeInstance(v)
+		ni, err := r.GetPodNodeInstance(s)
 		if err != nil {
+			ss.Stop()
 			status.Error(err, "Unable to get node instance")
 		}
 
 		switch r.KubernetesResourceType {
 		case resource.KubernetesResourceTypeStatefulSet:
 			if err := k8s.API(api.kubeConfig).Objects().Node().ConnectStatefulSet(r.Namespace, r.Name, ni); err != nil {
+				ss.Stop()
 				status.Error(err, "Unable to connect kubernetes statefulSet")
 			}
 		case resource.KubernetesResourceTypeDeployment:
 			if err := k8s.API(api.kubeConfig).Objects().Node().ConnectDeployment(r.Namespace, r.Name, ni); err != nil {
+				ss.Stop()
 				status.Error(err, "Unable to connect kubernetes deployment")
 			}
 		case resource.KubernetesResourceTypeDaemonSet:
 			if err := k8s.API(api.kubeConfig).Objects().Node().ConnectDaemonSet(r.Namespace, r.Name, ni); err != nil {
+				ss.Stop()
 				status.Error(err, "Unable to connect kubernetes daemonSet")
 			}
 		}
 	}
 
-	s.Stop()
+	ss.Stop()
 
 	fmt.Println()
 

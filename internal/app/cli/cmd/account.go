@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"mmesh.dev/m-cli/pkg/client"
-	"mmesh.dev/m-cli/pkg/vars"
 )
 
 // accountCmd represents the account command
@@ -26,19 +25,7 @@ var accountShowCmd = &cobra.Command{
 	},
 }
 
-var accountCreateCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Create new account",
-	Long:  appHeader(`Create new account.`),
-	Args:  cobra.NoArgs,
-	PreRun: func(cmd *cobra.Command, args []string) {
-		header()
-	},
-	Run: func(cmd *cobra.Command, args []string) {
-		client.Account().New()
-	},
-}
-
+/*
 var accountSettingsCmd = &cobra.Command{
 	Use:   "settings",
 	Short: "Edit account settings and integrations",
@@ -51,6 +38,7 @@ var accountSettingsCmd = &cobra.Command{
 		client.Account().Settings()
 	},
 }
+*/
 
 var accountSubscriptionCmd = &cobra.Command{
 	Use:   "subscription",
@@ -71,6 +59,7 @@ var accountSubscriptionShowCmd = &cobra.Command{
 	},
 }
 
+/*
 var accountSubscriptionApplyPromotionCmd = &cobra.Command{
 	Use:   "promo-code",
 	Short: "Apply promotion code",
@@ -83,9 +72,10 @@ var accountSubscriptionApplyPromotionCmd = &cobra.Command{
 		client.Account().ApplyPromotion()
 	},
 }
+*/
 
 var accountSubscriptionCancelCmd = &cobra.Command{
-	Use:   "delete",
+	Use:   "cancel",
 	Short: "Cancel subscription and delete account",
 	Long:  appHeader(`Cancel subscription and delete account.`),
 	Args:  cobra.NoArgs,
@@ -94,6 +84,7 @@ var accountSubscriptionCancelCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Account().Cancel()
+		client.Auth().Logout()
 	},
 }
 
@@ -118,14 +109,11 @@ var accountBillingPortalCmd = &cobra.Command{
 
 func init() {
 	accountCmd.AddCommand(accountShowCmd)
-	accountCmd.AddCommand(accountCreateCmd)
-	accountCmd.AddCommand(accountSettingsCmd)
+	// accountCmd.AddCommand(accountSettingsCmd)
 	accountCmd.AddCommand(accountSubscriptionCmd)
 	accountSubscriptionCmd.AddCommand(accountSubscriptionShowCmd)
-	accountSubscriptionCmd.AddCommand(accountSubscriptionApplyPromotionCmd)
+	// accountSubscriptionCmd.AddCommand(accountSubscriptionApplyPromotionCmd)
 	accountSubscriptionCmd.AddCommand(accountSubscriptionCancelCmd)
 	accountCmd.AddCommand(billingCmd)
 	billingCmd.AddCommand(accountBillingPortalCmd)
-
-	accountCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 }

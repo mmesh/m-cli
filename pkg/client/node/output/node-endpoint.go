@@ -3,13 +3,13 @@ package output
 import (
 	"fmt"
 
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/output/table"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
-func (api *API) ShowEndpoint(e *network.NetworkEndpoint) {
+func (api *API) ShowEndpoint(e *topology.Endpoint) {
 	output.SectionHeader("Endpoint Details")
 	output.TitleT1("Network Endpoint")
 

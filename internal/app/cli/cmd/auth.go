@@ -1,13 +1,9 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"mmesh.dev/m-cli/internal/app/cli/auth/login"
+	// "mmesh.dev/m-cli/internal/app/cli/auth/login"
 	"mmesh.dev/m-cli/pkg/client"
-	"mmesh.dev/m-cli/pkg/status"
 )
 
 // authCmd represents the auth command
@@ -17,6 +13,7 @@ var authCmd = &cobra.Command{
 	Long:  appHeader(`User session authentication commands.`),
 }
 
+/*
 // authLoginCmd represents the login command
 var authLoginCmd = &cobra.Command{
 	Use:   "login",
@@ -30,6 +27,7 @@ var authLoginCmd = &cobra.Command{
 		client.Auth().Login(login.NewRequest(), true)
 	},
 }
+*/
 
 // authLogoutCmd represents the logout command
 var authLogoutCmd = &cobra.Command{
@@ -41,15 +39,11 @@ var authLogoutCmd = &cobra.Command{
 		preflightNoLogin()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		accountID := viper.GetString("account.id")
-		if len(accountID) == 0 {
-			status.Error(fmt.Errorf("missing account.id"), "Unable to get configured account")
-		}
-
-		client.Auth().Logout(accountID)
+		client.Auth().Logout()
 	},
 }
 
+/*
 // authPasswordResetCmd represents the password-reset command
 var authPasswordResetCmd = &cobra.Command{
 	Use:   "password-reset",
@@ -63,7 +57,9 @@ var authPasswordResetCmd = &cobra.Command{
 		client.Auth().PasswordReset()
 	},
 }
+*/
 
+/*
 // authConfirmationMailResendCmd represents the password-reset command
 var authConfirmationMailResendCmd = &cobra.Command{
 	Use:   "resend-confirmation",
@@ -77,6 +73,7 @@ var authConfirmationMailResendCmd = &cobra.Command{
 		client.Auth().ConfirmationMailResend()
 	},
 }
+*/
 
 /*
 // authTokenCmd represents the login command
@@ -95,9 +92,9 @@ var authTokenCmd = &cobra.Command{
 */
 
 func init() {
-	authCmd.AddCommand(authLoginCmd)
+	// authCmd.AddCommand(authLoginCmd)
 	authCmd.AddCommand(authLogoutCmd)
-	authCmd.AddCommand(authPasswordResetCmd)
-	authCmd.AddCommand(authConfirmationMailResendCmd)
+	// authCmd.AddCommand(authPasswordResetCmd)
+	// authCmd.AddCommand(authConfirmationMailResendCmd)
 	// authCmd.AddCommand(authTokenCmd)
 }

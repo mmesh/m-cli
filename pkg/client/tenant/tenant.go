@@ -21,7 +21,7 @@ import (
 var tenantsMap map[string]*tenant.Tenant = nil
 var selectedTenant *tenant.Tenant = nil
 
-func GetTenant(edit bool) *tenant.Tenant {
+func GetTenant() *tenant.Tenant {
 	if selectedTenant != nil {
 		return selectedTenant
 	}
@@ -38,22 +38,14 @@ func GetTenant(edit bool) *tenant.Tenant {
 	tenants := make(map[string]*tenant.Tenant)
 
 	for _, t := range tl {
-		tenantOptID = t.TenantID
+		tenantOptID = fmt.Sprintf("[%s] %s", t.Name, t.Description)
 		tenantsOpts = append(tenantsOpts, tenantOptID)
 		tenants[tenantOptID] = t
 	}
 
 	sort.Strings(tenantsOpts)
 
-	if edit {
-		tenantsOpts = append(tenantsOpts, input.NewResource)
-	}
-
 	tenantOptID = input.GetSelect("Tenant:", "", tenantsOpts, survey.Required)
-
-	if tenantOptID == input.NewResource {
-		return nil
-	}
 
 	vars.TenantID = tenants[tenantOptID].TenantID
 	selectedTenant = tenants[tenantOptID]
@@ -71,7 +63,7 @@ func Tenants() map[string]*tenant.Tenant {
 	s := output.Spinner()
 	defer s.Stop()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetTenantAPIClient()
 	defer grpcConn.Close()
 
 	lr := &tenant.ListTenantsRequest{
@@ -104,19 +96,40 @@ func Tenants() map[string]*tenant.Tenant {
 	return tenants
 }
 
-func validTenantID(val interface{}) error {
+func FetchTenant(tenantID string) *tenant.Tenant {
+	a := account.GetAccount()
+
+	nxc, grpcConn := grpc.GetTenantAPIClient()
+	defer grpcConn.Close()
+
+	tr := &tenant.TenantReq{
+		AccountID: a.AccountID,
+		TenantID:  tenantID,
+	}
+
+	t, err := nxc.GetTenant(context.TODO(), tr)
+	if err != nil {
+		status.Error(err, "Unable to get tenant")
+	}
+
+	return t
+}
+
+func validTenantName(val interface{}) error {
 	if err := input.ValidID(val); err != nil {
 		return err
 	}
 
-	tenantID := val.(string)
+	tenantName := val.(string)
 
 	if tenantsMap == nil {
 		tenantsMap = Tenants()
 	}
 
-	if _, ok := tenantsMap[tenantID]; ok {
-		return fmt.Errorf("tenant %s already exist", tenantID)
+	for _, t := range tenantsMap {
+		if t.Name == tenantName {
+			return fmt.Errorf("tenant %s already exist", tenantName)
+		}
 	}
 
 	return nil

@@ -61,7 +61,7 @@ func SecurityGroups() map[string]*iam.SecurityGroup {
 	s := output.Spinner()
 	defer s.Stop()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetIAMAPIClient()
 	defer grpcConn.Close()
 
 	lr := &iam.ListSecurityGroupsRequest{

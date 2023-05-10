@@ -1,19 +1,19 @@
 package node
 
 import (
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 )
 
 type Interface interface {
-	CreateGateway(ni *network.NodeInstance) error
+	CreateGateway(ni *topology.NodeInstance) error
 	DeleteGateway(ns, name string) error
 
-	ConnectStatefulSet(ns, name string, ni *network.NodeInstance) error
-	DisconnectStatefulSet(ns, name string, ni *network.NodeInstance) error
-	ConnectDeployment(ns, name string, ni *network.NodeInstance) error
-	DisconnectDeployment(ns, name string, ni *network.NodeInstance) error
-	ConnectDaemonSet(ns, name string, ni *network.NodeInstance) error
-	DisconnectDaemonSet(ns, name string, ni *network.NodeInstance) error
+	ConnectStatefulSet(ns, name string, ni *topology.NodeInstance) error
+	DisconnectStatefulSet(ns, name string, ni *topology.NodeInstance) error
+	ConnectDeployment(ns, name string, ni *topology.NodeInstance) error
+	DisconnectDeployment(ns, name string, ni *topology.NodeInstance) error
+	ConnectDaemonSet(ns, name string, ni *topology.NodeInstance) error
+	DisconnectDaemonSet(ns, name string, ni *topology.NodeInstance) error
 }
 
 type API struct {

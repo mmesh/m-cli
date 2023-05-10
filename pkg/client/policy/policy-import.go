@@ -1,9 +1,10 @@
 package policy
 
+/*
 import (
 	"context"
 
-	"mmesh.dev/m-api-go/grpc/resources/ops/object"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/client/account"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/output"
@@ -14,23 +15,21 @@ import (
 func (api *API) Import(yamlFile string) {
 	a := account.GetAccount()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetTopologyAPIClient()
 	defer grpcConn.Close()
-
-	npc := &object.NetworkPolicyConfig{}
-
-	if err := utils.FileParser(yamlFile, npc); err != nil {
-		status.Error(err, "Unable to parse YAML file")
-	}
 
 	s := output.Spinner()
 
-	npcr := &object.NetworkPolicyConfigRequest{
-		AccountID:           a.AccountID,
-		NetworkPolicyConfig: npc,
+	snpr := &topology.SetNetworkPolicyRequest{}
+
+	if err := utils.FileParser(yamlFile, snpr); err != nil {
+		s.Stop()
+		status.Error(err, "Unable to parse YAML file")
 	}
 
-	np, err := nxc.SetNetworkPolicy(context.TODO(), npcr)
+	snpr.AccountID = a.AccountID
+
+	np, err := nxc.SetNetworkPolicy(context.TODO(), snpr)
 	if err != nil {
 		s.Stop()
 		status.Error(err, "Unable to set network policy")
@@ -39,5 +38,6 @@ func (api *API) Import(yamlFile string) {
 	s.Stop()
 
 	// output.Show(np)
-	Output().Show(npc.Tenant, npc.Network, npc.Subnet, np)
+	Output().Show(snpr.TenantID, snpr.NetID, snpr.SubnetID, np)
 }
+*/

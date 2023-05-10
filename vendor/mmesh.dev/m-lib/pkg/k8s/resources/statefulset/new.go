@@ -7,17 +7,17 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-lib/pkg/k8s/config"
 	"mmesh.dev/m-lib/pkg/mm"
 )
 
 func (a *API) New(i interface{}, appLabel config.AppLabel) *appsv1.StatefulSet {
-	var ni *network.NodeInstance
+	var ni *topology.NodeInstance
 
 	switch appLabel {
 	case config.AppLabelNode:
-		ni = i.(*network.NodeInstance)
+		ni = i.(*topology.NodeInstance)
 	default:
 		return nil
 	}
@@ -33,7 +33,7 @@ func (a *API) New(i interface{}, appLabel config.AppLabel) *appsv1.StatefulSet {
 			Name:      ni.K8SOpts.Name,
 			Namespace: ni.K8SOpts.Ns,
 			Labels: map[string]string{
-				"mmesh-federation": ni.FederationID,
+				// "mmesh-federation": ni.FederationID,
 				string(appLabel):   ni.K8SOpts.Name,
 				"mmesh-app":        string(appLabel),
 				"mmesh-objectID":   ni.K8SOpts.Name,
@@ -46,7 +46,7 @@ func (a *API) New(i interface{}, appLabel config.AppLabel) *appsv1.StatefulSet {
 			Replicas:    mm.Int32(1),
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"mmesh-federation": ni.FederationID,
+					// "mmesh-federation": ni.FederationID,
 					string(appLabel):   ni.K8SOpts.Name,
 					"mmesh-app":        string(appLabel),
 					"mmesh-objectID":   ni.K8SOpts.Name,
@@ -58,7 +58,7 @@ func (a *API) New(i interface{}, appLabel config.AppLabel) *appsv1.StatefulSet {
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"mmesh-federation": ni.FederationID,
+						// "mmesh-federation": ni.FederationID,
 						string(appLabel):   ni.K8SOpts.Name,
 						"mmesh-app":        string(appLabel),
 						"mmesh-objectID":   ni.K8SOpts.Name,

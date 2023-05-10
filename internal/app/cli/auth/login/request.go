@@ -1,40 +1,22 @@
 package login
 
 import (
-	"github.com/AlecAivazis/survey/v2"
+	"os"
+
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/resources/iam/auth"
-	"mmesh.dev/m-cli/pkg/client"
-	"mmesh.dev/m-cli/pkg/input"
-	"mmesh.dev/m-cli/pkg/output"
+	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
 func NewRequest() *auth.LoginRequest {
-	var auto bool
+	userToken := viper.GetString("token")
 
-	req := &auth.LoginRequest{}
-
-	req.Realm = viper.GetString("account.id")
-	req.Email = viper.GetString("user.email")
-
-	if len(req.Realm) > 0 && len(req.Email) > 0 && client.Auth().SSHAuth(req.Realm) {
-		auto = true
+	if len(userToken) == 0 {
+		msg.Error("Authorization token not found")
+		os.Exit(1)
 	}
 
-	if !auto {
-		// output.Header("Authentication Required")
-		// msg.Warn("Authentication Required")
-		output.AuthenticationRequired()
-		req.Realm = input.GetInput("Account:", "", viper.GetString("account.id"), survey.Required)
-		req.Email = input.GetInput("Email:", "", viper.GetString("user.email"), input.ValidEmail)
+	return &auth.LoginRequest{
+		UserToken: userToken,
 	}
-
-	if client.Auth().SSHAuth(req.Realm) {
-		req.AuthMethod = auth.AuthMethod_SSH_KEY
-	} else {
-		req.AuthMethod = auth.AuthMethod_PASSWORD
-		req.Password = input.GetPassword("Password:", "")
-	}
-
-	return req
 }

@@ -2,13 +2,14 @@ package node
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"sort"
 
 	"github.com/AlecAivazis/survey/v2"
-	"mmesh.dev/m-api-go/grpc/resources/network"
 	"mmesh.dev/m-api-go/grpc/resources/resource"
-	"mmesh.dev/m-cli/pkg/client/vrf"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
+	"mmesh.dev/m-cli/pkg/client/subnet"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
@@ -17,7 +18,7 @@ import (
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
-func GetNode(edit bool) *network.Node {
+func GetNode(edit bool) *topology.Node {
 	nl := nodes()
 
 	if len(nl) == 0 {
@@ -27,10 +28,11 @@ func GetNode(edit bool) *network.Node {
 
 	var nodeOptID string
 	nodesOpts := make([]string, 0)
-	nodes := make(map[string]*network.Node)
+	nodes := make(map[string]*topology.Node)
 
-	for _, n := range nl {
-		nodeOptID = n.NodeID
+	for nodeName, n := range nl {
+		// nodeOptID = nodeName
+		nodeOptID = fmt.Sprintf("[%s] %s", nodeName, n.Cfg.Description)
 		nodesOpts = append(nodesOpts, nodeOptID)
 		nodes[nodeOptID] = n
 	}
@@ -52,7 +54,7 @@ func GetNode(edit bool) *network.Node {
 	return nodes[nodeOptID]
 }
 
-func GetEndpoint(n *network.Node) *network.NetworkEndpoint {
+func GetEndpoint(n *topology.Node) *topology.Endpoint {
 	var eID string
 	var endpoints []string
 
@@ -72,21 +74,26 @@ func GetEndpoint(n *network.Node) *network.NetworkEndpoint {
 	return n.Endpoints[eID]
 }
 
-func nodes() map[string]*network.Node {
-	v := vrf.GetVRF(false)
+func nodes() map[string]*topology.Node {
+	s := subnet.GetSubnet(false)
 
-	s := output.Spinner()
-	defer s.Stop()
+	ss := output.Spinner()
+	defer ss.Stop()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetTopologyAPIClient()
 	defer grpcConn.Close()
 
-	lr := &network.ListNodesRequest{
+	lr := &topology.ListNodesRequest{
 		Meta: &resource.ListRequest{},
-		VRF:  v,
+		Subnet: &topology.SubnetReq{
+			AccountID: s.AccountID,
+			TenantID:  s.TenantID,
+			NetID:     s.NetID,
+			SubnetID:  s.SubnetID,
+		},
 	}
 
-	nodes := make(map[string]*network.Node)
+	nodes := make(map[string]*topology.Node) // map[nodeName]*topology.Node
 
 	for {
 		nl, err := nxc.ListNodes(context.TODO(), lr)
@@ -95,7 +102,11 @@ func nodes() map[string]*network.Node {
 		}
 
 		for _, n := range nl.Nodes {
-			nodes[n.NodeID] = n
+			if n.Cfg != nil {
+				if len(n.Cfg.NodeName) > 0 {
+					nodes[n.Cfg.NodeName] = n
+				}
+			}
 		}
 
 		if len(nl.Meta.NextPageToken) > 0 {
@@ -106,4 +117,16 @@ func nodes() map[string]*network.Node {
 	}
 
 	return nodes
+}
+
+func FetchNode(nr *topology.NodeReq) *topology.Node {
+	nxc, grpcConn := grpc.GetTopologyAPIClient()
+	defer grpcConn.Close()
+
+	n, err := nxc.GetNode(context.TODO(), nr)
+	if err != nil {
+		status.Error(err, "Unable to get node")
+	}
+
+	return n
 }

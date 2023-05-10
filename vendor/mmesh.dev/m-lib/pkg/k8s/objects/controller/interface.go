@@ -1,18 +1,18 @@
 package controller
 
 import (
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 )
 
 type Interface interface {
-	Create(ni *network.NodeInstance) error
+	Create(ni *topology.NodeInstance) error
 }
 
 type API struct {
 	KubeConfig []byte
 }
 
-func (a *API) Create(ni *network.NodeInstance) error {
+func (a *API) Create(ni *topology.NodeInstance) error {
 	// if _, err := resources.API(a.KubeConfig).Namespace().Create(ni.K8SOpts.Ns); err != nil {
 	// 	return errors.Wrapf(err, "[%v] function resources.API().Namespace().Create()", errors.Trace())
 	// }

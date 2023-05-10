@@ -12,14 +12,14 @@ import (
 func (api *API) Delete() {
 	u := GetUser(false)
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetIAMAPIClient()
 	defer grpcConn.Close()
 
 	output.ConfirmDeletion()
 
-	ur := &iam.UserRequest{
+	ur := &iam.UserReq{
 		AccountID: u.AccountID,
-		Email:     u.Email,
+		UserID:    u.UserID,
 	}
 
 	s := output.Spinner()

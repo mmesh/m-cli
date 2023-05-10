@@ -5,34 +5,34 @@ import (
 
 	// "github.com/c2h5oh/datasize"
 	"github.com/gosuri/uitable"
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/client/event"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
-func (api *API) Show(n *network.Node) {
+func (api *API) Show(n *topology.Node) {
 	output.SectionHeader("Node Details")
 	output.TitleT1("Node Information")
 
 	agentInfo(n)
 
-	// fmt.Printf("p2pHostID: %s\n\n", n.Agent.NxHostID)
+	if n.Agent.Routes != nil {
+		output.SubTitleT2("Routing: Advertised Routes")
 
-	output.SubTitleT2("Routing: Advertised Routes")
+		for _, r := range n.Agent.Routes.Export {
+			fmt.Printf(" ■ %s\n", colors.DarkGreen(r))
+		}
+		fmt.Println()
 
-	for _, r := range n.Agent.Routes.Export {
-		fmt.Printf(" ■ %s\n", colors.DarkGreen(r))
+		output.SubTitleT2("Routing: Imported Routes")
+
+		for _, r := range n.Agent.Routes.Import {
+			fmt.Printf(" ■ %s\n", colors.DarkGreen(r))
+		}
+		fmt.Println()
 	}
-	fmt.Println()
-
-	output.SubTitleT2("Routing: Imported Routes")
-
-	for _, r := range n.Agent.Routes.Import {
-		fmt.Printf(" ■ %s\n", colors.DarkGreen(r))
-	}
-	fmt.Println()
 
 	if n.EventMetrics != nil {
 		event.Output().ShowMetrics(n.EventMetrics)

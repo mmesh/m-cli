@@ -4,23 +4,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
+/*
 var iamCmd = &cobra.Command{
 	Use:   "iam",
 	Short: "Users administration and access management (RBAC)",
 	Long:  appHeader(`Users administration and access management (RBAC).`),
 }
+*/
 
+/*
 var userCmd = &cobra.Command{
 	Use:   "user",
 	Short: "User settings",
 	Long:  appHeader(`User settings.`),
 }
-
-var cloudCmd = &cobra.Command{
-	Use:   "cloud",
-	Short: "Integrate and manage cloud resources in mmesh",
-	Long:  appHeader(`Integrate and manage cloud resources in mmesh.`),
-}
+*/
 
 var opsCmd = &cobra.Command{
 	Use:   "ops",
@@ -48,28 +46,26 @@ var opsCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(accountCmd)
-	rootCmd.AddCommand(iamCmd)
+	// rootCmd.AddCommand(iamCmd)
 	rootCmd.AddCommand(authCmd)
-	rootCmd.AddCommand(userCmd)
+	// rootCmd.AddCommand(userCmd)
 	rootCmd.AddCommand(alertsCmd)
 	rootCmd.AddCommand(tenantCmd)
 	rootCmd.AddCommand(networkCmd)
 	rootCmd.AddCommand(subnetCmd)
-	rootCmd.AddCommand(networkRoutesCmd)
-	rootCmd.AddCommand(networkNodeCmd)
+	rootCmd.AddCommand(nodeCmd)
 	rootCmd.AddCommand(networkPolicyCmd)
 	rootCmd.AddCommand(k8sCmd)
-	rootCmd.AddCommand(cloudCmd)
 	// rootCmd.AddCommand(serviceCmd)
 	rootCmd.AddCommand(opsCmd)
 	rootCmd.AddCommand(execCmd)
-	rootCmd.AddCommand(transferCmd)
+	// rootCmd.AddCommand(transferCmd)
 	rootCmd.AddCommand(portFwdCmd)
 	// rootCmd.AddCommand(auditCmd)
-	rootCmd.AddCommand(supportCmd)
+	// rootCmd.AddCommand(supportCmd)
 	// rootCmd.AddCommand(statusCmd)
 	// rootCmd.AddCommand(runtimeCmd)
 	rootCmd.AddCommand(versionCmd)
-	rootCmd.AddCommand(setupCmd)
+	// rootCmd.AddCommand(setupCmd)
 	rootCmd.AddCommand(completionCmd)
 }

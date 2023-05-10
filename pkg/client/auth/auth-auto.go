@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -9,12 +8,8 @@ import (
 	"mmesh.dev/m-cli/pkg/status"
 )
 
-func (api *API) LoginRequired(accountID string) bool {
-	if len(accountID) == 0 {
-		status.Error(fmt.Errorf("missing accountID"), "Invalid accountID")
-	}
-
-	apiKeyFile, err := auth.GetAPIKeyFile(accountID)
+func (api *API) LoginRequired() bool {
+	apiKeyFile, err := auth.GetAPIKeyFile()
 	if err != nil {
 		status.Error(err, "Unable to find API key")
 	}

@@ -15,7 +15,7 @@ import (
 func (api *API) Set() {
 	a := account.GetAccount()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetIAMAPIClient()
 	defer grpcConn.Close()
 
 	role := GetRole(true)

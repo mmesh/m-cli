@@ -1,6 +1,6 @@
 package project
 
 func (api *API) List() {
-	//output.Show(pl)
+	// output.Show(pl)
 	Output().List(projects())
 }

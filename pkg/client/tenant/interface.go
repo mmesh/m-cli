@@ -5,7 +5,8 @@ import "mmesh.dev/m-cli/pkg/client/tenant/output"
 type Interface interface {
 	List()
 	Show()
-	Set()
+	New()
+	Update()
 	Delete()
 }
 type API struct{}

@@ -1,8 +1,8 @@
 package output
 
-import "mmesh.dev/m-api-go/grpc/resources/network"
+import "mmesh.dev/m-api-go/grpc/resources/topology"
 
 type Interface interface {
-	Show(tenantID, netID, vrfIF string, np *network.Policy)
+	Show(s *topology.Subnet)
 }
 type API struct{}

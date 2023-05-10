@@ -1,0 +1,77 @@
+package tasklog
+
+import (
+	"context"
+	"fmt"
+	"sort"
+	"time"
+
+	"github.com/AlecAivazis/survey/v2"
+	"mmesh.dev/m-api-go/grpc/resources/ops"
+	"mmesh.dev/m-api-go/grpc/resources/resource"
+	"mmesh.dev/m-cli/pkg/client/ops/workflow"
+	"mmesh.dev/m-cli/pkg/grpc"
+	"mmesh.dev/m-cli/pkg/input"
+	"mmesh.dev/m-cli/pkg/output"
+	"mmesh.dev/m-cli/pkg/status"
+)
+
+func GetTaskLog() *ops.TaskLog {
+	var taskLogID string
+
+	var taskLogOpts []string
+	taskLogList := make(map[string]*ops.TaskLog)
+
+	for _, tl := range taskLogs() {
+		tm := time.UnixMilli(tl.Status.Timestamp).String()
+		taskLogID = fmt.Sprintf("Task: %s | Timestamp: %s\n  Target: %s\n", tl.TaskName, tm, tl.NodeName)
+		taskLogOpts = append(taskLogOpts, taskLogID)
+		taskLogList[taskLogID] = tl
+	}
+
+	sort.Strings(taskLogOpts)
+
+	taskLogID = input.GetSelect("TaskLog:", "", taskLogOpts, survey.Required)
+
+	return taskLogList[taskLogID]
+}
+
+func taskLogs() []*ops.TaskLog {
+	wf := workflow.GetWorkflow()
+
+	s := output.Spinner()
+	defer s.Stop()
+
+	nxc, grpcConn := grpc.GetOpsAPIClient()
+	defer grpcConn.Close()
+
+	lr := &ops.ListTaskLogsRequest{
+		Meta: &resource.ListRequest{},
+		Workflow: &ops.WorkflowReq{
+			AccountID:  wf.AccountID,
+			TenantID:   wf.TenantID,
+			ProjectID:  wf.ProjectID,
+			WorkflowID: wf.WorkflowID,
+		},
+	}
+
+	var taskLogs []*ops.TaskLog
+
+	for {
+		tll, err := nxc.ListTaskLogs(context.TODO(), lr)
+		if err != nil {
+			s.Stop()
+			status.Error(err, "Unable to list operations")
+		}
+
+		taskLogs = append(taskLogs, tll.TaskLogs...)
+
+		if len(tll.Meta.NextPageToken) > 0 {
+			lr.Meta.PageToken = tll.Meta.NextPageToken
+		} else {
+			break
+		}
+	}
+
+	return taskLogs
+}

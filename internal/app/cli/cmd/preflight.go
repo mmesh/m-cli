@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/viper"
 	"mmesh.dev/m-cli/internal/app/cli/auth/login"
+	"mmesh.dev/m-cli/pkg/auth"
 	"mmesh.dev/m-cli/pkg/client"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
-	"mmesh.dev/m-cli/pkg/vars"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 	"mmesh.dev/m-lib/pkg/utils/msg"
 	"mmesh.dev/m-lib/pkg/version"
@@ -17,12 +16,12 @@ import (
 
 func header() {
 	fmt.Println(colors.Black(version.CLI_NAME + " " + version.GetVersion()))
-	output.AppHeader(vars.AccountID, false)
+	output.AppHeader(false)
 }
 
 func appHeader(str string) string {
 	h1 := colors.Black(version.CLI_NAME + " " + version.GetVersion())
-	h2 := output.AppHeader(vars.AccountID, true)
+	h2 := output.AppHeader(true)
 
 	return fmt.Sprintf("%s\n%s%s", h1, h2, str)
 }
@@ -35,9 +34,8 @@ func preflightNoLogin() {
 		os.Exit(0)
 	}
 
-	accountID := viper.GetString("account.id")
-	if len(accountID) == 0 {
-		status.Error(fmt.Errorf("missing account.id"), "Unable to get configured account")
+	if _, err := auth.GetAccountID(); err != nil {
+		status.Error(fmt.Errorf("missing accountID"), "Unable to get account")
 	}
 }
 
@@ -54,15 +52,9 @@ func preflight() {
 }
 
 func autoLogin() {
-	accountID := viper.GetString("account.id")
-	if len(accountID) == 0 {
-		status.Error(fmt.Errorf("missing account.id"), "Unable to get configured account")
-	}
-
-	if client.Auth().LoginRequired(accountID) {
+	if client.Auth().LoginRequired() {
 		client.Auth().Login(login.NewRequest(), true)
 	}
-	// client.Auth().AutoLogin(login.NewRequest())
 }
 
 func notConfigured() {

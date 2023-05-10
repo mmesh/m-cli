@@ -219,7 +219,7 @@ func (api *API) getK8sResourceList(k8sResources map[string]*resource.KubernetesR
 			// status = "🟢"
 			// subnet = fmt.Sprintf(" %s", output.StrNormal(fmt.Sprintf("%s:%s", r.NetID, r.VRFID)))
 			// subnet = fmt.Sprintf("%s ", output.StrEnabled(fmt.Sprintf("%s:%s", r.NetID, r.VRFID)))
-			subnet = fmt.Sprintf("[%s:%s] ", r.NetID, r.VRFID)
+			subnet = fmt.Sprintf("[%s:%s] ", r.NetID, r.SubnetID)
 		} else {
 			if connected {
 				continue

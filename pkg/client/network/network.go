@@ -7,8 +7,9 @@ import (
 	"sort"
 
 	"github.com/AlecAivazis/survey/v2"
-	"mmesh.dev/m-api-go/grpc/resources/network"
 	"mmesh.dev/m-api-go/grpc/resources/resource"
+	tenant_pb "mmesh.dev/m-api-go/grpc/resources/tenant"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/client/tenant"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
@@ -18,10 +19,10 @@ import (
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
-var networksMap map[string]*network.Network = nil
-var selectedNetwork *network.Network = nil
+var networksMap map[string]*topology.Network = nil
+var selectedNetwork *topology.Network = nil
 
-func GetNetwork(edit bool) *network.Network {
+func GetNetwork(edit bool) *topology.Network {
 	if selectedNetwork != nil {
 		return selectedNetwork
 	}
@@ -35,10 +36,10 @@ func GetNetwork(edit bool) *network.Network {
 
 	var networkOptID string
 	networksOpts := make([]string, 0)
-	networks := make(map[string]*network.Network)
+	networks := make(map[string]*topology.Network)
 
 	for _, n := range nl {
-		networkOptID = fmt.Sprintf("[%s] %s", n.NetID, n.NetworkCIDR)
+		networkOptID = fmt.Sprintf("[%s] %s", n.NetID, n.Description)
 		networksOpts = append(networksOpts, networkOptID)
 		networks[networkOptID] = n
 	}
@@ -61,25 +62,28 @@ func GetNetwork(edit bool) *network.Network {
 	return networks[networkOptID]
 }
 
-func networks() map[string]*network.Network {
+func networks() map[string]*topology.Network {
 	if networksMap != nil {
 		return networksMap
 	}
 
-	t := tenant.GetTenant(false)
+	t := tenant.GetTenant()
 
 	s := output.Spinner()
 	defer s.Stop()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetTopologyAPIClient()
 	defer grpcConn.Close()
 
-	lr := &network.ListNetworksRequest{
-		Meta:   &resource.ListRequest{},
-		Tenant: t,
+	lr := &topology.ListNetworksRequest{
+		Meta: &resource.ListRequest{},
+		Tenant: &tenant_pb.TenantReq{
+			AccountID: t.AccountID,
+			TenantID:  t.TenantID,
+		},
 	}
 
-	networks := make(map[string]*network.Network)
+	networks := make(map[string]*topology.Network)
 
 	for {
 		nl, err := nxc.ListNetworks(context.TODO(), lr)
@@ -102,22 +106,4 @@ func networks() map[string]*network.Network {
 	networksMap = networks
 
 	return networks
-}
-
-func validNetID(val interface{}) error {
-	if err := input.ValidID(val); err != nil {
-		return err
-	}
-
-	netID := val.(string)
-
-	if networksMap == nil {
-		networksMap = networks()
-	}
-
-	if _, ok := networksMap[netID]; ok {
-		return fmt.Errorf("network %s already exist", netID)
-	}
-
-	return nil
 }

@@ -3,20 +3,22 @@ package output
 import (
 	"fmt"
 
-	"mmesh.dev/m-api-go/grpc/resources/ops/project"
+	"mmesh.dev/m-api-go/grpc/resources/ops"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/output/table"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
-func (api *API) Show(p *project.Project) {
+func (api *API) Show(p *ops.Project) {
 	output.SectionHeader("Ops: Project Details")
 	output.TitleT1("Project Information")
 
 	t := table.New()
 
-	t.AddRow(colors.Black("Account ID"), colors.DarkWhite(p.AccountID))
+	// t.AddRow(colors.Black("Account ID"), colors.DarkWhite(p.AccountID))
+	t.AddRow(colors.Black("Tenant ID"), colors.DarkWhite(p.TenantID))
 	t.AddRow(colors.Black("Project ID"), colors.DarkWhite(p.ProjectID))
+	t.AddRow(colors.Black("Name"), colors.DarkWhite(p.Name))
 	t.AddRow(colors.Black("Description"), colors.DarkWhite(p.Description))
 
 	t.Render()

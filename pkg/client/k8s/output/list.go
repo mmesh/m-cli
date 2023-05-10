@@ -3,7 +3,9 @@ package output
 import (
 	"fmt"
 
+	tenant_pb "mmesh.dev/m-api-go/grpc/resources/tenant"
 	"mmesh.dev/m-cli/pkg/client/k8s/resource"
+	"mmesh.dev/m-cli/pkg/client/tenant"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/output/table"
 	"mmesh.dev/m-lib/pkg/utils/colors"
@@ -20,6 +22,8 @@ func (api *API) List(k8sResources map[string]*resource.KubernetesResource) {
 	t.Header(colors.Black("KUBERNETES RESOURCE"))
 
 	t.SetRowLine("-")
+
+	s := output.Spinner()
 
 	for _, r := range k8sResources {
 		var status string
@@ -41,22 +45,28 @@ func (api *API) List(k8sResources map[string]*resource.KubernetesResource) {
 		t.AddRow(c1)
 	}
 
+	s.Stop()
+
 	t.Render()
 	fmt.Println()
 }
 
 func getNetStatus(r *resource.KubernetesResource) string {
-	tenantID := r.TenantID
-	if len(tenantID) == 0 {
-		tenantID = "-"
+	tenantName := "-"
+	if len(r.TenantID) > 0 {
+		t := getTenant(r.TenantID)
+		if t != nil {
+			tenantName = t.Name
+		}
 	}
+
 	netID := r.NetID
 	if len(netID) == 0 {
 		netID = "-"
 	}
-	vrfID := r.VRFID
-	if len(vrfID) == 0 {
-		vrfID = "-"
+	subnetID := r.SubnetID
+	if len(subnetID) == 0 {
+		subnetID = "-"
 	}
 
 	t := colors.Black("Tenant:")
@@ -65,5 +75,22 @@ func getNetStatus(r *resource.KubernetesResource) string {
 
 	return fmt.Sprintf(
 		"%s %s | %s %s | %s %s",
-		t, colors.DarkGreen(tenantID), n, colors.DarkGreen(netID), s, colors.DarkGreen(vrfID))
+		t, colors.DarkGreen(tenantName), n, colors.DarkGreen(netID), s, colors.DarkGreen(subnetID))
+}
+
+var tenantsMap = make(map[string]*tenant_pb.Tenant, 0)
+
+func getTenant(tenantID string) *tenant_pb.Tenant {
+	t, ok := tenantsMap[tenantID]
+	if ok {
+		return t
+	}
+
+	t = tenant.FetchTenant(tenantID)
+	if t != nil {
+		tenantsMap[tenantID] = t
+		return t
+	}
+
+	return nil
 }

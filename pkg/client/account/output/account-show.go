@@ -22,11 +22,20 @@ func (api *API) show(a *account.Account) {
 	}
 
 	t.AddRow(colors.Black("Account ID"), colors.DarkWhite(a.AccountID)+" "+testing)
-	t.AddRow(colors.Black("Description"), colors.DarkWhite(a.Description))
-	t.AddRow(colors.Black("Account Token"), colors.DarkWhite(a.AccountToken))
+
+	if len(a.Name) > 0 {
+		t.AddRow(colors.Black("Name"), colors.DarkWhite(a.Name))
+	}
+	if len(a.Description) > 0 {
+		t.AddRow(colors.Black("Description"), colors.DarkWhite(a.Description))
+	}
+	if len(a.CompanyName) > 0 {
+		t.AddRow(colors.Black("Company"), colors.DarkWhite(a.CompanyName))
+	}
+
 	t.AddRow(colors.Black("Location ID"), colors.DarkWhite(a.LocationID))
 	t.AddRow(colors.Black("Federation ID"), colors.DarkWhite(a.FederationID))
-	t.AddRow(colors.Black("Account Admin"), colors.DarkWhite(a.Owner.Admin.Email))
+	// t.AddRow(colors.Black("Account Admin"), colors.DarkWhite(a.Owner.Admin.UserID))
 
 	// if a.Type != account.AccountType_NORMAL {
 	// 	t.AddRow(colors.Black("Account Type"), output.StrEnabled("provider"))

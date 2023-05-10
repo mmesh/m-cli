@@ -17,7 +17,7 @@ type KubernetesResource struct {
 	AccountID string
 	TenantID  string
 	NetID     string
-	VRFID     string
+	SubnetID  string
 
 	// Labels map[string]string
 	Annotations map[string]string
@@ -39,7 +39,7 @@ func (r *KubernetesResource) ParseLabels(labels map[string]string) {
 		case "mmesh-network":
 			r.NetID = v
 		case "mmesh-subnet":
-			r.VRFID = v
+			r.SubnetID = v
 		}
 	}
 
@@ -47,7 +47,7 @@ func (r *KubernetesResource) ParseLabels(labels map[string]string) {
 		len(r.AccountID) > 0 &&
 		len(r.TenantID) > 0 &&
 		len(r.NetID) > 0 &&
-		len(r.VRFID) > 0 {
+		len(r.SubnetID) > 0 {
 		r.Connected = true
 	}
 }
@@ -69,7 +69,7 @@ func (r *KubernetesResource) ParseAnnotations(annotations map[string]string) {
 			r.NetID = v
 			r.Annotations[k] = v
 		case "mmesh.io/subnet":
-			r.VRFID = v
+			r.SubnetID = v
 			r.Annotations[k] = v
 		case "mmesh.io/dnsName":
 			r.Annotations[k] = v
@@ -80,7 +80,7 @@ func (r *KubernetesResource) ParseAnnotations(annotations map[string]string) {
 
 	if len(r.TenantID) > 0 &&
 		len(r.NetID) > 0 &&
-		len(r.VRFID) > 0 {
+		len(r.SubnetID) > 0 {
 		r.Connected = true
 	}
 }

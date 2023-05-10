@@ -1,13 +1,13 @@
 package node
 
 import (
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/k8s/config"
 	"mmesh.dev/m-lib/pkg/k8s/resources"
 )
 
-func (a *API) CreateGateway(ni *network.NodeInstance) error {
+func (a *API) CreateGateway(ni *topology.NodeInstance) error {
 	ns := ni.K8SOpts.Ns
 
 	if _, err := resources.API(a.KubeConfig).Namespace().Create(ns); err != nil {

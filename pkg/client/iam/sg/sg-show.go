@@ -1,5 +1,9 @@
 package sg
 
+import "mmesh.dev/m-cli/pkg/client/tenant"
+
 func (api *API) Show() {
-	Output().Show(GetSecurityGroup(false))
+	tenantMap := tenant.Tenants()
+
+	Output().Show(GetSecurityGroup(false), tenantMap)
 }

@@ -3,13 +3,13 @@ package output
 import (
 	"fmt"
 
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/output/table"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
-func (api *API) List(networks map[string]*network.Network) {
+func (api *API) List(networks map[string]*topology.Network) {
 	output.SectionHeader("Networks")
 	output.TitleT1("Network List")
 

@@ -21,15 +21,18 @@ func (a *API) Update(ns, name string) error {
 
 	ctx := context.TODO()
 
-	getOpts := metav1.GetOptions{}
 	updateOpts := metav1.UpdateOptions{}
 
 	retryErr := retry.RetryOnConflict(retry.DefaultRetry, func() error {
 		// Retrieve the latest version of Service before attempting update
 		// RetryOnConflict uses exponential backoff to avoid exhausting the apiserver
-		crb, err := a.clientset.RbacV1().ClusterRoleBindings().Get(ctx, name, getOpts)
+
+		crb, err := a.Get(name)
 		if err != nil {
-			return errors.Wrapf(err, "[%v] function a.clientset.RbacV1().ClusterRoleBindings().Get()", errors.Trace())
+			return errors.Wrapf(err, "[%v] function a.Get()", errors.Trace())
+		}
+		if crb == nil { // not found
+			return nil
 		}
 
 		if crb.Subjects == nil {

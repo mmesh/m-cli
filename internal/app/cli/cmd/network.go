@@ -90,7 +90,6 @@ func init() {
 	networkCmd.AddCommand(networkUpdateCmd)
 	networkCmd.AddCommand(networkDeleteCmd)
 
-	networkCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 	networkCmd.PersistentFlags().StringVarP(&vars.TenantID, "tenant", "t", "", "tenant identifier")
 	networkCmd.PersistentFlags().StringVarP(&vars.NetID, "network", "n", "", "network identifier")
 }

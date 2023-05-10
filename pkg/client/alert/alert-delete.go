@@ -34,8 +34,8 @@ func (api *API) multiDelete() {
 		nodeID := colors.DarkWhite(output.Fit(a.NodeID, 32))
 		status := Output().AlertStatus(a.Status)
 		component := colors.DarkWhite(output.Fit(strings.ToLower(a.Component), 52))
-		group := fmt.Sprintf("%s %s", colors.Black("Group"), colors.DarkWhite(a.Group))
-		class := fmt.Sprintf("%s %s", colors.Black("Class"), colors.DarkWhite(a.Class))
+		group := fmt.Sprintf("%s %s", colors.Black("Group"), colors.DarkWhite(a.Group.String()))
+		class := fmt.Sprintf("%s %s", colors.Black("Class"), colors.DarkWhite(a.Class.String()))
 		l1 := fmt.Sprintf("%s %s %s", tm, nodeID, status)
 		l2 := fmt.Sprintf("%s %s", colors.Black("Component"), component)
 		l3 := fmt.Sprintf("%s %s", group, class)
@@ -57,13 +57,22 @@ func (api *API) multiDelete() {
 
 	s := output.Spinner()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetMonitoringAPIClient()
 	defer grpcConn.Close()
 
 	for _, alertOptID := range alertsToDelete {
 		a := alerts[alertOptID]
 
-		if _, err := nxc.DeleteAlert(context.TODO(), a); err != nil {
+		ar := &events.AlertReq{
+			AccountID: a.AccountID,
+			AlertID:   a.AlertID,
+			TenantID:  a.TenantID,
+			// NetID:     a.NetID,
+			// SubnetID:  a.SubnetID,
+			// NodeID: a.NodeID,
+		}
+
+		if _, err := nxc.DeleteAlert(context.TODO(), ar); err != nil {
 			s.Stop()
 			status.Error(err, "Unable to delete alert")
 		}
@@ -77,14 +86,23 @@ func (api *API) multiDelete() {
 func (api *API) singleDelete() {
 	a := getAlert()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetMonitoringAPIClient()
 	defer grpcConn.Close()
 
 	output.ConfirmDeletion()
 
 	s := output.Spinner()
 
-	sr, err := nxc.DeleteAlert(context.TODO(), a)
+	ar := &events.AlertReq{
+		AccountID: a.AccountID,
+		AlertID:   a.AlertID,
+		TenantID:  a.TenantID,
+		// NetID:     a.NetID,
+		// SubnetID:  a.SubnetID,
+		NodeID: a.NodeID,
+	}
+
+	sr, err := nxc.DeleteAlert(context.TODO(), ar)
 	if err != nil {
 		s.Stop()
 		status.Error(err, "Unable to delete alert")

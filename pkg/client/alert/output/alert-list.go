@@ -22,14 +22,14 @@ func (api *API) List(alerts map[string]*events.Alert) {
 	}
 
 	t := table.New()
-	t.Header(colors.Black("LAST UPDATED / NODE ID"), colors.Black("STATUS / COMPONENT"))
+	t.Header(colors.Black("LAST UPDATED / NODE NAME"), colors.Black("STATUS / COMPONENT"))
 
 	t.SetRowLine("-")
 
 	tmSort := make([]string, 0)
 	tmSortUniq := make(map[string]struct{})
 	for _, a := range alerts {
-		tm := output.Datetime(a.LastUpdated)
+		tm := output.DatetimeMilli(a.LastUpdated)
 		if _, ok := tmSortUniq[tm]; !ok {
 			tmSortUniq[tm] = struct{}{}
 			tmSort = append(tmSort, tm)
@@ -39,23 +39,23 @@ func (api *API) List(alerts map[string]*events.Alert) {
 
 	for _, tm := range tmSort {
 		for _, a := range alerts {
-			if tm == output.Datetime(a.LastUpdated) {
-				nodeID := colors.DarkWhite(output.Fit(a.NodeID, 36))
+			if tm == output.DatetimeMilli(a.LastUpdated) {
+				nodeName := colors.DarkWhite(output.Fit(a.NodeName, 36))
 				component := colors.DarkWhite(output.Fit(strings.ToLower(a.Component), 32))
 
 				var status string
-				switch strings.ToLower(a.Status) {
-				case "triggered":
+				switch a.Status {
+				case events.Status_TRIGGERED:
 					status = colors.DarkRed("█")
-				case "acknowledged":
+				case events.Status_ACKNOWLEDGED:
 					status = colors.DarkYellow("█")
-				case "resolved":
+				case events.Status_RESOLVED:
 					status = colors.Green("█")
 				}
 
 				alertStatus := api.AlertStatus(a.Status)
 
-				c1 := fmt.Sprintf("%s %s\n%s %s", status, colors.Black(tm), status, nodeID)
+				c1 := fmt.Sprintf("%s %s\n%s %s", status, colors.Black(tm), status, nodeName)
 				c2 := fmt.Sprintf("%s\n%s", alertStatus, component)
 
 				t.AddRow(c1, c2)

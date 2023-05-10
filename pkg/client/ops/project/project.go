@@ -2,14 +2,14 @@ package project
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"sort"
 
 	"github.com/AlecAivazis/survey/v2"
-	"mmesh.dev/m-api-go/grpc/resources/ops/project"
+	"mmesh.dev/m-api-go/grpc/resources/ops"
 	"mmesh.dev/m-api-go/grpc/resources/resource"
-	"mmesh.dev/m-cli/pkg/client/account"
+	tenant_pb "mmesh.dev/m-api-go/grpc/resources/tenant"
+	"mmesh.dev/m-cli/pkg/client/tenant"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
@@ -18,9 +18,9 @@ import (
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
-var projectsMap map[string]*project.Project = nil
+var projectsMap map[string]*ops.Project = nil
 
-func GetProject(edit bool) *project.Project {
+func GetProject() *ops.Project {
 	pl := projects()
 
 	if len(pl) == 0 {
@@ -30,50 +30,46 @@ func GetProject(edit bool) *project.Project {
 
 	var projectOptID string
 	projectsOpts := make([]string, 0)
-	projects := make(map[string]*project.Project)
+	projects := make(map[string]*ops.Project)
 
 	for _, p := range pl {
-		projectOptID = p.ProjectID
+		projectOptID = p.Name
 		projectsOpts = append(projectsOpts, projectOptID)
 		projects[projectOptID] = p
 	}
 
 	sort.Strings(projectsOpts)
 
-	if edit {
-		projectsOpts = append(projectsOpts, input.NewResource)
-	}
-
 	projectOptID = input.GetSelect("Project:", "", projectsOpts, survey.Required)
-
-	if projectOptID == input.NewResource {
-		return nil
-	}
 
 	vars.ProjectID = projects[projectOptID].ProjectID
 
 	return projects[projectOptID]
 }
 
-func projects() map[string]*project.Project {
-	a := account.GetAccount()
+func projects() map[string]*ops.Project {
+	t := tenant.GetTenant()
 
 	s := output.Spinner()
 	defer s.Stop()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetOpsAPIClient()
 	defer grpcConn.Close()
 
-	lr := &project.ListProjectsRequest{
-		Meta:      &resource.ListRequest{},
-		AccountID: a.AccountID,
+	lr := &ops.ListProjectsRequest{
+		Meta: &resource.ListRequest{},
+		Tenant: &tenant_pb.TenantReq{
+			AccountID: t.AccountID,
+			TenantID:  t.TenantID,
+		},
 	}
 
-	projects := make(map[string]*project.Project)
+	projects := make(map[string]*ops.Project)
 
 	for {
 		pl, err := nxc.ListProjects(context.TODO(), lr)
 		if err != nil {
+			s.Stop()
 			status.Error(err, "Unable to list projects")
 		}
 
@@ -91,20 +87,24 @@ func projects() map[string]*project.Project {
 	return projects
 }
 
-func validProjectID(val interface{}) error {
+/*
+func validProjectName(val interface{}) error {
 	if err := input.ValidID(val); err != nil {
 		return err
 	}
 
-	projectID := val.(string)
+	projectName := val.(string)
 
 	if projectsMap == nil {
 		projectsMap = projects()
 	}
 
-	if _, ok := projectsMap[projectID]; ok {
-		return fmt.Errorf("project %s already exist", projectID)
+	for _, p := range projectsMap {
+		if p.Name == projectName {
+			return fmt.Errorf("project %s already exist", projectName)
+		}
 	}
 
 	return nil
 }
+*/

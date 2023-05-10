@@ -1,9 +1,9 @@
 package output
 
-import "mmesh.dev/m-api-go/grpc/resources/ops/project"
+import "mmesh.dev/m-api-go/grpc/resources/ops"
 
 type Interface interface {
-	List(projects map[string]*project.Project)
-	Show(p *project.Project)
+	List(projects map[string]*ops.Project)
+	Show(p *ops.Project)
 }
 type API struct{}

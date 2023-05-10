@@ -21,9 +21,8 @@ var execCmd = &cobra.Command{
 }
 
 func init() {
-	execCmd.Flags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier (optional)")
 	execCmd.Flags().StringVarP(&vars.TenantID, "tenant", "t", "", "tenant identifier (optional)")
 	execCmd.Flags().StringVarP(&vars.NetID, "network", "n", "", "network identifier (optional)")
-	execCmd.Flags().StringVarP(&vars.VRFID, "subnet", "s", "", "subnet/vrf identifier (optional)")
+	execCmd.Flags().StringVarP(&vars.SubnetID, "subnet", "s", "", "subnet identifier (optional)")
 	execCmd.Flags().StringVarP(&vars.NodeID, "node", "x", "", "node identifier (optional)")
 }

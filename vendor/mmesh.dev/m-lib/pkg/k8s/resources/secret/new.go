@@ -5,16 +5,16 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-lib/pkg/k8s/config"
 )
 
 func (a *API) New(i interface{}, appLabel config.AppLabel) *corev1.Secret {
-	var ni *network.NodeInstance
+	var ni *topology.NodeInstance
 
 	switch appLabel {
 	case config.AppLabelNode:
-		ni = i.(*network.NodeInstance)
+		ni = i.(*topology.NodeInstance)
 	default:
 		return nil
 	}
@@ -30,7 +30,7 @@ func (a *API) New(i interface{}, appLabel config.AppLabel) *corev1.Secret {
 			Name:      ni.K8SOpts.Name,
 			Namespace: ni.K8SOpts.Ns,
 			Labels: map[string]string{
-				"mmesh-federation": ni.FederationID,
+				// "mmesh-federation": ni.FederationID,
 				string(appLabel):   ni.K8SOpts.Name,
 				"mmesh-app":        string(appLabel),
 				"mmesh-objectID":   ni.K8SOpts.Name,

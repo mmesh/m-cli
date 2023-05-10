@@ -2,61 +2,29 @@ package output
 
 import (
 	"fmt"
-	"strings"
 
-	"github.com/spf13/viper"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
-func AppHeader(accountID string, output bool) string {
-	var account string
-	if len(accountID) == 0 {
-		accountID = viper.GetString("account.id")
-		// accountID = "demo"
-		if len(accountID) > 0 {
-			accountID = colors.DarkWhite(Fit(accountID, 28))
-			account = fmt.Sprintf(" Account ID: %s", accountID)
-		}
-	} else {
-		accountID = colors.DarkWhite(Fit(accountID, 28))
-		account = fmt.Sprintf(" Account ID: %s", accountID)
-	}
-
-	var user string
-	userEmail := viper.GetString("user.email")
-	// userEmail := "user@demo.local"
-	if len(userEmail) > 0 {
-		userEmail = colors.DarkWhite(Fit(userEmail, 28))
-		user = fmt.Sprintf(" User:       %s", userEmail)
-	}
-
-	endpoint := viper.GetString("controller.authserver")
-	if len(endpoint) == 0 {
-		endpoint = colors.Black("[not-configured]")
-	} else {
-		if strings.HasSuffix(endpoint, "dev.mmesh.network") {
-			endpoint = "dev.mmesh.network"
-		} else if strings.HasSuffix(endpoint, "mmesh.network") {
-			endpoint = "mmesh.network"
-		}
-
-		endpoint = colors.DarkWhite(Fit(endpoint, 28))
-	}
-
-	return logo(account, user, endpoint, output)
+func AppHeader(output bool) string {
+	return logo(output)
 }
 
-func logo(account, user, endpoint string, output bool) string {
+func logo(output bool) string {
+	website := fmt.Sprintf("%s %s", colors.Black("Main Website: "), colors.DarkWhite("https://mmesh.io"))
+	docsite := fmt.Sprintf("%s %s", colors.Black("Documentation:"), colors.DarkWhite("https://docs.mmesh.io"))
+	// discord := fmt.Sprintf("%s %s", colors.Black("Discord:      "), colors.DarkWhite("https://mmesh.io/discord"))
+
 	if output {
-		l1 := fmt.Sprintf(colors.DarkWhite("  ■   ▄  ▄▄ ▄▄ ▄▄ ▄▄ ▄▄▄▄ ▄▄▄▄ ▄  ▄ ")+colors.Green("│")+"%s\n", account)
-		l2 := fmt.Sprintf(colors.DarkWhite("■  ██    █ ▄ █ █ ▄ █ █■   ▀  ▄ █▄▄█ ")+colors.Green("│")+"%s\n", user)
-		l3 := fmt.Sprintf(colors.DarkWhite("  ▀   ■  ▀ ▀ ▀ ▀ ▀ ▀ ▀▀▀▀ ▀▀▀▀ ▀  ▀ ")+colors.Green("│")+" Controller: %s\n", endpoint)
+		l1 := fmt.Sprintf(colors.DarkWhite("  ■   ▄  ▄▄ ▄▄ ▄▄ ▄▄ ▄▄▄▄ ▄▄▄▄ ▄  ▄ ") + colors.Green("│") + "\n")
+		l2 := fmt.Sprintf(colors.DarkWhite("■  ██    █ ▄ █ █ ▄ █ █■   ▀  ▄ █▄▄█ ")+colors.Green("│")+" %s\n", website)
+		l3 := fmt.Sprintf(colors.DarkWhite("  ▀   ■  ▀ ▀ ▀ ▀ ▀ ▀ ▀▀▀▀ ▀▀▀▀ ▀  ▀ ")+colors.Green("│")+" %s\n", docsite)
 		return fmt.Sprintf("%s%s%s\n", l1, l2, l3)
 	}
 
-	fmt.Printf("  ■   ▄  ▄▄ ▄▄ ▄▄ ▄▄ ▄▄▄▄ ▄▄▄▄ ▄  ▄ "+colors.Green("│")+"%s\n", account)
-	fmt.Printf("■  ██    █ ▄ █ █ ▄ █ █■   ▀  ▄ █▄▄█ "+colors.Green("│")+"%s\n", user)
-	fmt.Printf("  ▀   ■  ▀ ▀ ▀ ▀ ▀ ▀ ▀▀▀▀ ▀▀▀▀ ▀  ▀ "+colors.Green("│")+" Controller: %s\n", endpoint)
+	fmt.Printf("  ■   ▄  ▄▄ ▄▄ ▄▄ ▄▄ ▄▄▄▄ ▄▄▄▄ ▄  ▄ " + colors.Green("│") + "\n")
+	fmt.Printf("■  ██    █ ▄ █ █ ▄ █ █■   ▀  ▄ █▄▄█ "+colors.Green("│")+" %s\n", website)
+	fmt.Printf("  ▀   ■  ▀ ▀ ▀ ▀ ▀ ▀ ▀▀▀▀ ▀▀▀▀ ▀  ▀ "+colors.Green("│")+" %s\n", docsite)
 	fmt.Println()
 
 	return ""

@@ -3,36 +3,37 @@ package output
 import (
 	"fmt"
 
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/output/table"
-	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
-func (api *API) Show(tenantID, netID, vrfID string, np *network.Policy) {
+func (api *API) Show(s *topology.Subnet) {
 	output.SectionHeader("Security Policy Details")
 	output.TitleT1("Security Policy")
 
 	t := table.New()
 
-	t.AddRow(colors.Black("Tenant ID"), colors.DarkWhite(tenantID))
-	t.AddRow(colors.Black("Network ID"), colors.DarkWhite(netID))
-	t.AddRow(colors.Black("Subnet ID"), colors.DarkWhite(vrfID))
+	t.AddRow(colors.Black("Tenant ID"), colors.DarkWhite(s.TenantID))
+	t.AddRow(colors.Black("Network ID"), colors.DarkWhite(s.NetID))
+	t.AddRow(colors.Black("Subnet ID"), colors.DarkWhite(s.SubnetID))
+	t.AddRow(colors.Black("Description"), colors.DarkWhite(s.Description))
+	t.AddRow(colors.Black("Subnet CIDR"), colors.DarkWhite(s.IPAM.SubnetCIDR))
 
 	t.Render()
 
-	ShowNetworkPolicy(np)
+	ShowNetworkPolicy(s.NetworkPolicy)
 }
 
-func ShowNetworkPolicy(np *network.Policy) {
+func ShowNetworkPolicy(np *topology.Policy) {
 	t := table.New()
 
 	switch np.DefaultPolicy {
-	case ipnet.Policy_ACCEPT:
-		t.AddRow(colors.Black("Default Policy"), output.StrEnabled(np.DefaultPolicy))
-	case ipnet.Policy_DROP:
-		t.AddRow(colors.Black("Default Policy"), output.StrDisabled(np.DefaultPolicy))
+	case topology.SecurityPolicy_ACCEPT:
+		t.AddRow(colors.Black("Default Policy"), output.StrEnabled(topology.SecurityPolicy_ACCEPT.String()))
+	case topology.SecurityPolicy_DROP:
+		t.AddRow(colors.Black("Default Policy"), output.StrDisabled(topology.SecurityPolicy_DROP.String()))
 	}
 
 	t.Render()
@@ -49,17 +50,17 @@ func ShowNetworkPolicy(np *network.Policy) {
 	for _, nf := range np.NetworkFilters {
 		var pol string
 		switch nf.Policy {
-		case ipnet.Policy_ACCEPT:
-			pol = output.StrEnabled(nf.Policy)
-		case ipnet.Policy_DROP:
-			pol = output.StrDisabled(nf.Policy)
+		case topology.SecurityPolicy_ACCEPT:
+			pol = output.StrEnabled(topology.SecurityPolicy_ACCEPT.String())
+		case topology.SecurityPolicy_DROP:
+			pol = output.StrDisabled(topology.SecurityPolicy_DROP.String())
 		}
 
 		var portProto string
 		if nf.DstPort == 0 {
-			portProto = nf.Proto
+			portProto = nf.Proto.String()
 		} else {
-			portProto = fmt.Sprintf("%d/%s", nf.DstPort, nf.Proto)
+			portProto = fmt.Sprintf("%d/%s", nf.DstPort, nf.Proto.String())
 		}
 
 		t.AddRow(

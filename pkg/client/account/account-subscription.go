@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/AlecAivazis/survey/v2"
 	"github.com/skratchdot/open-golang/open"
 	"mmesh.dev/m-api-go/grpc/resources/account"
 	"mmesh.dev/m-api-go/grpc/resources/billing"
@@ -29,35 +28,32 @@ func (api *API) Subscription(a *account.Account, interactive bool) {
 
 	requiresPaymentMethod := false
 
-	n := 0
-	for _, s := range a.Service.Subscriptions {
-		Output().Subscription(s, n)
+	s := a.Service.Subscription
 
-		if !interactive {
-			continue
-		}
+	Output().Subscription(s, 0)
 
-		switch s.LatestStripeInvoicePaymentIntentStatus {
-		case "requires_payment_method":
-			requiresPaymentMethod = true
-		case "requires_action":
-			if len(s.LatestStripeHostedInvoiceURL) > 0 {
-				if input.GetConfirm(`Your bank/card issuer is requesting additional authentication
+	if !interactive {
+		return
+	}
+
+	switch s.LatestStripeInvoicePaymentIntentStatus {
+	case "requires_payment_method":
+		requiresPaymentMethod = true
+	case "requires_action":
+		if len(s.LatestStripeHostedInvoiceURL) > 0 {
+			if input.GetConfirm(`Your bank/card issuer is requesting additional authentication
   to authorize an ongoing payment.
 
   Open the payment form now?`, true) {
-					if err := open.Start(s.LatestStripeHostedInvoiceURL); err != nil {
-						status.Error(err, "Unable to open URL in your browser")
-					}
-
-					fmt.Printf("\n%s %s\n\n", colors.DarkWhite("🢂"), colors.Black("Opening URL in your browser..."))
-				} else {
-					fmt.Println()
+				if err := open.Start(s.LatestStripeHostedInvoiceURL); err != nil {
+					status.Error(err, "Unable to open URL in your browser")
 				}
+
+				fmt.Printf("\n%s %s\n\n", colors.DarkWhite("🢂"), colors.Black("Opening URL in your browser..."))
+			} else {
+				fmt.Println()
 			}
 		}
-
-		n++
 	}
 
 	if !interactive {
@@ -81,20 +77,15 @@ func (api *API) Subscription(a *account.Account, interactive bool) {
 	}
 }
 
+/*
 func (api *API) ApplyPromotion() {
 	a := FetchAccount()
 
 	api.Subscription(a, false)
 
-	var sID string
-	for _, s := range a.Service.Subscriptions {
-		sID = s.StripeSubscriptionID
-		break
-	}
-
 	apr := &billing.ApplyPromotionRequest{
 		AccountID:            a.AccountID,
-		StripeSubscriptionID: sID,
+		StripeSubscriptionID: a.Service.Subscription.StripeSubscriptionID,
 		PromotionCode:        input.GetInput("Promotion Code:", "", "", survey.Required),
 	}
 
@@ -113,6 +104,7 @@ func (api *API) ApplyPromotion() {
 
 	output.Show(sr)
 }
+*/
 
 func (api *API) BillingPortal(a *account.Account) {
 	if a == nil {

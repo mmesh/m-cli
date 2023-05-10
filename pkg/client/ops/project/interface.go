@@ -5,7 +5,8 @@ import "mmesh.dev/m-cli/pkg/client/ops/project/output"
 type Interface interface {
 	List()
 	Show()
-	Set()
+	Create()
+	Update()
 	Delete()
 }
 type API struct{}

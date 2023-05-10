@@ -11,7 +11,7 @@ import (
 func (api *API) Delete() {
 	role := GetRole(false)
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetIAMAPIClient()
 	defer grpcConn.Close()
 
 	output.ConfirmDeletion()

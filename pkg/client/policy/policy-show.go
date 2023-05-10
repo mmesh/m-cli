@@ -1,11 +1,11 @@
 package policy
 
 import (
-	"mmesh.dev/m-cli/pkg/client/vrf"
+	"mmesh.dev/m-cli/pkg/client/subnet"
 )
 
 func (api *API) Show() {
-	v := vrf.GetVRF(false)
+	s := subnet.GetSubnet(false)
 
-	Output().Show(v.TenantID, v.NetID, v.VRFID, v.NetworkPolicy)
+	Output().Show(s)
 }

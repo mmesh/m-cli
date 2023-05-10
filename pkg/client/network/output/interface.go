@@ -1,9 +1,9 @@
 package output
 
-import "mmesh.dev/m-api-go/grpc/resources/network"
+import "mmesh.dev/m-api-go/grpc/resources/topology"
 
 type Interface interface {
-	List(networks map[string]*network.Network)
-	Show(n *network.Network)
+	List(networks map[string]*topology.Network)
+	Show(n *topology.Network)
 }
 type API struct{}

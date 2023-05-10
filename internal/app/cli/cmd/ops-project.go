@@ -6,14 +6,12 @@ import (
 	"mmesh.dev/m-cli/pkg/vars"
 )
 
-// opsProjectsCmd represents the opsProjects command
 var opsProjectsCmd = &cobra.Command{
 	Use:   "project",
 	Short: "Workflow projects administration",
 	Long:  appHeader(`Workflow projects administration.`),
 }
 
-// opsProjectsListCmd represents the ops/projects list verb
 var opsProjectsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List projects",
@@ -27,7 +25,6 @@ var opsProjectsListCmd = &cobra.Command{
 	},
 }
 
-// opsProjectsShowCmd represents the ops/projects get verb
 var opsProjectsShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show project",
@@ -41,21 +38,32 @@ var opsProjectsShowCmd = &cobra.Command{
 	},
 }
 
-// opsProjectsSetCmd represents the ops/projects set verb
-var opsProjectsSetCmd = &cobra.Command{
-	Use:   "set",
-	Short: "Create or update a project",
-	Long:  appHeader(`Create or update a project interactively.`),
+var opsProjectsCreateCmd = &cobra.Command{
+	Use:   "create",
+	Short: "Create a project",
+	Long:  appHeader(`Create a new project interactively.`),
 	Args:  cobra.NoArgs,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		preflight()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		client.Project().Set()
+		client.Project().Create()
 	},
 }
 
-// opsProjectsDeleteCmd represents the ops/projects delete verb
+var opsProjectsUpdateCmd = &cobra.Command{
+	Use:   "update",
+	Short: "Update a project",
+	Long:  appHeader(`Update a project interactively.`),
+	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		client.Project().Update()
+	},
+}
+
 var opsProjectsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Remove project",
@@ -73,9 +81,9 @@ func init() {
 	opsCmd.AddCommand(opsProjectsCmd)
 	opsProjectsCmd.AddCommand(opsProjectsListCmd)
 	opsProjectsCmd.AddCommand(opsProjectsShowCmd)
-	opsProjectsCmd.AddCommand(opsProjectsSetCmd)
+	opsProjectsCmd.AddCommand(opsProjectsCreateCmd)
+	opsProjectsCmd.AddCommand(opsProjectsUpdateCmd)
 	opsProjectsCmd.AddCommand(opsProjectsDeleteCmd)
 
-	opsProjectsCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 	opsProjectsCmd.PersistentFlags().StringVarP(&vars.ProjectID, "project", "p", "", "project identifier")
 }

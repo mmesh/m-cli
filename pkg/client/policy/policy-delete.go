@@ -3,30 +3,40 @@ package policy
 import (
 	"context"
 
-	"mmesh.dev/m-cli/pkg/client/vrf"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
+	"mmesh.dev/m-cli/pkg/client/subnet"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
 )
 
 func (api *API) Delete() {
-	v := vrf.GetVRF(false)
+	s := subnet.GetSubnet(false)
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetTopologyAPIClient()
 	defer grpcConn.Close()
 
 	output.ConfirmDeletion()
 
-	s := output.Spinner()
+	ss := output.Spinner()
 
-	np, err := nxc.DeleteNetworkPolicy(context.TODO(), v)
+	sr := &topology.SubnetReq{
+		AccountID: s.AccountID,
+		TenantID:  s.TenantID,
+		NetID:     s.NetID,
+		SubnetID:  s.SubnetID,
+	}
+
+	np, err := nxc.DeleteNetworkPolicy(context.TODO(), sr)
 	if err != nil {
-		s.Stop()
+		ss.Stop()
 		status.Error(err, "Unable to delete network policy")
 	}
 
-	s.Stop()
+	s.NetworkPolicy = np
 
-	// output.Show(np)
-	Output().Show(v.TenantID, v.NetID, v.VRFID, np)
+	ss.Stop()
+
+	// output.Show(s)
+	Output().Show(s)
 }

@@ -3,36 +3,38 @@ package policy
 import (
 	"context"
 
-	"mmesh.dev/m-api-go/grpc/resources/ops/object"
-	"mmesh.dev/m-cli/pkg/client/vrf"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
+	"mmesh.dev/m-cli/pkg/client/subnet"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
 )
 
 func (api *API) SetDefault() {
-	v := vrf.GetVRF(false)
+	s := subnet.GetSubnet(false)
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetTopologyAPIClient()
 	defer grpcConn.Close()
 
-	npc := setDefaultNetworkPolicy(v)
-
-	s := output.Spinner()
-
-	npcr := &object.NetworkPolicyConfigRequest{
-		AccountID:           v.AccountID,
-		NetworkPolicyConfig: npc,
+	usr := &topology.UpdateSubnetRequest{
+		AccountID:     s.AccountID,
+		TenantID:      s.TenantID,
+		NetID:         s.NetID,
+		SubnetID:      s.SubnetID,
+		Description:   s.Description,
+		DefaultPolicy: subnet.GetSecurityPolicy("Default Security Policy:"),
 	}
 
-	np, err := nxc.SetNetworkPolicy(context.TODO(), npcr)
+	ss := output.Spinner()
+
+	s, err := nxc.UpdateSubnet(context.TODO(), usr)
 	if err != nil {
-		s.Stop()
+		ss.Stop()
 		status.Error(err, "Unable to set network policy")
 	}
 
-	s.Stop()
+	ss.Stop()
 
-	// output.Show(np)
-	Output().Show(v.TenantID, v.NetID, v.VRFID, np)
+	// output.Show(s)
+	Output().Show(s)
 }

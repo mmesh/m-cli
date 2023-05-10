@@ -10,7 +10,6 @@ import (
 	"github.com/spf13/viper"
 	"mmesh.dev/m-cli/pkg/config"
 	"mmesh.dev/m-cli/pkg/status"
-	"mmesh.dev/m-cli/pkg/vars"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/update"
 	"mmesh.dev/m-lib/pkg/utils"
@@ -61,7 +60,7 @@ func Init() {
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", defaultConfigFileHelp())
 	// rootCmd.PersistentFlags().StringVarP(&outputFormat, "output", "o", "table", "output format (table, json)")
-	rootCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
+	// rootCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -72,7 +71,7 @@ func Init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	flag.StringVar(&vars.AccountID, "a", "", "account identifier")
+	// flag.StringVar(&vars.AccountID, "a", "", "account identifier")
 	flag.StringVar(&cfgFile, "config", "", defaultConfigFileHelp())
 	flag.Parse()
 

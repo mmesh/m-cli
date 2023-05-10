@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"mmesh.dev/m-api-go/grpc/resources/account"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
@@ -15,14 +16,18 @@ import (
 func (api *API) Cancel() {
 	a := FetchAccount()
 
-	nxc, grpcConn := grpc.GetManagerProviderAPIClient(true)
+	nxc, grpcConn := grpc.GetAccountAPIClient(true)
 	defer grpcConn.Close()
 
 	confirmCancelation()
 
 	s := output.Spinner()
 
-	sr, err := nxc.CancelAccount(context.TODO(), a)
+	ar := &account.AccountReq{
+		AccountID: a.AccountID,
+	}
+
+	sr, err := nxc.CancelAccount(context.TODO(), ar)
 	if err != nil {
 		s.Stop()
 		status.Error(err, "Unable to cancel account")

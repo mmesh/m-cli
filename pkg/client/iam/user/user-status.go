@@ -20,12 +20,12 @@ func (api *API) Disable() {
 func setStatus(enabled bool) {
 	u := GetUser(false)
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetIAMAPIClient()
 	defer grpcConn.Close()
 
-	ur := &iam.UserRequest{
+	ur := &iam.UserReq{
 		AccountID: u.AccountID,
-		Email:     u.Email,
+		UserID:    u.UserID,
 	}
 
 	s := output.Spinner()

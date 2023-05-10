@@ -127,6 +127,17 @@ func Logout() {
 
 func Datetime(tm int64) string {
 	t := time.Unix(tm, 0)
+
+	return datetime(t)
+}
+
+func DatetimeMilli(tm int64) string {
+	t := time.UnixMilli(tm)
+
+	return datetime(t)
+}
+
+func datetime(t time.Time) string {
 	yr := t.Year()
 	m := t.Month()
 	d := t.Day()

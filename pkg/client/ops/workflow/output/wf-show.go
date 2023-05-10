@@ -6,9 +6,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/spf13/viper"
-	"mmesh.dev/m-api-go/grpc/resources/ops/workflow"
+	"mmesh.dev/m-api-go/grpc/resources/ops"
+	"mmesh.dev/m-cli/pkg/auth"
 	"mmesh.dev/m-cli/pkg/client/event"
+	"mmesh.dev/m-cli/pkg/client/node"
+	"mmesh.dev/m-cli/pkg/client/tenant"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/output/table"
 	"mmesh.dev/m-lib/pkg/utils"
@@ -16,21 +18,23 @@ import (
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
-func (api *API) Show(wf *workflow.Workflow) {
+func (api *API) Show(wf *ops.Workflow) {
 	output.SectionHeader("Ops: Workflow Details")
 	output.TitleT1("Workflow Information")
 
 	t := table.New()
 
-	t.AddRow(colors.Black("Account ID"), colors.DarkWhite(wf.AccountID))
+	// t.AddRow(colors.Black("Account ID"), colors.DarkWhite(wf.AccountID))
+	t.AddRow(colors.Black("Tenant ID"), colors.DarkWhite(wf.TenantID))
 	t.AddRow(colors.Black("Project ID"), colors.DarkWhite(wf.ProjectID))
 	t.AddRow(colors.Black("Workflow ID"), colors.DarkWhite(wf.WorkflowID))
 
+	t.AddRow(colors.Black("Name"), colors.DarkWhite(wf.Name))
 	t.AddRow(colors.Black("Description"), colors.DarkWhite(wf.Description))
 
-	if wf.Owner != nil {
-		t.AddRow(colors.Black("Owner"), colors.DarkWhite(wf.Owner.Email))
-	}
+	// if wf.Owner != nil {
+	// 	t.AddRow(colors.Black("Owner"), colors.DarkWhite(wf.Owner.UserID))
+	// }
 
 	if wf.Enabled {
 		t.AddRow(colors.Black("Enabled"), output.StrEnabled("yes"))
@@ -58,14 +62,15 @@ func (api *API) Show(wf *workflow.Workflow) {
 
 		t = table.New()
 
-		if wf.Triggers.Webhook.Enabled {
+		if wf.Triggers.Webhook {
 			t.AddRow(colors.Black("Workflow Webhook"), output.StrEnabled("enabled"))
 			t.Render()
 
-			// /api/v1/accounts/{accountToken}/webhooks/workflow/{wfToken}
-			srv := viper.GetString("controller.authServer")
-			if len(srv) > 0 {
-				whURL := fmt.Sprintf("%s/api/v1/accounts/%s/webhooks/workflow/%s", srv, wf.AccountToken, wf.Token)
+			// /api/v1/accounts/{accountID}/webhooks/workflow/{wfToken}
+			srv, err := auth.GetControllerEndpoint()
+			if err == nil && len(srv) > 0 {
+				host := strings.Split(srv, ":")[0]
+				whURL := fmt.Sprintf("https://%s/api/v1/accounts/%s/webhooks/workflow/%s", host, wf.AccountID, wf.Token)
 				fmt.Printf("\n%s %s\n", colors.Black("Workflow Webhook URL"), colors.DarkWhite(whURL))
 			}
 		} else {
@@ -74,14 +79,6 @@ func (api *API) Show(wf *workflow.Workflow) {
 		}
 
 		fmt.Println()
-
-		if wf.Triggers.GitEvents != nil {
-			fmt.Printf(colors.Black("Git Events\n"))
-			for _, gitEvt := range wf.Triggers.GitEvents.Events {
-				fmt.Printf(" ■ %s\n", colors.DarkGreen(gitEvt))
-			}
-			fmt.Println()
-		}
 
 		if wf.Triggers.Schedule != nil {
 			t = table.New()
@@ -114,44 +111,31 @@ func (api *API) Show(wf *workflow.Workflow) {
 		}
 	}
 
-	if wf.Jobs != nil {
-		output.SubTitleT2("Jobs")
+	if wf.Tasks != nil {
+		output.SubTitleT2("Tasks")
 
 		t = table.New()
 
-		for i, job := range wf.Jobs {
-			jName := fmt.Sprintf("%s%s%s %s", colors.DarkMagenta("["), colors.Magenta(fmt.Sprintf("%d", i+1)), colors.DarkMagenta("]"), colors.Black("Name"))
-			t.AddRow(jName, colors.DarkWhite(job.Name))
-			t.AddRow(colors.Black("    Description"), colors.DarkWhite(job.Description))
-			t.AddRow("", "")
-			t.AddRow(colors.White("    Tasks"))
-			t.AddRow(colors.Black("    ====="))
-			for j, task := range job.Tasks {
-				tName := fmt.Sprintf("    %s%s%s %s", colors.DarkMagenta("["), colors.Magenta(fmt.Sprintf("%d", j+1)), colors.DarkMagenta("]"), colors.Black("Name"))
-				t.AddRow(tName, colors.DarkWhite(task.Name))
-				t.AddRow(colors.Black("        Description"), colors.DarkWhite(task.Description))
-				t.AddRow("", "")
-				// t.AddRow(fmt.Sprintf("        %s", colors.InvertedBlack("Action Name")), colors.InvertedBlack("Command"), colors.InvertedBlack("Args"), colors.InvertedBlack("UID"), colors.InvertedBlack("GID"))
-				t.AddRow(fmt.Sprintf("        %s", colors.Black("Action Name")), colors.Black("Command"), colors.Black("Args"), colors.Black("UID"), colors.Black("GID"))
-				t.AddRow(fmt.Sprintf("        %s", colors.Black("-----------")), colors.Black("-------"), colors.Black("----"), colors.Black("---"), colors.Black("---"))
-				for _, action := range task.Actions {
-					actName := fmt.Sprintf("        %s", colors.DarkWhite(action.Name))
-					actCmd := colors.DarkWhite(action.Command.Cmd)
-					actArgs := colors.DarkWhite(strings.Join(action.Command.Args, " "))
-					actUID := colors.DarkWhite(fmt.Sprintf("%d", action.Command.UID))
-					actGID := colors.DarkWhite(fmt.Sprintf("%d", action.Command.GID))
-					t.AddRow(actName, actCmd, actArgs, actUID, actGID)
-				}
-				t.AddRow("", "")
-			}
+		t.AddRow(colors.Black("Task Name"), colors.Black("Command"), colors.Black("Args"), colors.Black("UID"), colors.Black("GID"))
+		t.AddRow(colors.Black("---------"), colors.Black("-------"), colors.Black("----"), colors.Black("---"), colors.Black("---"))
+
+		for _, task := range wf.Tasks {
+			taskName := colors.DarkWhite(task.Name)
+			taskCmd := colors.DarkWhite(task.Command.Cmd)
+			taskArgs := colors.DarkWhite(strings.Join(task.Command.Args, " "))
+			taskUID := colors.DarkWhite(fmt.Sprintf("%d", task.Command.UID))
+			taskGID := colors.DarkWhite(fmt.Sprintf("%d", task.Command.GID))
+			t.AddRow(taskName, taskCmd, taskArgs, taskUID, taskGID)
 		}
 
 		t.Render()
-		// fmt.Println()
+		fmt.Println()
 	}
 
 	if len(wf.Targets) > 0 {
 		output.SubTitleT2("Targets")
+
+		s := output.Spinner()
 
 		t = table.New()
 		// t.Header(colors.Black("TENANT"), colors.Black("NETWORK"), colors.Black("SUBNET"), colors.Black("NODE"))
@@ -161,15 +145,20 @@ func (api *API) Show(wf *workflow.Workflow) {
 		t.AddRow(colors.Black("Tenant"), colors.Black("Network"), colors.Black("Subnet"), colors.Black("Node"))
 		t.AddRow(colors.Black("------"), colors.Black("-------"), colors.Black("------"), colors.Black("----"))
 
-		for _, n := range wf.Targets {
+		for _, nr := range wf.Targets {
+			tenantName := tenant.FetchTenant(nr.TenantID).Name
+			nodeName := node.FetchNode(nr).Cfg.NodeName
 			t.AddRow(
-				colors.DarkWhite(n.TenantID),
-				colors.DarkWhite(n.NetID),
-				colors.DarkWhite(n.VRFID),
-				colors.DarkWhite(output.Fit(n.NodeID, 32)),
+				colors.DarkWhite(tenantName),
+				colors.DarkWhite(nr.NetID),
+				colors.DarkWhite(nr.SubnetID),
+				// colors.DarkWhite(output.Fit(n.NodeID, 32)),
+				colors.DarkWhite(output.Fit(nodeName, 32)),
 				// colors.DarkWhite(" "),
 			)
 		}
+
+		s.Stop()
 
 		t.Render()
 		fmt.Println()

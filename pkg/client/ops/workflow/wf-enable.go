@@ -17,9 +17,9 @@ func (api *API) Disable() {
 }
 
 func wfEnable(enabled bool) {
-	wf := GetWorkflow(false)
+	wf := GetWorkflow()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetOpsAPIClient()
 	defer grpcConn.Close()
 
 	s := output.Spinner()

@@ -17,12 +17,12 @@ import (
 func (api *API) SetPermissions() {
 	u := GetUser(false)
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetIAMAPIClient()
 	defer grpcConn.Close()
 
 	supr := &iam.SetUserPermissionsRequest{
 		AccountID: u.AccountID,
-		Email:     u.Email,
+		UserID:    u.UserID,
 		RBAC:      setUserRBAC(nxc, u),
 	}
 
@@ -39,7 +39,7 @@ func (api *API) SetPermissions() {
 	Output().Show(u)
 }
 
-func setUserRBAC(nxc rpc.CoreAPIClient, u *iam.User) *iam.UserRBAC {
+func setUserRBAC(nxc rpc.IAMAPIClient, u *iam.User) *iam.UserRBAC {
 	rbac := u.RBAC
 
 	rbac.SecurityGroups = input.GetMultiSelect("Security Groups:", "", getSecurityGroups(u.AccountID), rbac.SecurityGroups, nil)

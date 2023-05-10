@@ -14,10 +14,10 @@ func (api *API) List(tenants map[string]*tenant.Tenant) {
 	output.TitleT1("Tenant List")
 
 	t := table.New()
-	t.Header(colors.Black("TENANT ID"), colors.Black("DESCRIPTION"))
+	t.Header(colors.Black("TENANT NAME"), colors.Black("DESCRIPTION"))
 
 	for _, tenant := range tenants {
-		t.AddRow(colors.DarkWhite(tenant.TenantID), output.Fit(tenant.Description, 48))
+		t.AddRow(colors.DarkWhite(tenant.Name), output.Fit(tenant.Description, 48))
 	}
 
 	t.Render()

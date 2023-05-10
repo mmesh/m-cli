@@ -4,16 +4,16 @@ import (
 	"fmt"
 
 	corev1 "k8s.io/api/core/v1"
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-lib/pkg/k8s/config"
 )
 
 func (a *API) NewVolumes(i interface{}, appLabel config.AppLabel) []corev1.Volume {
-	var ni *network.NodeInstance
+	var ni *topology.NodeInstance
 
 	switch appLabel {
 	case config.AppLabelNode:
-		ni = i.(*network.NodeInstance)
+		ni = i.(*topology.NodeInstance)
 	default:
 		return nil
 	}

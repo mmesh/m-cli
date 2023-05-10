@@ -61,6 +61,5 @@ func init() {
 	billingInvoiceCmd.AddCommand(billingInvoiceShowCmd)
 	billingInvoiceCmd.AddCommand(billingInvoiceDeleteCmd)
 
-	billingInvoiceCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 	billingInvoiceCmd.PersistentFlags().StringVarP(&vars.InvoiceID, "invoice", "i", "", "invoice identifier")
 }

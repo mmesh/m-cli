@@ -6,7 +6,7 @@ import (
 	"sort"
 
 	"github.com/AlecAivazis/survey/v2"
-	"mmesh.dev/m-api-go/grpc/resources/ops/workflow"
+	"mmesh.dev/m-api-go/grpc/resources/ops"
 	"mmesh.dev/m-api-go/grpc/resources/resource"
 	"mmesh.dev/m-cli/pkg/client/ops/project"
 	"mmesh.dev/m-cli/pkg/grpc"
@@ -17,7 +17,7 @@ import (
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
-func GetWorkflow(edit bool) *workflow.Workflow {
+func GetWorkflow() *ops.Workflow {
 	wfl := workflows()
 
 	if len(wfl) == 0 {
@@ -27,50 +27,49 @@ func GetWorkflow(edit bool) *workflow.Workflow {
 
 	var workflowOptID string
 	workflowsOpts := make([]string, 0)
-	workflows := make(map[string]*workflow.Workflow)
+	workflows := make(map[string]*ops.Workflow)
 
 	for _, wf := range wfl {
-		workflowOptID = wf.WorkflowID
+		workflowOptID = wf.Name
 		workflowsOpts = append(workflowsOpts, workflowOptID)
 		workflows[workflowOptID] = wf
 	}
 
 	sort.Strings(workflowsOpts)
 
-	if edit {
-		workflowsOpts = append(workflowsOpts, input.NewResource)
-	}
-
 	workflowOptID = input.GetSelect("Workflow:", "", workflowsOpts, survey.Required)
-
-	if workflowOptID == input.NewResource {
-		return nil
-	}
 
 	vars.WorkflowID = workflows[workflowOptID].WorkflowID
 
 	return workflows[workflowOptID]
 }
 
-func workflows() map[string]*workflow.Workflow {
-	p := project.GetProject(false)
+func workflows() map[string]*ops.Workflow {
+	p := project.GetProject()
 
 	s := output.Spinner()
 	defer s.Stop()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetOpsAPIClient()
 	defer grpcConn.Close()
 
-	lr := &workflow.ListWorkflowsRequest{
-		Meta:    &resource.ListRequest{},
-		Project: p,
+	pr := &ops.ProjectReq{
+		AccountID: p.AccountID,
+		TenantID:  p.TenantID,
+		ProjectID: p.ProjectID,
 	}
 
-	workflows := make(map[string]*workflow.Workflow)
+	lr := &ops.ListWorkflowsRequest{
+		Meta:    &resource.ListRequest{},
+		Project: pr,
+	}
+
+	workflows := make(map[string]*ops.Workflow)
 
 	for {
 		wfl, err := nxc.ListWorkflows(context.TODO(), lr)
 		if err != nil {
+			s.Stop()
 			status.Error(err, "Unable to list workflows")
 		}
 
@@ -86,12 +85,4 @@ func workflows() map[string]*workflow.Workflow {
 	}
 
 	return workflows
-}
-
-func validWorkflowID(val interface{}) error {
-	if err := input.ValidID(val); err != nil {
-		return err
-	}
-
-	return nil
 }

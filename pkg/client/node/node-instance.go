@@ -5,26 +5,25 @@ import (
 	"fmt"
 	"os"
 
-	"mmesh.dev/m-api-go/grpc/resources/network"
-	"mmesh.dev/m-cli/pkg/client/vrf"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
+	"mmesh.dev/m-cli/pkg/client/subnet"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
-	"mmesh.dev/m-cli/pkg/vars"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
 func (api *API) AddNode() {
-	v := vrf.GetVRF(false)
-	if v == nil {
+	s := subnet.GetSubnet(false)
+	if s == nil {
 		msg.Alert("No subnet found.")
-		msg.Alert("Please, configure at least one before creating networks.")
+		msg.Alert("Please, configure at least one before adding nodes.")
 		os.Exit(1)
 	}
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetTopologyAPIClient()
 	defer grpcConn.Close()
 
 	/*
@@ -44,24 +43,65 @@ func (api *API) AddNode() {
 		`, colors.White("slack.mmesh.io"))
 	*/
 
-	vars.NodeID = input.GetInput("Node ID:", "", vars.NodeID, input.ValidID)
+	nodeName := input.GetInput("Node Name:", "", "", input.ValidID)
+	desc := input.GetInput("Description:", "", "", nil)
 
-	niReq := &network.NodeInstanceRequest{
-		AccountID: v.AccountID,
-		TenantID:  v.TenantID,
-		NetID:     v.NetID,
-		VRFID:     v.VRFID,
-		NodeID:    vars.NodeID,
+	nnr := &topology.NewGenericNodeRequest{
+		NodeRequest: &topology.NewNodeRequest{
+			AccountID:   s.AccountID,
+			TenantID:    s.TenantID,
+			NetID:       s.NetID,
+			SubnetID:    s.SubnetID,
+			NodeName:    nodeName,
+			Description: desc,
+			Type:        topology.NodeType_GENERIC,
+		},
+	}
+
+	ss := output.Spinner()
+
+	ni, err := nxc.CreateGenericNode(context.TODO(), nnr)
+	if err != nil {
+		ss.Stop()
+		status.Error(err, "Unable to create node")
+	}
+
+	ss.Stop()
+
+	Output().Show(ni.Node)
+
+	fmt.Print(colors.Black("----- mmesh-node.yml -----\n"))
+	fmt.Printf("%s\n", colors.DarkWhite(ni.Config.YAML))
+	fmt.Print(colors.Black("----- mmesh-node.yml -----\n"))
+	fmt.Println()
+}
+
+/*
+func (api *API) GetInstallationWebhook() {
+	n := GetNode(false)
+
+	nxc, grpcConn := grpc.GetTopologyAPIClient()
+	defer grpcConn.Close()
+
+	nr := &topology.NodeReq{
+		AccountID: n.AccountID,
+		TenantID:  n.TenantID,
+		NetID:     n.NetID,
+		SubnetID:  n.SubnetID,
+		NodeID:    n.NodeID,
 	}
 
 	s := output.Spinner()
 
-	ni, err := nxc.CreateNodeInstallLinuxWebhook(context.TODO(), niReq)
+	ni, err := nxc.CreateNodeInstallLinuxWebhook(context.TODO(), nr)
 	if err != nil {
+		s.Stop()
 		status.Error(err, "Unable to generate node config")
 	}
 
 	s.Stop()
+
+	nodeName := n.Cfg.NodeName
 
 	cmd1 := colors.DarkGreen(fmt.Sprintf("curl -s %s | sudo sh", ni.Config.WebhookURL))
 	cmd2 := colors.DarkGreen(fmt.Sprintf("ssh <your_node> \"curl -s %s | sudo sh\"", ni.Config.WebhookURL))
@@ -75,8 +115,8 @@ process for them :-)
 For security, these magic links expire in 24h and can be used once only,
 but you can generate as many as you need.
 
-Use the following commands to setup the node on the machine %s you
-want to connect to your mmesh:
+Use the following commands on the machine %s to setup and
+connect the node to your mmesh:
 
 %s
 
@@ -89,9 +129,9 @@ at %s. It is recommended to review and customize
 the management section according to your security standards or specific needs.
 
 `,
-		colors.DarkWhite(vars.NodeID),
-		colors.DarkWhite(v.VRFID),
-		colors.DarkWhite(vars.NodeID),
+		colors.DarkWhite(nodeName),
+		colors.DarkWhite(n.SubnetID),
+		colors.DarkWhite(nodeName),
 		cmd1,
 		cmd2,
 		configFile,
@@ -99,3 +139,4 @@ the management section according to your security standards or specific needs.
 
 	// fmt.Printf("\n# Generated config, use it to create your mmesh-agent.yml file\n")
 }
+*/

@@ -7,21 +7,31 @@ import (
 	"sync"
 
 	"github.com/AlecAivazis/survey/v2"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/auth"
 	"mmesh.dev/m-cli/pkg/client/node"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
-	"mmesh.dev/m-lib/pkg/mmid"
-	"mmesh.dev/m-lib/pkg/mmp"
-	"mmesh.dev/m-lib/pkg/mmp/cli"
+	"mmesh.dev/m-cli/pkg/status"
+	"mmesh.dev/m-lib/pkg/mm"
+	"mmesh.dev/m-lib/pkg/mmp/stream/protos/command"
+	"mmesh.dev/m-lib/pkg/mmp/stream/utils/cli"
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
 func (api *API) Exec(args []string) {
 	n := node.GetNode(false)
 
-	nxnc, grpcConn := grpc.GetNetworkAPIClient()
+	controllerEndpoint := getNodeControllerEndpoint(&topology.NodeReq{
+		AccountID: n.AccountID,
+		TenantID:  n.TenantID,
+		NetID:     n.NetID,
+		SubnetID:  n.SubnetID,
+		NodeID:    n.NodeID,
+	})
+
+	nxnc, grpcConn := grpc.GetNetworkAPIClient(controllerEndpoint)
 	defer grpcConn.Close()
 
 	var execCommand string
@@ -50,7 +60,18 @@ func (api *API) Exec(args []string) {
 	wg.Add(1)
 	go grpc.Control(nxnc, &wg, execWaitc)
 
-	dstID := mmid.NewMMNodeID(n.AccountID, n.TenantID, n.NetID, n.VRFID, n.NodeID)
+	nodeMMID, err := mm.GetID(&topology.NodeReq{
+		AccountID: n.AccountID,
+		TenantID:  n.TenantID,
+		NetID:     n.NetID,
+		SubnetID:  n.SubnetID,
+		NodeID:    n.NodeID,
+	})
+	if err != nil {
+		status.Error(err, "Unable to get node identifier")
+	}
+
+	dstID := nodeMMID.String()
 
 	authKey, err := auth.GetAuthKey()
 	if err != nil {
@@ -60,7 +81,7 @@ func (api *API) Exec(args []string) {
 
 	output.SectionHeader("mmesh remote management")
 
-	mmp.NewShellRequest(authKey, dstID.String(), execCommand, args...)
+	command.NewShellRequest(authKey, dstID, execCommand, args...)
 
 	cli.Connected()
 

@@ -6,12 +6,11 @@ import (
 )
 
 type Interface interface {
-	New()
 	Show()
-	Settings()
+	// Settings()
 	Cancel()
 	Subscription(a *account.Account, interactive bool)
-	ApplyPromotion()
+	// ApplyPromotion()
 	BillingPortal(a *account.Account)
 }
 type API struct{}

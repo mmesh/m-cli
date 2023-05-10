@@ -1,11 +1,12 @@
 package config
 
 import (
+	"fmt"
 	"os"
+	"time"
 
 	"github.com/spf13/viper"
 	"mmesh.dev/m-lib/pkg/logging"
-	"mmesh.dev/m-lib/pkg/mmid"
 	"mmesh.dev/m-lib/pkg/utils/msg"
 	"mmesh.dev/m-lib/pkg/version"
 	"mmesh.dev/m-lib/pkg/xlog"
@@ -30,8 +31,9 @@ func Init() {
 		os.Exit(1)
 	}
 
-	mmID := mmid.NewMMCLIID(viper.GetString("account.id"), hostID)
-	viper.Set("mm.id", mmID.String())
+	mmID := fmt.Sprintf("__cli:%s:%d:%d", hostID, os.Getegid(), time.Now().Unix())
+
+	viper.Set("mm.id", mmID)
 
 	viper.Set("mm.app", version.CLI_NAME)
 

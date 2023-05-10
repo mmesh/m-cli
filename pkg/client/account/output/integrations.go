@@ -14,12 +14,10 @@ func showIntegrations(i *thirdParty.Integrations) {
 		return
 	}
 
-	if i.Pagerduty == nil &&
+	if i.Clickup == nil &&
 		i.Github == nil &&
-		i.Slack == nil &&
-		i.DigitalOcean == nil &&
-		i.GCP == nil &&
-		i.Scaleway == nil {
+		i.Pagerduty == nil &&
+		i.Slack == nil {
 		return
 	}
 
@@ -99,42 +97,6 @@ func showIntegrations(i *thirdParty.Integrations) {
 			}
 		}
 	*/
-
-	if i.DigitalOcean != nil {
-		if i.DigitalOcean.Enabled {
-			t.AddRow(colors.Black("DigitalOcean"), output.StrEnabled("enabled"))
-			// t.AddRow(colors.Black("DigitalOcean Token"), colors.DarkWhite(i.DigitalOcean.Token), colors.Black(" "))
-			// t.AddRow(colors.Black("DigitalOcean Project"), colors.DarkWhite(i.DigitalOcean.ProjectName), colors.Black(" "))
-		} else {
-			t.AddRow(colors.Black("DigitalOcean"), output.StrDisabled("not-configured"))
-		}
-		// t.AddRow()
-	}
-
-	if i.GCP != nil {
-		if i.GCP.Enabled {
-			t.AddRow(colors.Black("Google Cloud"), output.StrEnabled("enabled"))
-			// t.AddRow(colors.Black("Google Cloud ProjectID"), colors.DarkWhite(i.GCP.ProjectID), colors.Black(" "))
-			// t.AddRow(colors.Black("Google Cloud JSONKey"), colors.DarkWhite("*********"))
-			// t.AddRow("GCP JSON Key:", colors.Black(string(i.GCP.JSONKey)), colors.Black(" "))
-		} else {
-			t.AddRow(colors.Black("Google Cloud"), output.StrDisabled("not-configured"))
-		}
-		// t.AddRow()
-	}
-
-	if i.Scaleway != nil {
-		if i.Scaleway.Enabled {
-			t.AddRow(colors.Black("Scaleway Cloud"), output.StrEnabled("enabled"))
-			// t.AddRow(colors.Black("Scaleway OrganizationID"), colors.DarkWhite(i.Scaleway.OrganizationID), colors.Black(" "))
-			// t.AddRow(colors.Black("Scaleway ProjectID"), colors.DarkWhite(i.Scaleway.ProjectID), colors.Black(" "))
-			// t.AddRow(colors.Black("Scaleway AccessKey"), colors.DarkWhite(i.Scaleway.AccessKey))
-			// t.AddRow(colors.Black("Scaleway SecretKey"), colors.DarkWhite(i.Scaleway.SecretKey))
-		} else {
-			t.AddRow(colors.Black("Scaleway Cloud"), output.StrDisabled("not-configured"))
-		}
-		// t.AddRow()
-	}
 
 	t.Render()
 	fmt.Println()

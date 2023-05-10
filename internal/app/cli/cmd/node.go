@@ -6,18 +6,16 @@ import (
 	"mmesh.dev/m-cli/pkg/vars"
 )
 
-// networkNodeCmd represents the networkNode command
-var networkNodeCmd = &cobra.Command{
+var nodeCmd = &cobra.Command{
 	Use:   "node",
 	Short: "Network node operations",
 	Long:  appHeader(`Network node operations for network administrators.`),
 }
 
-// networkNodeCreateGenericNodeCmd represents the node create verb
-var networkAddNodeCmd = &cobra.Command{
+var nodeAddNodeCmd = &cobra.Command{
 	Use:   "add",
-	Short: "Generate magic link to setup a new node",
-	Long:  appHeader(`Generate magic link to setup a new node.`),
+	Short: "Add a new node",
+	Long:  appHeader(`Register a new node.`),
 	Args:  cobra.NoArgs,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		preflight()
@@ -27,8 +25,23 @@ var networkAddNodeCmd = &cobra.Command{
 	},
 }
 
-// networkNodeListCmd represents the admin/networks/vrfs list verb
-var networkNodeListCmd = &cobra.Command{
+/*
+var nodeGetInstallationWebhookCmd = &cobra.Command{
+	Use:   "get-magic-link",
+	Short: "Generate magic link to setup a new node (linux only)",
+	Long:  appHeader(`Generate magic link to setup a new node (linux only).`),
+	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		client.Node().GetInstallationWebhook()
+	},
+}
+*/
+
+// nodeListCmd represents the admin/networks/vrfs list verb
+var nodeListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List nodes",
 	Long:  appHeader(`List nodes.`),
@@ -41,8 +54,8 @@ var networkNodeListCmd = &cobra.Command{
 	},
 }
 
-// networkNodeShowCmd represents the network/node show verb
-var networkNodeShowCmd = &cobra.Command{
+// nodeShowCmd represents the network/node show verb
+var nodeShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show node",
 	Long:  appHeader(`Show node details.`),
@@ -55,8 +68,8 @@ var networkNodeShowCmd = &cobra.Command{
 	},
 }
 
-// networkNodeDeleteCmd represents the network/nodes delete verb
-var networkNodeDeleteCmd = &cobra.Command{
+// nodeDeleteCmd represents the network/nodes delete verb
+var nodeDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Remove node",
 	Long:  appHeader(`Remove node from database.`),
@@ -69,8 +82,8 @@ var networkNodeDeleteCmd = &cobra.Command{
 	},
 }
 
-// networkNodeMetricsCmd represents the network/node metrics verb
-var networkNodeMetricsCmd = &cobra.Command{
+// nodeMetricsCmd represents the network/node metrics verb
+var nodeMetricsCmd = &cobra.Command{
 	Use:   "metrics",
 	Short: "Show detailed metrics",
 	Long:  appHeader(`Show detailed metrics.`),
@@ -83,8 +96,8 @@ var networkNodeMetricsCmd = &cobra.Command{
 	},
 }
 
-// networkNodeResetTrafficMatrixCmd represents the network/nodes delete verb
-// var networkNodeResetTrafficMatrixCmd = &cobra.Command{
+// nodeResetTrafficMatrixCmd represents the network/nodes delete verb
+// var nodeResetTrafficMatrixCmd = &cobra.Command{
 // 	Use:   "reset-traffic-matrix",
 // 	Short: "Reset traffic matrix metrics",
 // 	Long:  appHeader(`Reset traffic matrix metrics.`),
@@ -97,8 +110,8 @@ var networkNodeMetricsCmd = &cobra.Command{
 // 	},
 // }
 
-// networkNodeShowEndpointCmd represents the network/node show-endpoint verb
-var networkNodeShowEndpointCmd = &cobra.Command{
+// nodeShowEndpointCmd represents the network/node show-endpoint verb
+var nodeShowEndpointCmd = &cobra.Command{
 	Use:   "show-endpoint",
 	Short: "Show network endpoint details",
 	Long:  appHeader(`Show network endpoint details.`),
@@ -111,8 +124,8 @@ var networkNodeShowEndpointCmd = &cobra.Command{
 	},
 }
 
-// networkNodeDeleteEndpointCmd represents the network/node delete-endpoint verb
-var networkNodeDeleteEndpointCmd = &cobra.Command{
+// nodeDeleteEndpointCmd represents the network/node delete-endpoint verb
+var nodeDeleteEndpointCmd = &cobra.Command{
 	Use:   "delete-endpoint",
 	Short: "Delete network endpoint",
 	Long:  appHeader(`Remove network endpoint from database.`),
@@ -126,18 +139,18 @@ var networkNodeDeleteEndpointCmd = &cobra.Command{
 }
 
 func init() {
-	networkNodeCmd.AddCommand(networkAddNodeCmd)
-	networkNodeCmd.AddCommand(networkNodeListCmd)
-	networkNodeCmd.AddCommand(networkNodeShowCmd)
-	networkNodeCmd.AddCommand(networkNodeDeleteCmd)
-	networkNodeCmd.AddCommand(networkNodeMetricsCmd)
-	// networkNodeCmd.AddCommand(networkNodeResetTrafficMatrixCmd)
-	networkNodeCmd.AddCommand(networkNodeShowEndpointCmd)
-	networkNodeCmd.AddCommand(networkNodeDeleteEndpointCmd)
+	nodeCmd.AddCommand(nodeAddNodeCmd)
+	// nodeCmd.AddCommand(nodeGetInstallationWebhookCmd)
+	nodeCmd.AddCommand(nodeListCmd)
+	nodeCmd.AddCommand(nodeShowCmd)
+	nodeCmd.AddCommand(nodeDeleteCmd)
+	nodeCmd.AddCommand(nodeMetricsCmd)
+	// nodeCmd.AddCommand(nodeResetTrafficMatrixCmd)
+	nodeCmd.AddCommand(nodeShowEndpointCmd)
+	nodeCmd.AddCommand(nodeDeleteEndpointCmd)
 
-	networkNodeCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
-	networkNodeCmd.PersistentFlags().StringVarP(&vars.TenantID, "tenant", "t", "", "tenant identifier")
-	networkNodeCmd.PersistentFlags().StringVarP(&vars.NetID, "network", "n", "", "network identifier")
-	networkNodeCmd.PersistentFlags().StringVarP(&vars.VRFID, "subnet", "s", "", "subnet/vrf identifier")
-	networkNodeCmd.PersistentFlags().StringVarP(&vars.NodeID, "node", "x", "", "node identifier")
+	nodeCmd.PersistentFlags().StringVarP(&vars.TenantID, "tenant", "t", "", "tenant identifier")
+	nodeCmd.PersistentFlags().StringVarP(&vars.NetID, "network", "n", "", "network identifier")
+	nodeCmd.PersistentFlags().StringVarP(&vars.SubnetID, "subnet", "s", "", "subnet identifier")
+	nodeCmd.PersistentFlags().StringVarP(&vars.NodeID, "node", "x", "", "node identifier")
 }

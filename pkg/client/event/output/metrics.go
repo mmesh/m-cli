@@ -19,8 +19,8 @@ func (api *API) ShowMetrics(em *metrics.EventMetrics) {
 
 	t.AddRow(colors.Black("Successful Events"), colors.DarkGreen(fmt.Sprintf("%07.0f", em.SuccessCount)))
 	t.AddRow(colors.Black("Failed Events"), colors.DarkRed(fmt.Sprintf("%07.0f", em.FailCount)))
-	t.AddRow(colors.Black("First Activity"), colors.DarkWhite(time.Unix(em.FirstActivity, 0).String()))
-	t.AddRow(colors.Black("Last Activity"), colors.DarkWhite(time.Unix(em.LastActivity, 0).String()))
+	t.AddRow(colors.Black("First Activity"), colors.DarkWhite(time.UnixMilli(em.FirstActivity).String()))
+	t.AddRow(colors.Black("Last Activity"), colors.DarkWhite(time.UnixMilli(em.LastActivity).String()))
 	t.AddRow(colors.Black("Activity Index"), colors.DarkWhite(fmt.Sprintf("%.4f", em.ActivityIndex)))
 	t.AddRow(colors.Black("Failure Probability"), api.FailureProbability(em))
 	t.AddRow(colors.Black("Score"), colors.DarkWhite(fmt.Sprintf("%.2f", em.Score)))

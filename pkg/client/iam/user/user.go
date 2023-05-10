@@ -2,12 +2,10 @@ package user
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"sort"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/resources/iam"
 	"mmesh.dev/m-api-go/grpc/resources/resource"
 	"mmesh.dev/m-cli/pkg/client/account"
@@ -18,12 +16,6 @@ import (
 	"mmesh.dev/m-cli/pkg/vars"
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
-
-type loggedUser struct {
-	accountID string
-	email     string
-	isAdmin   bool
-}
 
 func GetUser(edit bool) *iam.User {
 	ul := users()
@@ -38,7 +30,7 @@ func GetUser(edit bool) *iam.User {
 	users := make(map[string]*iam.User)
 
 	for _, u := range ul {
-		userOptID = u.Email
+		userOptID = u.UserID
 		usersOpts = append(usersOpts, userOptID)
 		users[userOptID] = u
 	}
@@ -55,7 +47,7 @@ func GetUser(edit bool) *iam.User {
 		return nil
 	}
 
-	vars.UserEmail = users[userOptID].Email
+	vars.UserID = users[userOptID].UserID
 
 	return users[userOptID]
 }
@@ -66,7 +58,7 @@ func users() map[string]*iam.User {
 	s := output.Spinner()
 	defer s.Stop()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetIAMAPIClient()
 	defer grpcConn.Close()
 
 	lr := &iam.ListUsersRequest{
@@ -83,7 +75,7 @@ func users() map[string]*iam.User {
 		}
 
 		for _, u := range ul.Users {
-			users[u.Email] = u
+			users[u.UserID] = u
 		}
 
 		if len(ul.Meta.NextPageToken) > 0 {
@@ -94,20 +86,4 @@ func users() map[string]*iam.User {
 	}
 
 	return users
-}
-
-func getLoggedUser() *loggedUser {
-	isAdmin := viper.GetBool("logged.isAdmin")
-	realm := viper.GetString("logged.realm")
-	userEmail := viper.GetString("logged.email")
-
-	if len(realm) == 0 || len(userEmail) == 0 {
-		status.Error(fmt.Errorf("user not logged in"), "Unable to get user data")
-	}
-
-	return &loggedUser{
-		accountID: realm,
-		email:     userEmail,
-		isAdmin:   isAdmin,
-	}
 }

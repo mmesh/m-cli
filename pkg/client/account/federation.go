@@ -1,5 +1,6 @@
 package account
 
+/*
 import (
 	"context"
 	"fmt"
@@ -50,7 +51,7 @@ func selectFederation() *controller.FederationSelected {
 
 	vars.LocationID = lID
 
-	nxc, grpcConn := grpc.GetManagerProviderAPIClient(false)
+	nxc, grpcConn := grpc.GetManagerAPIClient(false)
 	defer grpcConn.Close()
 
 	s := output.Spinner()
@@ -65,3 +66,4 @@ func selectFederation() *controller.FederationSelected {
 
 	return f
 }
+*/

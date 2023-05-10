@@ -1,5 +1,6 @@
 package account
 
+/*
 import (
 	"context"
 
@@ -10,7 +11,7 @@ import (
 )
 
 func selectLocation() []*location.Location {
-	nxc, grpcConn := grpc.GetManagerProviderAPIClient(false)
+	nxc, grpcConn := grpc.GetManagerAPIClient(false)
 	defer grpcConn.Close()
 
 	lr := &location.ListLocationsRequest{
@@ -34,3 +35,4 @@ func selectLocation() []*location.Location {
 
 	return locations
 }
+*/

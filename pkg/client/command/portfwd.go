@@ -7,17 +7,19 @@ import (
 	"strconv"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/spf13/viper"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/auth"
 	"mmesh.dev/m-cli/pkg/client/node"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
-	"mmesh.dev/m-lib/pkg/mmid"
-	"mmesh.dev/m-lib/pkg/mmp"
-	"mmesh.dev/m-lib/pkg/mmp/cli"
+	"mmesh.dev/m-lib/pkg/mm"
+	"mmesh.dev/m-lib/pkg/mmp/stream/protos/portfwd"
+	"mmesh.dev/m-lib/pkg/mmp/stream/utils/cli"
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
@@ -26,7 +28,15 @@ const proto string = "TCP"
 func (api *API) PortFwd() {
 	n := node.GetNode(false)
 
-	nxnc, grpcConn := grpc.GetNetworkAPIClient()
+	controllerEndpoint := getNodeControllerEndpoint(&topology.NodeReq{
+		AccountID: n.AccountID,
+		TenantID:  n.TenantID,
+		NetID:     n.NetID,
+		SubnetID:  n.SubnetID,
+		NodeID:    n.NodeID,
+	})
+
+	nxnc, grpcConn := grpc.GetNetworkAPIClient(controllerEndpoint)
 	defer grpcConn.Close()
 
 	helpText := "Remote TCP port on target node"
@@ -47,8 +57,28 @@ func (api *API) PortFwd() {
 		status.Error(err, "Invalid local port")
 	}
 
+	// rewrite mm.id for mmp authentication
+	accountID, err := auth.GetAccountID()
+	if err != nil {
+		status.Error(fmt.Errorf("missing accountID"), "Unable to get account")
+	}
+	hostID := viper.GetString("host.id")
+	mmID := fmt.Sprintf("%s:__cli:%s:%d:%d", accountID, hostID, os.Getegid(), time.Now().Unix())
+	viper.Set("mm.id", mmID)
+
 	srcID := viper.GetString("mm.id")
-	dstID := mmid.GetMMIDFromNode(n).String()
+
+	nodeMMID, err := mm.GetID(&topology.NodeReq{
+		AccountID: n.AccountID,
+		TenantID:  n.TenantID,
+		NetID:     n.NetID,
+		SubnetID:  n.SubnetID,
+		NodeID:    n.NodeID,
+	})
+	if err != nil {
+		status.Error(err, "Unable to get node identifier")
+	}
+	dstID := nodeMMID.String()
 
 	var wg sync.WaitGroup
 	portFwdWaitc := make(chan struct{}, 2)
@@ -65,11 +95,11 @@ func (api *API) PortFwd() {
 
 	output.SectionHeader("mmesh remote management")
 
-	mmp.NewPortFwd(authKey, uint32(srcP), uint32(dstP), proto, srcID, dstID, true)
+	portfwd.NewPortFwd(authKey, uint32(srcP), uint32(dstP), proto, srcID, dstID, true)
 
 	cli.Connected()
 
-	output.CmdLog(fmt.Sprintf("Activating port forwarding to %s (%s/%s)", n.NodeID, proto, rp))
+	output.CmdLog(fmt.Sprintf("Activating port forwarding to %s (%s/%s)", n.Cfg.NodeName, proto, rp))
 
 	go pfClose(portFwdWaitc, srcP, dstP, proto, srcID, dstID)
 
@@ -88,7 +118,7 @@ func pfClose(waitc chan struct{}, srcP, dstP int, proto, srcID, dstID string) {
 		output.CmdLog("Closing connections...")
 
 		wg.Add(1)
-		mmp.ClosePortFwd(uint32(srcP), uint32(dstP), proto, srcID, dstID, &wg)
+		portfwd.ClosePortFwd(uint32(srcP), uint32(dstP), proto, srcID, dstID, &wg)
 
 		wg.Wait()
 		waitc <- struct{}{}

@@ -4,6 +4,7 @@ import "mmesh.dev/m-cli/pkg/client/node/output"
 
 type Interface interface {
 	AddNode()
+	// GetInstallationWebhook()
 	List()
 	Show()
 	Delete()

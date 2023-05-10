@@ -4,49 +4,73 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/output/table"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
-func agentInfo(n *network.Node) {
-	na := n.Agent
+const nodeTimeout = 960
 
-	if na == nil {
-		msg.Alert("No data found, agent is not registered yet")
-		os.Exit(0)
-	}
-
-	if na.Metrics == nil {
-		fmt.Printf("[%s]\n\n", colors.Black("not enough data yet"))
-		os.Exit(0)
-	}
-
-	if na.Metrics.HostMetrics == nil {
-		fmt.Printf("[%s]\n\n", colors.Black("not enough data yet"))
+func agentInfo(n *topology.Node) {
+	ncfg := n.Cfg
+	if ncfg == nil {
+		msg.Alert("No data found, node is not configured yet")
 		os.Exit(0)
 	}
 
 	t := table.New()
 
-	t.AddRow(colors.Black("Account ID"), colors.DarkWhite(n.AccountID))
+	// t.AddRow(colors.Black("Account ID"), colors.DarkWhite(n.AccountID))
 	t.AddRow(colors.Black("Tenant ID"), colors.DarkWhite(n.TenantID))
 	t.AddRow(colors.Black("Network ID"), colors.DarkWhite(n.NetID))
-	t.AddRow(colors.Black("Subnet ID"), colors.DarkWhite(n.VRFID))
+	t.AddRow(colors.Black("Subnet ID"), colors.DarkWhite(n.SubnetID))
 	t.AddRow(colors.Black("Node ID"), colors.DarkWhite(n.NodeID))
 	// t.AddRow()
-	// t.AddRow(colors.Black("Hostname"), colors.DarkWhite(na.AgentID))
+	t.AddRow(colors.Black("Node Name"), colors.DarkWhite(ncfg.NodeName))
+	t.AddRow(colors.Black("Description"), colors.DarkWhite(ncfg.Description))
 
 	var status string
-	if na.Healthy {
-		status = output.StrOnline()
-	} else {
+	tm := time.UnixMilli(n.LastSeen)
+	if time.Since(tm) > nodeTimeout*time.Second {
 		status = output.StrOffline()
+	} else {
+		status = output.StrOnline()
 	}
 	t.AddRow(colors.Black("Status"), status)
+
+	t.Render()
+	fmt.Println()
+
+	fmt.Print(colors.Black("-----NODE AUTHORIZATION TOKEN-----\n"))
+	fmt.Printf("%s\n", colors.DarkWhite(n.NodeToken))
+	fmt.Print(colors.Black("-----NODE AUTHORIZATION TOKEN-----\n"))
+	fmt.Println()
+
+	na := n.Agent
+	if na == nil {
+		// msg.Alert("No data found, agent is not registered yet")
+		// os.Exit(0)
+		return
+	}
+
+	if na.Metrics == nil {
+		// fmt.Printf("[%s]\n\n", colors.Black("not enough data yet"))
+		// os.Exit(0)
+		return
+	}
+
+	if na.Metrics.HostMetrics == nil {
+		// fmt.Printf("[%s]\n\n", colors.Black("not enough data yet"))
+		// os.Exit(0)
+		return
+	}
+
+	t = table.New()
+
 	t.AddRow(colors.Black("OS"), colors.DarkWhite(strings.Title(na.Metrics.HostMetrics.OS)))
 
 	if len(na.Metrics.HostMetrics.Uptime) > 0 {
@@ -54,15 +78,15 @@ func agentInfo(n *network.Node) {
 	}
 
 	var autoUpdate, maintSched string
-	if na.Maintenance != nil {
-		if na.Maintenance.AutoUpdate {
+	if ncfg.Maintenance != nil {
+		if ncfg.Maintenance.AutoUpdate {
 			autoUpdate = output.StrEnabled("auto-update")
 		} else {
 			autoUpdate = output.StrDisabled("auto-update")
 		}
-		if na.Maintenance.Schedule != nil {
-			maintHour := fmt.Sprintf("%02d", na.Maintenance.Schedule.Hour)
-			maintMin := fmt.Sprintf("%02d", na.Maintenance.Schedule.Minute)
+		if ncfg.Maintenance.Schedule != nil {
+			maintHour := fmt.Sprintf("%02d", ncfg.Maintenance.Schedule.Hour)
+			maintMin := fmt.Sprintf("%02d", ncfg.Maintenance.Schedule.Minute)
 			maintSched = colors.DarkGreen(fmt.Sprintf("%s:%s", maintHour, maintMin))
 			maintSched = fmt.Sprintf("%s [%s]", colors.DarkWhite("Scheduled"), maintSched)
 		} else {
@@ -73,23 +97,23 @@ func agentInfo(n *network.Node) {
 	t.AddRow(colors.Black("Maintenance"), maint)
 
 	var disableExec, disableTransfer, disablePortFwd, disableOps string
-	if na.Management != nil {
-		if na.Management.DisableExec {
+	if ncfg.Management != nil {
+		if ncfg.Management.DisableExec {
 			disableExec = output.StrDisabled("exec")
 		} else {
 			disableExec = output.StrEnabled("exec")
 		}
-		if na.Management.DisableTransfer {
+		if ncfg.Management.DisableTransfer {
 			disableTransfer = output.StrDisabled("transfer")
 		} else {
 			disableTransfer = output.StrEnabled("transfer")
 		}
-		if na.Management.DisablePortForwarding {
+		if ncfg.Management.DisablePortForwarding {
 			disablePortFwd = output.StrDisabled("portForward")
 		} else {
 			disablePortFwd = output.StrEnabled("portForward")
 		}
-		if na.Management.DisableOps {
+		if ncfg.Management.DisableOps {
 			disableOps = output.StrDisabled("workflows")
 		} else {
 			disableOps = output.StrEnabled("workflows")
@@ -110,18 +134,17 @@ func agentInfo(n *network.Node) {
 	t.AddRow(colors.Black("Port"), colors.DarkWhite(fmt.Sprintf("%d", na.Port)))
 
 	var k8sGw string
-	dnsPort := "n/a"
-	if na.Options != nil {
-		if na.Options.KubernetesGw {
-			k8sGw = output.StrEnabled("k8sGw")
-		}
-		dnsPort = fmt.Sprintf("udp/%d", na.Options.DNSPort)
+	if ncfg.KubernetesGw {
+		k8sGw = output.StrEnabled("k8sGw")
 	}
+
+	dnsPort := fmt.Sprintf("udp/%d", na.DNSPort)
+
 	var relay string
-	if na.IsRelay {
+	if na.CanRelay && !ncfg.DisableRelay {
 		relay = output.StrTier1()
 	}
-	prio := fmt.Sprintf("[%s-%s]", colors.DarkWhite("priority"), colors.Yellow(fmt.Sprintf("%d", na.Priority)))
+	prio := fmt.Sprintf("[%s-%s]", colors.DarkWhite("priority"), colors.Yellow(fmt.Sprintf("%d", ncfg.Priority)))
 	routing := fmt.Sprintf("%s %s %s", prio, relay, k8sGw)
 	t.AddRow(colors.Black("DNS Port"), colors.DarkWhite(dnsPort))
 	t.AddRow(colors.Black("Routing"), routing)

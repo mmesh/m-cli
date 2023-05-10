@@ -6,12 +6,12 @@ import (
 
 	// "github.com/c2h5oh/datasize"
 	"github.com/gosuri/uitable"
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
-func (api *API) Metrics(n *network.Node) {
+func (api *API) Metrics(n *topology.Node) {
 	output.SectionHeader("Node Details")
 	output.TitleT1("Node Metrics")
 
@@ -224,7 +224,7 @@ func (api *API) Metrics(n *network.Node) {
 	// t.AddRow()
 
 	if n.Agent.Metrics.LastUpdated > 0 {
-		tm := time.Unix(n.Agent.Metrics.LastUpdated, 0)
+		tm := time.UnixMilli(n.Agent.Metrics.LastUpdated)
 		t.AddRow(colors.Black("Last Updated"), colors.DarkWhite(tm.String()))
 	}
 

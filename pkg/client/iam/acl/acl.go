@@ -61,7 +61,7 @@ func ACLs() map[string]*iam.ACL {
 	s := output.Spinner()
 	defer s.Stop()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetIAMAPIClient()
 	defer grpcConn.Close()
 
 	lr := &iam.ListACLsRequest{

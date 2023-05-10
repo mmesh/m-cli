@@ -1,7 +1,7 @@
 package config
 
 import (
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 )
 
 type AppLabel string
@@ -20,25 +20,20 @@ type InstanceLabelType string
 const (
 	InstanceLabelTypeGeneric           InstanceLabelType = "generic"
 	InstanceLabelTypeKubernetesGateway InstanceLabelType = "k8sgw"
-	InstanceLabelTypeMRS               InstanceLabelType = "mrs"
 )
 
 func (a InstanceLabelType) String() string {
 	return string(a)
 }
 
-func GetInstanceLabelType(t network.NodeInstanceType) string {
+func GetInstanceLabelType(t topology.NodeType) string {
 	switch t {
-	case network.NodeInstanceType_GENERIC:
+	case topology.NodeType_GENERIC:
 		return InstanceLabelTypeGeneric.String()
-	case network.NodeInstanceType_RELAY_NODE:
-		return InstanceLabelTypeGeneric.String()
-	case network.NodeInstanceType_K8S_GATEWAY:
+	case topology.NodeType_K8S_GATEWAY:
 		return InstanceLabelTypeKubernetesGateway.String()
-	case network.NodeInstanceType_K8S_RELAY_SERVICE:
-		return InstanceLabelTypeMRS.String()
-	case network.NodeInstanceType_CLOUD_INSTANCE:
-		return InstanceLabelTypeGeneric.String()
+	// case topology.NodeType_CLOUD_INSTANCE:
+	// 	return InstanceLabelTypeGeneric.String()
 	}
 
 	return InstanceLabelTypeGeneric.String()

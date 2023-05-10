@@ -41,17 +41,29 @@ var tenantShowCmd = &cobra.Command{
 	},
 }
 
-// tenantSetCmd represents the admin/tenants set verb
-var tenantSetCmd = &cobra.Command{
-	Use:   "set",
-	Short: "Create or update tenant",
-	Long:  appHeader(`Create or update tenant interactively.`),
+var tenantNewCmd = &cobra.Command{
+	Use:   "create",
+	Short: "Create tenant",
+	Long:  appHeader(`Create tenant interactively.`),
 	Args:  cobra.NoArgs,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		preflight()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		client.Tenant().Set()
+		client.Tenant().New()
+	},
+}
+
+var tenantUpdateCmd = &cobra.Command{
+	Use:   "update",
+	Short: "Update tenant details",
+	Long:  appHeader(`Update tenant details interactively.`),
+	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		client.Tenant().Update()
 	},
 }
 
@@ -72,9 +84,9 @@ var tenantDeleteCmd = &cobra.Command{
 func init() {
 	tenantCmd.AddCommand(tenantListCmd)
 	tenantCmd.AddCommand(tenantShowCmd)
-	tenantCmd.AddCommand(tenantSetCmd)
+	tenantCmd.AddCommand(tenantNewCmd)
+	tenantCmd.AddCommand(tenantUpdateCmd)
 	tenantCmd.AddCommand(tenantDeleteCmd)
 
-	tenantCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 	tenantCmd.PersistentFlags().StringVarP(&vars.TenantID, "tenant", "t", "", "tenant identifier")
 }

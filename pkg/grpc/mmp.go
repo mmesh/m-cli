@@ -10,6 +10,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/rpc"
 	"mmesh.dev/m-lib/pkg/mmp"
+	"mmesh.dev/m-lib/pkg/mmp/queuing"
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
@@ -51,7 +52,7 @@ func Control(client rpc.NetworkAPIClient, wg *sync.WaitGroup, waitc chan struct{
 
 	go func() {
 		for {
-			payload := <-mmp.TxControlQueue
+			payload := <-queuing.TxControlQueue
 			if err := stream.Send(payload); err != nil {
 				// msg.Tracef("Failed to send mmp payload: %v", errors.Cause(err))
 				waitc <- struct{}{}
@@ -60,10 +61,15 @@ func Control(client rpc.NetworkAPIClient, wg *sync.WaitGroup, waitc chan struct{
 		}
 	}()
 
-	mmp.TxControlQueue <- &mmsp.Payload{
-		SrcID:       viper.GetString("mm.id"),
-		PayloadType: mmsp.PayloadType_NODE_INIT,
-		Node:        nil,
+	mmID := viper.GetString("mm.id")
+
+	queuing.TxControlQueue <- &mmsp.Payload{
+		SrcID: mmID,
+		Type:  mmsp.PDUType_SESSION,
+		SessionPDU: &mmsp.SessionPDU{
+			Type:      mmsp.SessionMsgType_SESSION_CLI_INIT,
+			SessionID: mmID,
+		},
 	}
 
 	<-waitc

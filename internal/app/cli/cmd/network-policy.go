@@ -25,6 +25,7 @@ var networkPolicyShowCmd = &cobra.Command{
 	},
 }
 
+/*
 var networkPolicyImportCmd = &cobra.Command{
 	Use:   "import -f <yamlFile>",
 	Short: "Import security policy from YAML file",
@@ -50,6 +51,7 @@ var networkPolicyExportCmd = &cobra.Command{
 		client.NetworkPolicy().Export()
 	},
 }
+*/
 
 var networkPolicySetDefaultCmd = &cobra.Command{
 	Use:   "set-default",
@@ -64,6 +66,7 @@ var networkPolicySetDefaultCmd = &cobra.Command{
 	},
 }
 
+/*
 var networkPolicySetRuleCmd = &cobra.Command{
 	Use:   "set-rule",
 	Short: "Set security policy rule",
@@ -89,6 +92,46 @@ var networkPolicyUnsetRuleCmd = &cobra.Command{
 		client.NetworkPolicy().UnsetRule()
 	},
 }
+*/
+
+var networkPolicyNewNetworkFilterCmd = &cobra.Command{
+	Use:   "add-rule",
+	Short: "Add security policy rule",
+	Long:  appHeader(`Add security policy rule.`),
+	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		client.NetworkPolicy().NewNetworkFilter()
+	},
+}
+
+var networkPolicyUpdateNetworkFilterCmd = &cobra.Command{
+	Use:   "edit-rule",
+	Short: "Edit security policy rule",
+	Long:  appHeader(`Edit security policy rule.`),
+	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		client.NetworkPolicy().UpdateNetworkFilter()
+	},
+}
+
+var networkPolicyDeleteNetworkFilterCmd = &cobra.Command{
+	Use:   "delete-rule",
+	Short: "Delete security policy rule",
+	Long:  appHeader(`Delete security policy rule.`),
+	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		client.NetworkPolicy().DeleteNetworkFilter()
+	},
+}
 
 var networkPolicyDeleteCmd = &cobra.Command{
 	Use:   "delete",
@@ -105,18 +148,20 @@ var networkPolicyDeleteCmd = &cobra.Command{
 
 func init() {
 	networkPolicyCmd.AddCommand(networkPolicyShowCmd)
-	networkPolicyCmd.AddCommand(networkPolicyImportCmd)
-	networkPolicyCmd.AddCommand(networkPolicyExportCmd)
+	// networkPolicyCmd.AddCommand(networkPolicyImportCmd)
+	// networkPolicyCmd.AddCommand(networkPolicyExportCmd)
 	networkPolicyCmd.AddCommand(networkPolicySetDefaultCmd)
-	networkPolicyCmd.AddCommand(networkPolicySetRuleCmd)
-	networkPolicyCmd.AddCommand(networkPolicyUnsetRuleCmd)
+	// networkPolicyCmd.AddCommand(networkPolicySetRuleCmd)
+	// networkPolicyCmd.AddCommand(networkPolicyUnsetRuleCmd)
+	networkPolicyCmd.AddCommand(networkPolicyNewNetworkFilterCmd)
+	networkPolicyCmd.AddCommand(networkPolicyUpdateNetworkFilterCmd)
+	networkPolicyCmd.AddCommand(networkPolicyDeleteNetworkFilterCmd)
 	networkPolicyCmd.AddCommand(networkPolicyDeleteCmd)
 
-	networkPolicyCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 	networkPolicyCmd.PersistentFlags().StringVarP(&vars.TenantID, "tenant", "t", "", "tenant identifier")
 	networkPolicyCmd.PersistentFlags().StringVarP(&vars.NetID, "network", "n", "", "network identifier")
-	networkPolicyCmd.PersistentFlags().StringVarP(&vars.VRFID, "vrf", "v", "", "subnet/vrf identifier")
+	networkPolicyCmd.PersistentFlags().StringVarP(&vars.SubnetID, "subnet", "s", "", "subnet identifier")
 
-	networkPolicyImportCmd.Flags().StringVarP(&vars.YAMLFile, "yamlFile", "f", "", "yaml workflow file")
-	networkPolicyImportCmd.MarkFlagRequired("yamlFile")
+	// networkPolicyImportCmd.Flags().StringVarP(&vars.YAMLFile, "yamlFile", "f", "", "yaml workflow file")
+	// networkPolicyImportCmd.MarkFlagRequired("yamlFile")
 }

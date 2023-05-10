@@ -10,7 +10,8 @@ import (
 	"github.com/AlecAivazis/survey/v2"
 	"mmesh.dev/m-api-go/grpc/resources/events"
 	"mmesh.dev/m-api-go/grpc/resources/resource"
-	"mmesh.dev/m-cli/pkg/client/account"
+	tenant_pb "mmesh.dev/m-api-go/grpc/resources/tenant"
+	"mmesh.dev/m-cli/pkg/client/tenant"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
@@ -32,12 +33,11 @@ func getAlert() *events.Alert {
 	alerts := make(map[string]*events.Alert)
 
 	for _, a := range al {
-		tm := output.Datetime(a.LastUpdated)
-		nodeID := output.Fit(a.NodeID, 32)
-		status := strings.ToUpper(a.Status)
+		tm := output.DatetimeMilli(a.LastUpdated)
+		nodeName := output.Fit(a.NodeName, 32)
 		// component := output.Fit(a.Component, 32)
 		component := strings.ToLower(a.Component)
-		l1 := fmt.Sprintf("%s %s [%s]", tm, nodeID, status)
+		l1 := fmt.Sprintf("%s %s [%s]", tm, nodeName, a.Status.String())
 		// l2 := fmt.Sprintf("Component: %s", component)
 		l2 := fmt.Sprintf("Component: %s | Group: %s | Class: %s", component, a.Group, a.Class)
 		// l3 := fmt.Sprintf("Group: %s | Class: %s", a.Group, a.Class)
@@ -57,17 +57,20 @@ func getAlert() *events.Alert {
 }
 
 func alerts() map[string]*events.Alert {
-	a := account.GetAccount()
+	t := tenant.GetTenant()
 
 	s := output.Spinner()
 	// defer s.Stop()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetMonitoringAPIClient()
 	defer grpcConn.Close()
 
 	lr := &events.ListAlertsRequest{
-		Meta:      &resource.ListRequest{},
-		AccountID: a.AccountID,
+		Meta: &resource.ListRequest{},
+		Tenant: &tenant_pb.TenantReq{
+			AccountID: t.AccountID,
+			TenantID:  t.TenantID,
+		},
 	}
 
 	alerts := make(map[string]*events.Alert)

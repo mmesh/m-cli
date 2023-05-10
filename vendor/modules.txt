@@ -25,23 +25,12 @@ github.com/Azure/go-autorest/logger
 # github.com/Azure/go-autorest/tracing v0.6.0
 ## explicit; go 1.12
 github.com/Azure/go-autorest/tracing
-# github.com/Baozisoftware/qrcode-terminal-go v0.0.0-20170407111555-c0650d8dff0f
-## explicit
-github.com/Baozisoftware/qrcode-terminal-go
 # github.com/PuerkitoBio/purell v1.1.1
 ## explicit
 github.com/PuerkitoBio/purell
 # github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578
 ## explicit
 github.com/PuerkitoBio/urlesc
-# github.com/biter777/countries v1.5.6
-## explicit; go 1.13
-github.com/biter777/countries
-# github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc
-## explicit
-github.com/boombuler/barcode
-github.com/boombuler/barcode/qr
-github.com/boombuler/barcode/utils
 # github.com/briandowns/spinner v1.19.0
 ## explicit; go 1.14
 github.com/briandowns/spinner
@@ -67,50 +56,6 @@ github.com/fatih/color
 # github.com/fsnotify/fsnotify v1.5.4
 ## explicit; go 1.16
 github.com/fsnotify/fsnotify
-# github.com/gdamore/encoding v1.0.0
-## explicit; go 1.9
-github.com/gdamore/encoding
-# github.com/gdamore/tcell/v2 v2.4.1-0.20210905002822-f057f0a857a1
-## explicit; go 1.12
-github.com/gdamore/tcell/v2
-github.com/gdamore/tcell/v2/terminfo
-github.com/gdamore/tcell/v2/terminfo/a/aixterm
-github.com/gdamore/tcell/v2/terminfo/a/alacritty
-github.com/gdamore/tcell/v2/terminfo/a/ansi
-github.com/gdamore/tcell/v2/terminfo/b/beterm
-github.com/gdamore/tcell/v2/terminfo/base
-github.com/gdamore/tcell/v2/terminfo/c/cygwin
-github.com/gdamore/tcell/v2/terminfo/d/dtterm
-github.com/gdamore/tcell/v2/terminfo/dynamic
-github.com/gdamore/tcell/v2/terminfo/e/emacs
-github.com/gdamore/tcell/v2/terminfo/extended
-github.com/gdamore/tcell/v2/terminfo/f/foot
-github.com/gdamore/tcell/v2/terminfo/g/gnome
-github.com/gdamore/tcell/v2/terminfo/h/hpterm
-github.com/gdamore/tcell/v2/terminfo/k/konsole
-github.com/gdamore/tcell/v2/terminfo/k/kterm
-github.com/gdamore/tcell/v2/terminfo/l/linux
-github.com/gdamore/tcell/v2/terminfo/p/pcansi
-github.com/gdamore/tcell/v2/terminfo/r/rxvt
-github.com/gdamore/tcell/v2/terminfo/s/screen
-github.com/gdamore/tcell/v2/terminfo/s/simpleterm
-github.com/gdamore/tcell/v2/terminfo/s/sun
-github.com/gdamore/tcell/v2/terminfo/t/termite
-github.com/gdamore/tcell/v2/terminfo/t/tmux
-github.com/gdamore/tcell/v2/terminfo/v/vt100
-github.com/gdamore/tcell/v2/terminfo/v/vt102
-github.com/gdamore/tcell/v2/terminfo/v/vt220
-github.com/gdamore/tcell/v2/terminfo/v/vt320
-github.com/gdamore/tcell/v2/terminfo/v/vt400
-github.com/gdamore/tcell/v2/terminfo/v/vt420
-github.com/gdamore/tcell/v2/terminfo/v/vt52
-github.com/gdamore/tcell/v2/terminfo/w/wy50
-github.com/gdamore/tcell/v2/terminfo/w/wy60
-github.com/gdamore/tcell/v2/terminfo/w/wy99_ansi
-github.com/gdamore/tcell/v2/terminfo/x/xfce
-github.com/gdamore/tcell/v2/terminfo/x/xterm
-github.com/gdamore/tcell/v2/terminfo/x/xterm_kitty
-github.com/gdamore/tcell/v2/terminfo/x/xterm_termite
 # github.com/go-logr/logr v1.2.3
 ## explicit; go 1.16
 github.com/go-logr/logr
@@ -152,6 +97,9 @@ github.com/google/gofuzz
 ## explicit; go 1.12
 github.com/google/gopacket
 github.com/google/gopacket/layers
+# github.com/google/uuid v1.1.2
+## explicit
+github.com/google/uuid
 # github.com/gorilla/websocket v1.4.2
 ## explicit; go 1.12
 github.com/gorilla/websocket
@@ -203,9 +151,6 @@ github.com/json-iterator/go
 # github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
 ## explicit
 github.com/kballard/go-shellquote
-# github.com/lucasb-eyer/go-colorful v1.2.0
-## explicit; go 1.12
-github.com/lucasb-eyer/go-colorful
 # github.com/magiconair/properties v1.8.6
 ## explicit; go 1.13
 github.com/magiconair/properties
@@ -253,22 +198,9 @@ github.com/pelletier/go-toml/v2/internal/tracker
 # github.com/pkg/errors v0.9.1
 ## explicit
 github.com/pkg/errors
-# github.com/pquerna/otp v1.3.0
-## explicit; go 1.12
-github.com/pquerna/otp
-github.com/pquerna/otp/hotp
-github.com/pquerna/otp/totp
-# github.com/rivo/tview v0.0.0-20211001102648-5508f4b00266
-## explicit; go 1.12
-github.com/rivo/tview
 # github.com/rivo/uniseg v0.2.0
 ## explicit; go 1.12
 github.com/rivo/uniseg
-# github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
-## explicit; go 1.13
-github.com/skip2/go-qrcode
-github.com/skip2/go-qrcode/bitset
-github.com/skip2/go-qrcode/reedsolomon
 # github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 ## explicit
 github.com/skratchdot/open-golang/open
@@ -354,8 +286,6 @@ golang.org/x/sys/windows
 golang.org/x/term
 # golang.org/x/text v0.3.7
 ## explicit; go 1.17
-golang.org/x/text/encoding
-golang.org/x/text/encoding/internal/identifier
 golang.org/x/text/secure/bidirule
 golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
@@ -725,38 +655,27 @@ mmesh.dev/m-api-go/grpc/common/empty
 mmesh.dev/m-api-go/grpc/common/jwt
 mmesh.dev/m-api-go/grpc/common/status
 mmesh.dev/m-api-go/grpc/common/version
-mmesh.dev/m-api-go/grpc/network/dns
-mmesh.dev/m-api-go/grpc/network/mmnp/natprobe
-mmesh.dev/m-api-go/grpc/network/mmnp/register
-mmesh.dev/m-api-go/grpc/network/mmnp/routing
 mmesh.dev/m-api-go/grpc/network/mmsp
-mmesh.dev/m-api-go/grpc/network/mmsp/alert
-mmesh.dev/m-api-go/grpc/network/mmsp/command
-mmesh.dev/m-api-go/grpc/network/mmsp/portFwd
-mmesh.dev/m-api-go/grpc/network/mmsp/transfer
+mmesh.dev/m-api-go/grpc/network/mmsp/stream
+mmesh.dev/m-api-go/grpc/network/nac
+mmesh.dev/m-api-go/grpc/network/routing
 mmesh.dev/m-api-go/grpc/resources/account
 mmesh.dev/m-api-go/grpc/resources/billing
 mmesh.dev/m-api-go/grpc/resources/controller
 mmesh.dev/m-api-go/grpc/resources/events
 mmesh.dev/m-api-go/grpc/resources/iam
 mmesh.dev/m-api-go/grpc/resources/iam/auth
-mmesh.dev/m-api-go/grpc/resources/itsm
 mmesh.dev/m-api-go/grpc/resources/location
 mmesh.dev/m-api-go/grpc/resources/messaging
 mmesh.dev/m-api-go/grpc/resources/metrics
-mmesh.dev/m-api-go/grpc/resources/network
-mmesh.dev/m-api-go/grpc/resources/ops/object
-mmesh.dev/m-api-go/grpc/resources/ops/project
-mmesh.dev/m-api-go/grpc/resources/ops/workflow
+mmesh.dev/m-api-go/grpc/resources/ops
 mmesh.dev/m-api-go/grpc/resources/resource
 mmesh.dev/m-api-go/grpc/resources/services
-mmesh.dev/m-api-go/grpc/resources/services/catalog
-mmesh.dev/m-api-go/grpc/resources/services/catalog/cloud/compute
 mmesh.dev/m-api-go/grpc/resources/services/catalog/pro
-mmesh.dev/m-api-go/grpc/resources/services/platform/cloud
-mmesh.dev/m-api-go/grpc/resources/services/platform/crm
 mmesh.dev/m-api-go/grpc/resources/services/thirdParty
 mmesh.dev/m-api-go/grpc/resources/tenant
+mmesh.dev/m-api-go/grpc/resources/topology
+mmesh.dev/m-api-go/grpc/resources/tss
 mmesh.dev/m-api-go/grpc/resources/webhook
 mmesh.dev/m-api-go/grpc/rpc
 # mmesh.dev/m-lib v0.0.0-00010101000000-000000000000 => ../m-lib
@@ -781,14 +700,16 @@ mmesh.dev/m-lib/pkg/k8s/resources/serviceaccount
 mmesh.dev/m-lib/pkg/k8s/resources/statefulset
 mmesh.dev/m-lib/pkg/logging
 mmesh.dev/m-lib/pkg/mm
-mmesh.dev/m-lib/pkg/mmid
 mmesh.dev/m-lib/pkg/mmp
-mmesh.dev/m-lib/pkg/mmp/auth
-mmesh.dev/m-lib/pkg/mmp/cli
-mmesh.dev/m-lib/pkg/mmp/protos/chat
-mmesh.dev/m-lib/pkg/mmp/streaming
-mmesh.dev/m-lib/pkg/mmp/term
-mmesh.dev/m-lib/pkg/mmp/term/pty
+mmesh.dev/m-lib/pkg/mmp/queuing
+mmesh.dev/m-lib/pkg/mmp/stream/protos/command
+mmesh.dev/m-lib/pkg/mmp/stream/protos/command/term
+mmesh.dev/m-lib/pkg/mmp/stream/protos/command/term/pty
+mmesh.dev/m-lib/pkg/mmp/stream/protos/portfwd
+mmesh.dev/m-lib/pkg/mmp/stream/protos/transfer
+mmesh.dev/m-lib/pkg/mmp/stream/utils/auth
+mmesh.dev/m-lib/pkg/mmp/stream/utils/cli
+mmesh.dev/m-lib/pkg/mmp/stream/utils/streaming
 mmesh.dev/m-lib/pkg/resources
 mmesh.dev/m-lib/pkg/runtime
 mmesh.dev/m-lib/pkg/update

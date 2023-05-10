@@ -46,6 +46,5 @@ func init() {
 	billingItemCmd.AddCommand(billingItemListCmd)
 	billingItemCmd.AddCommand(billingItemShowCmd)
 
-	billingItemCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 	billingItemCmd.PersistentFlags().StringVarP(&vars.BilledItemID, "item", "i", "", "billed item identifier")
 }

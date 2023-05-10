@@ -23,9 +23,8 @@ var portFwdCmd = &cobra.Command{
 }
 
 func init() {
-	portFwdCmd.Flags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier (optional)")
 	portFwdCmd.Flags().StringVarP(&vars.TenantID, "tenant", "t", "", "tenant identifier (optional)")
 	portFwdCmd.Flags().StringVarP(&vars.NetID, "network", "n", "", "network identifier (optional)")
-	portFwdCmd.Flags().StringVarP(&vars.VRFID, "subnet", "s", "", "subnet/vrf identifier (optional)")
+	portFwdCmd.Flags().StringVarP(&vars.SubnetID, "subnet", "s", "", "subnet identifier (optional)")
 	portFwdCmd.Flags().StringVarP(&vars.NodeID, "node", "x", "", "node identifier (optional)")
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/AlecAivazis/survey/v2"
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/client/tenant"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
@@ -13,28 +13,28 @@ import (
 )
 
 func (api *API) New() {
-	t := tenant.GetTenant(false)
+	t := tenant.GetTenant()
 
-	n := &network.Network{
+	nnr := &topology.NewNetworkRequest{
 		AccountID: t.AccountID,
 		TenantID:  t.TenantID,
 	}
 
-	n.NetID = input.GetInput("Network ID:", "", "", validNetID)
-
 	helpMsg := "A valid /16 network with format 'n.n.0.0/16' is required"
-	n.NetworkCIDR = input.GetInput("Network CIDR:", helpMsg, "", input.ValidNetwork)
+	nnr.NetworkCIDR = input.GetInput("Network CIDR:", helpMsg, "", input.ValidNetwork)
 
-	n.Description = input.GetInput("Description:", "", n.Description, survey.Required)
+	nnr.Description = input.GetInput("Description:", "", "", survey.Required)
 
-	n.RouteVRFs = input.GetConfirm("Route this network's subnets (VRFs) each other?", n.RouteVRFs)
+	nnr.RoutedSubnets = input.GetConfirm("Route this network's subnets each other?", false)
+
+	nnr.LocationID = getConnectivityZone().LocationID
 
 	s := output.Spinner()
 
-	nxc, grpcConn := grpc.GetCoreAPIClient()
+	nxc, grpcConn := grpc.GetTopologyAPIClient()
 	defer grpcConn.Close()
 
-	n, err := nxc.SetNetwork(context.TODO(), n)
+	n, err := nxc.CreateNetwork(context.TODO(), nnr)
 	if err != nil {
 		s.Stop()
 		status.Error(err, "Unable to create network")

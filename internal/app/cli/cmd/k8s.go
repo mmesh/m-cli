@@ -132,9 +132,8 @@ func init() {
 	k8sPodsCmd.AddCommand(k8sPodsConnectCmd)
 	k8sPodsCmd.AddCommand(k8sPodsDisconnectCmd)
 
-	k8sCmd.PersistentFlags().StringVarP(&vars.AccountID, "account", "a", "", "account identifier")
 	k8sCmd.PersistentFlags().StringVarP(&vars.TenantID, "tenant", "t", "", "tenant identifier")
 	k8sCmd.PersistentFlags().StringVarP(&vars.NetID, "network", "n", "", "network identifier")
-	k8sCmd.PersistentFlags().StringVarP(&vars.VRFID, "subnet", "s", "", "subnet/vrf identifier")
+	k8sCmd.PersistentFlags().StringVarP(&vars.SubnetID, "subnet", "s", "", "subnet identifier")
 	// k8sCmd.PersistentFlags().StringVarP(&vars.NodeID, "node", "x", "", "node identifier")
 }
