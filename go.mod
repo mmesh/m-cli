@@ -7,7 +7,7 @@ replace mmesh.dev/m-api-go => ../m-api/_dist/mmesh.dev/m-api-go
 replace mmesh.dev/m-lib => ../m-lib
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.3.4
+	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/briandowns/spinner v1.19.0
 	github.com/google/uuid v1.1.2
 	github.com/gosuri/uitable v0.0.4
@@ -83,7 +83,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5 // indirect
 	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/text v0.4.0 // indirect
 	golang.org/x/time v0.0.0-20220210224613-90d013bbcef8 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20220519153652-3a47de7e79bd // indirect
