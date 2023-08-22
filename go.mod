@@ -9,7 +9,7 @@ replace mmesh.dev/m-lib => ../m-lib
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.4
 	github.com/briandowns/spinner v1.19.0
-	github.com/google/uuid v1.1.2
+	github.com/google/uuid v1.3.1
 	github.com/gosuri/uitable v0.0.4
 	github.com/hokaccha/go-prettyjson v0.0.0-20210113012101-fb4e108d2519
 	github.com/olekukonko/tablewriter v0.0.5
