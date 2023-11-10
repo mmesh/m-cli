@@ -198,8 +198,8 @@ tasks:
     cmds:
       - task: publish-binaries-stable
 
-  release:
-    desc: Build and release all the packages.
+  tag:
+    desc: Create new git tag.
     vars:
       NEXT_VERSION:
         sh: svu next
@@ -208,6 +208,11 @@ tasks:
       - git tag -sa {{.NEXT_VERSION}} -m "{{.NEXT_VERSION}}"
       - echo "Running git push origin {{.NEXT_VERSION}} to push new tag to GitHub..."
       - git push origin {{.NEXT_VERSION}}
+
+  release:
+    desc: Build and release all the packages.
+    cmds:
+      - task: tag
       - task: docker:docker-login
       # - task: docker:ghcr-login
       - task: _goreleaser
