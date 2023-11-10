@@ -209,7 +209,7 @@ tasks:
       - echo "Running git push origin {{.NEXT_VERSION}} to push new tag to GitHub..."
       - git push origin {{.NEXT_VERSION}}
       - task: docker:docker-login
-      - task: docker:ghcr-login
+      # - task: docker:ghcr-login
       - task: _goreleaser
         vars:
           CMD: release

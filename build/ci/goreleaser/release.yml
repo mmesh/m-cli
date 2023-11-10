@@ -215,14 +215,14 @@ dockers:
       - "mmeshdev/mmeshctl:{{ .Tag }}-{{ .Env.GO_VERSION }}"
       - "mmeshdev/mmeshctl:v{{ .Major }}"
       - "mmeshdev/mmeshctl:v{{ .Major }}.{{ .Minor }}"
-      - "ghcr.io/mmesh/mmeshctl:latest"
-      - "ghcr.io/mmesh/mmeshctl:snapshot"
-      - "ghcr.io/mmesh/mmeshctl:dev"
-      - "ghcr.io/mmesh/mmeshctl:stable"
-      - "ghcr.io/mmesh/mmeshctl:{{ .Tag }}"
-      - "ghcr.io/mmesh/mmeshctl:{{ .Tag }}-{{ .Env.GO_VERSION }}"
-      - "ghcr.io/mmesh/mmeshctl:v{{ .Major }}"
-      - "ghcr.io/mmesh/mmeshctl:v{{ .Major }}.{{ .Minor }}"
+      # - "ghcr.io/mmesh/mmeshctl:latest"
+      # - "ghcr.io/mmesh/mmeshctl:snapshot"
+      # - "ghcr.io/mmesh/mmeshctl:dev"
+      # - "ghcr.io/mmesh/mmeshctl:stable"
+      # - "ghcr.io/mmesh/mmeshctl:{{ .Tag }}"
+      # - "ghcr.io/mmesh/mmeshctl:{{ .Tag }}-{{ .Env.GO_VERSION }}"
+      # - "ghcr.io/mmesh/mmeshctl:v{{ .Major }}"
+      # - "ghcr.io/mmesh/mmeshctl:v{{ .Major }}.{{ .Minor }}"
     use: buildx
     goos: linux
     goarch: amd64
