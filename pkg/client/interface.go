@@ -5,7 +5,7 @@ import (
 	"mmesh.dev/m-cli/pkg/client/alert"
 	"mmesh.dev/m-cli/pkg/client/auth"
 	"mmesh.dev/m-cli/pkg/client/billing"
-	"mmesh.dev/m-cli/pkg/client/command"
+	// "mmesh.dev/m-cli/pkg/client/command"
 	// "mmesh.dev/m-cli/pkg/client/iam/acl"
 	// "mmesh.dev/m-cli/pkg/client/iam/role"
 	// "mmesh.dev/m-cli/pkg/client/iam/sg"
@@ -96,6 +96,6 @@ func Kubernetes() k8s.Interface {
 	return &k8s.API{}
 }
 
-func Command() command.Interface {
-	return &command.API{}
-}
+// func Command() command.Interface {
+// 	return &command.API{}
+// }

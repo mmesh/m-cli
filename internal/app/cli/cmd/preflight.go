@@ -53,7 +53,8 @@ func preflight() {
 
 func autoLogin() {
 	if client.Auth().LoginRequired() {
-		client.Auth().Login(login.NewRequest(), true)
+		client.Auth().OTPSignin(login.NewRequestWithOTP(), true)
+		// client.Auth().LoginWithToken(login.NewRequestWithToken(), true)
 	}
 }
 

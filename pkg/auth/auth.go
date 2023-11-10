@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/resources/iam/auth"
@@ -15,8 +16,11 @@ import (
 
 type Credentials struct {
 	AccountID    string `json:"accountID,omitempty"`
+	LocationID   string `json:"locationID,omitempty"`
 	FederationID string `json:"federationID,omitempty"`
 	Key          string `json:"key,omitempty"`
+	ExpiresAt    int64  `json:"expiresAt,omitempty"`
+	UserID       string `json:"userID,omitempty"`
 }
 
 // GetNoAuthKey gets void authKey
@@ -36,6 +40,30 @@ func GetAuthKey() (*auth.AuthKey, error) {
 	return &auth.AuthKey{Key: cred.Key}, nil
 }
 
+func GetAuthExpiresAt() (*time.Time, error) {
+	cred, err := getCredentials()
+	if err != nil {
+		return nil, errors.Wrapf(err, "[%v] function getCredentials()", errors.Trace())
+	}
+
+	tm := time.UnixMilli(cred.ExpiresAt)
+
+	return &tm, nil
+}
+
+func GetUserID() (string, error) {
+	cred, err := getCredentials()
+	if err != nil {
+		return "", errors.Wrapf(err, "[%v] function getCredentials()", errors.Trace())
+	}
+
+	if len(cred.UserID) == 0 {
+		return "", fmt.Errorf("missing userID")
+	}
+
+	return cred.UserID, nil
+}
+
 func GetAccountID() (string, error) {
 	if len(vars.AccountID) > 0 {
 		return vars.AccountID, nil
@@ -52,6 +80,25 @@ func GetAccountID() (string, error) {
 
 	return cred.AccountID, nil
 }
+
+/*
+func getLocationID() (string, error) {
+	if len(vars.LocationID) > 0 {
+		return vars.LocationID, nil
+	}
+
+	cred, err := getCredentials()
+	if err != nil {
+		return "", errors.Wrapf(err, "[%v] function getCredentials()", errors.Trace())
+	}
+
+	if len(cred.LocationID) == 0 {
+		return "", fmt.Errorf("missing locationID")
+	}
+
+	return cred.LocationID, nil
+}
+*/
 
 func getFederationID() (string, error) {
 	if len(vars.FederationID) > 0 {
