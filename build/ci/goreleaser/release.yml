@@ -78,7 +78,7 @@ checksum:
 signs:
   - cmd: cosign
     env:
-      - COSIGN_EXPERIMENTAL=1
+      # - COSIGN_EXPERIMENTAL=1
     stdin: "{{ .Env.COSIGN_PWD }}"
     certificate: "${artifact}.pem"
     args:
@@ -87,18 +87,22 @@ signs:
       - "--output-certificate=${certificate}"
       - "--output-signature=${signature}"
       - "${artifact}"
+      - "--yes" # needed on cosign 2.0.0+
     artifacts: checksum
     output: false
 
 docker_signs:
   - cmd: cosign
     env:
-      - COSIGN_EXPERIMENTAL=1
-    artifacts: manifests
-    output: false
+      # - COSIGN_EXPERIMENTAL=1
+    stdin: "{{ .Env.COSIGN_PWD }}"
     args:
       - "sign"
+      - "--key=/cosign/cosign.key"
       - "${artifact}"
+      - "--yes" # needed on cosign 2.0.0+
+    artifacts: manifests
+    output: false
 
 sboms:
   - artifacts: archive
@@ -219,7 +223,7 @@ dockers:
       - "ghcr.io/mmesh/mmeshctl:{{ .Tag }}-{{ .Env.GO_VERSION }}"
       - "ghcr.io/mmesh/mmeshctl:v{{ .Major }}"
       - "ghcr.io/mmesh/mmeshctl:v{{ .Major }}.{{ .Minor }}"
-    use: docker
+    use: buildx
     goos: linux
     goarch: amd64
     build_flag_templates:
