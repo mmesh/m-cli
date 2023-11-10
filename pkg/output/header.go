@@ -12,7 +12,7 @@ func AppHeader(output bool) string {
 
 func logo(output bool) string {
 	website := fmt.Sprintf("%s %s", colors.Black("Main Website: "), colors.DarkWhite("https://mmesh.io"))
-	docsite := fmt.Sprintf("%s %s", colors.Black("Documentation:"), colors.DarkWhite("https://docs.mmesh.io"))
+	docsite := fmt.Sprintf("%s %s", colors.Black("Documentation:"), colors.DarkWhite("https://mmesh.io/docs"))
 	// discord := fmt.Sprintf("%s %s", colors.Black("Discord:      "), colors.DarkWhite("https://mmesh.io/discord"))
 
 	if output {

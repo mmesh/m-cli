@@ -86,14 +86,8 @@ func authResponse(resp *auth_pb.AuthenticationResponse, verbose bool) {
 	switch resp.Result {
 	case auth_pb.AuthenticationResult_AUTHENTICATION_FAILED:
 		msg.Error("Login failed")
-	// case auth_pb.AuthenticationResult_ACCOUNT_UNCONFIRMED:
-	// 	// unconfirmedAccount()
-	// 	msg.Error("Account not confirmed")
 	case auth_pb.AuthenticationResult_ACCOUNT_DISABLED:
 		msg.Error("Account disabled, please contact customer service")
-	// case auth_pb.AuthenticationResult_IAM_USER_UNCONFIRMED:
-	// 	// unconfirmedUser()
-	// 	msg.Error("User not confirmed")
 	case auth_pb.AuthenticationResult_USER_DISABLED:
 		msg.Error("User disabled, please contact your mmesh account administrator")
 	}

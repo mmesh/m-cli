@@ -59,12 +59,6 @@ func getControllerAPIClientParams() *apiClientParameters {
 
 	p.grpcServer = controllerEndpoint
 
-	// p.grpcServer = viper.GetString("controller.endpoint")
-	// if len(p.grpcServer) == 0 {
-	// 	msg.Error("Missing configuration. Check config file.")
-	// 	os.Exit(1)
-	// }
-
 	return p
 }
 
