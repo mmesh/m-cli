@@ -647,94 +647,6 @@ func local_request_IAMAPI_NewUserToken_0(ctx context.Context, marshaler runtime.
 
 }
 
-func request_IAMAPI_SetUserEmail_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.SetUserEmailRequest
-	var metadata runtime.ServerMetadata
-
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["accountID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
-	}
-
-	protoReq.AccountID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
-	}
-
-	val, ok = pathParams["userID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "userID")
-	}
-
-	protoReq.UserID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "userID", err)
-	}
-
-	msg, err := client.SetUserEmail(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_IAMAPI_SetUserEmail_0(ctx context.Context, marshaler runtime.Marshaler, server IAMAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.SetUserEmailRequest
-	var metadata runtime.ServerMetadata
-
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["accountID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
-	}
-
-	protoReq.AccountID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
-	}
-
-	val, ok = pathParams["userID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "userID")
-	}
-
-	protoReq.UserID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "userID", err)
-	}
-
-	msg, err := server.SetUserEmail(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
 func request_IAMAPI_SetUserPermissions_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq iam.SetUserPermissionsRequest
 	var metadata runtime.ServerMetadata
@@ -892,7 +804,7 @@ func local_request_IAMAPI_ListSecurityGroups_0(ctx context.Context, marshaler ru
 }
 
 var (
-	filter_IAMAPI_GetSecurityGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "securityGroupID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_IAMAPI_GetSecurityGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "securityGroupID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_IAMAPI_GetSecurityGroup_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1070,7 +982,7 @@ func local_request_IAMAPI_SetSecurityGroup_0(ctx context.Context, marshaler runt
 }
 
 var (
-	filter_IAMAPI_DeleteSecurityGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "securityGroupID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_IAMAPI_DeleteSecurityGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "securityGroupID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_IAMAPI_DeleteSecurityGroup_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1228,7 +1140,7 @@ func local_request_IAMAPI_ListRoles_0(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_IAMAPI_GetRole_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "roleID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_IAMAPI_GetRole_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "roleID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_IAMAPI_GetRole_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1406,7 +1318,7 @@ func local_request_IAMAPI_SetRole_0(ctx context.Context, marshaler runtime.Marsh
 }
 
 var (
-	filter_IAMAPI_DeleteRole_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "roleID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_IAMAPI_DeleteRole_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "roleID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_IAMAPI_DeleteRole_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1564,7 +1476,7 @@ func local_request_IAMAPI_ListACLs_0(ctx context.Context, marshaler runtime.Mars
 }
 
 var (
-	filter_IAMAPI_GetACL_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "ACLID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_IAMAPI_GetACL_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "ACLID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_IAMAPI_GetACL_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1742,7 +1654,7 @@ func local_request_IAMAPI_SetACL_0(ctx context.Context, marshaler runtime.Marsha
 }
 
 var (
-	filter_IAMAPI_DeleteACL_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "ACLID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_IAMAPI_DeleteACL_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "ACLID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_IAMAPI_DeleteACL_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2059,31 +1971,6 @@ func RegisterIAMAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 		}
 
 		forward_IAMAPI_NewUserToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("PATCH", pattern_IAMAPI_SetUserEmail_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.IAMAPI/SetUserEmail", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{userID}:email"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_IAMAPI_SetUserEmail_0(annotatedContext, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_IAMAPI_SetUserEmail_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -2418,7 +2305,7 @@ func RegisterIAMAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 // RegisterIAMAPIHandlerFromEndpoint is same as RegisterIAMAPIHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterIAMAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}
@@ -2648,28 +2535,6 @@ func RegisterIAMAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 		}
 
 		forward_IAMAPI_NewUserToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("PATCH", pattern_IAMAPI_SetUserEmail_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.IAMAPI/SetUserEmail", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{userID}:email"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_IAMAPI_SetUserEmail_0(annotatedContext, inboundMarshaler, client, req, pathParams)
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_IAMAPI_SetUserEmail_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -2981,8 +2846,6 @@ var (
 
 	pattern_IAMAPI_NewUserToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"api", "v1", "accounts", "accountID", "iam", "users", "userID"}, "token"))
 
-	pattern_IAMAPI_SetUserEmail_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"api", "v1", "accounts", "accountID", "iam", "users", "userID"}, "email"))
-
 	pattern_IAMAPI_SetUserPermissions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"api", "v1", "accounts", "accountID", "iam", "users", "userID"}, "perms"))
 
 	pattern_IAMAPI_ListSecurityGroups_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5}, []string{"api", "v1", "accounts", "accountID", "iam", "securityGroups"}, ""))
@@ -3028,8 +2891,6 @@ var (
 	forward_IAMAPI_DisableUser_0 = runtime.ForwardResponseMessage
 
 	forward_IAMAPI_NewUserToken_0 = runtime.ForwardResponseMessage
-
-	forward_IAMAPI_SetUserEmail_0 = runtime.ForwardResponseMessage
 
 	forward_IAMAPI_SetUserPermissions_0 = runtime.ForwardResponseMessage
 
