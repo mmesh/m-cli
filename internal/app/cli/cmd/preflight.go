@@ -5,12 +5,9 @@ import (
 	"os"
 
 	"mmesh.dev/m-cli/internal/app/cli/auth/login"
-	"mmesh.dev/m-cli/pkg/auth"
 	"mmesh.dev/m-cli/pkg/client"
 	"mmesh.dev/m-cli/pkg/output"
-	"mmesh.dev/m-cli/pkg/status"
 	"mmesh.dev/m-lib/pkg/utils/colors"
-	"mmesh.dev/m-lib/pkg/utils/msg"
 	"mmesh.dev/m-lib/pkg/version"
 )
 
@@ -29,14 +26,14 @@ func appHeader(str string) string {
 func preflightNoLogin() {
 	header()
 
-	if !isConfigured {
-		notConfigured()
-		os.Exit(0)
-	}
+	// if !isConfigured {
+	// 	notConfigured()
+	// 	os.Exit(0)
+	// }
 
-	if _, err := auth.GetAccountID(); err != nil {
-		status.Error(fmt.Errorf("missing accountID"), "Unable to get account")
-	}
+	// if _, err := auth.GetAccountID(); err != nil {
+	// 	status.Error(fmt.Errorf("missing accountID"), "Unable to get account")
+	// }
 }
 
 func preflight() {
@@ -46,7 +43,7 @@ func preflight() {
 		// silent auto-login
 		autoLogin()
 	} else {
-		notConfigured()
+		// notConfigured()
 		os.Exit(0)
 	}
 }
@@ -58,6 +55,7 @@ func autoLogin() {
 	}
 }
 
+/*
 func notConfigured() {
 	msg.Error("Configuration not detected")
 
@@ -67,3 +65,4 @@ func notConfigured() {
 	msg := fmt.Sprintf("%s %s%s%s", colors.Black("Please configure the client with"), q, cmd, q)
 	fmt.Printf("%s %s\n\n", colors.Cyan("🢂"), msg)
 }
+*/

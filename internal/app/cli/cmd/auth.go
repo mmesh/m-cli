@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	// "mmesh.dev/m-cli/internal/app/cli/auth/login"
+	"mmesh.dev/m-cli/internal/app/cli/auth/login"
 	"mmesh.dev/m-cli/pkg/client"
 )
 
@@ -13,7 +13,6 @@ var authCmd = &cobra.Command{
 	Long:  appHeader(`User session authentication commands.`),
 }
 
-/*
 // authLoginCmd represents the login command
 var authLoginCmd = &cobra.Command{
 	Use:   "login",
@@ -24,10 +23,9 @@ var authLoginCmd = &cobra.Command{
 		preflightNoLogin()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		client.Auth().Login(login.NewRequest(), true)
+		client.Auth().OTPSignin(login.NewRequestWithOTP(), true)
 	},
 }
-*/
 
 // authLogoutCmd represents the logout command
 var authLogoutCmd = &cobra.Command{
@@ -92,7 +90,7 @@ var authTokenCmd = &cobra.Command{
 */
 
 func init() {
-	// authCmd.AddCommand(authLoginCmd)
+	authCmd.AddCommand(authLoginCmd)
 	authCmd.AddCommand(authLogoutCmd)
 	// authCmd.AddCommand(authPasswordResetCmd)
 	// authCmd.AddCommand(authConfirmationMailResendCmd)

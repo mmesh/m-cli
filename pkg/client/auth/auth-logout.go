@@ -12,6 +12,16 @@ import (
 )
 
 func (api *API) Logout() {
+	apiKeyFile, err := auth.GetAPIKeyFile()
+	if err != nil {
+		status.Error(err, "Unable to find API key")
+	}
+
+	if _, err := os.Stat(apiKeyFile); os.IsNotExist(err) {
+		output.Logout()
+		return
+	}
+
 	s := output.Spinner()
 
 	nxc, grpcConn := grpc.GetManagerAPIClient(true)
@@ -46,12 +56,6 @@ func (api *API) Logout() {
 		grpcConn.Close()
 		s.Stop()
 		status.Error(err, "Unable to signout")
-	}
-
-	apiKeyFile, err := auth.GetAPIKeyFile()
-	if err != nil {
-		s.Stop()
-		status.Error(err, "Unable to find API key")
 	}
 
 	if err := os.RemoveAll(apiKeyFile); err != nil {
