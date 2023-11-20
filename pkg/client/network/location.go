@@ -46,7 +46,7 @@ func getConnectivityZone() *location.Location {
 }
 
 func listConnectivityLocations() []*location.Location {
-	nxc, grpcConn := grpc.GetManagerAPIClient(false)
+	nxc, grpcConn := grpc.GetManagerAPIClient(true)
 	defer grpcConn.Close()
 
 	lr := &location.ListLocationsRequest{
