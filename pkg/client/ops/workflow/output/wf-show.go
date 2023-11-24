@@ -142,16 +142,18 @@ func (api *API) Show(wf *ops.Workflow) {
 		// t.Header(colors.Black("Tenant"), colors.Black("Network"), colors.Black("Subnet"), colors.Black("Node"))
 
 		// t.AddRow(colors.InvertedBlack("Tenant"), colors.InvertedBlack("Network"), colors.InvertedBlack("Subnet"), colors.InvertedBlack("Node"))
-		t.AddRow(colors.Black("Tenant"), colors.Black("Network"), colors.Black("Subnet"), colors.Black("Node"))
-		t.AddRow(colors.Black("------"), colors.Black("-------"), colors.Black("------"), colors.Black("----"))
+		// t.AddRow(colors.Black("Tenant"), colors.Black("Network"), colors.Black("Subnet"), colors.Black("Node"))
+		// t.AddRow(colors.Black("------"), colors.Black("-------"), colors.Black("------"), colors.Black("----"))
+		t.AddRow(colors.Black("Tenant"), colors.Black("Node"))
+		t.AddRow(colors.Black("------"), colors.Black("----"))
 
 		for _, nr := range wf.Targets {
 			tenantName := tenant.FetchTenant(nr.TenantID).Name
 			nodeName := node.FetchNode(nr).Cfg.NodeName
 			t.AddRow(
 				colors.DarkWhite(tenantName),
-				colors.DarkWhite(nr.NetID),
-				colors.DarkWhite(nr.SubnetID),
+				// colors.DarkWhite(nr.NetID),
+				// colors.DarkWhite(nr.SubnetID),
 				// colors.DarkWhite(output.Fit(n.NodeID, 32)),
 				colors.DarkWhite(output.Fit(nodeName, 32)),
 				// colors.DarkWhite(" "),

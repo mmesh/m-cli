@@ -26,8 +26,12 @@ func agentInfo(n *topology.Node) {
 
 	// t.AddRow(colors.Black("Account ID"), colors.DarkWhite(n.AccountID))
 	t.AddRow(colors.Black("Tenant ID"), colors.DarkWhite(n.TenantID))
-	t.AddRow(colors.Black("Network ID"), colors.DarkWhite(n.NetID))
-	t.AddRow(colors.Black("Subnet ID"), colors.DarkWhite(n.SubnetID))
+	if len(n.Cfg.NetID) > 0 {
+		t.AddRow(colors.Black("Network ID"), colors.DarkWhite(n.Cfg.NetID))
+	}
+	if len(n.Cfg.SubnetID) > 0 {
+		t.AddRow(colors.Black("Subnet ID"), colors.DarkWhite(n.Cfg.SubnetID))
+	}
 	t.AddRow(colors.Black("Node ID"), colors.DarkWhite(n.NodeID))
 	// t.AddRow()
 	t.AddRow(colors.Black("Node Name"), colors.DarkWhite(ncfg.NodeName))

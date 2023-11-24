@@ -29,8 +29,8 @@ func (api *API) Show(tl *ops.TaskLog) {
 	// t.AddRow(colors.DarkWhite("Target"))
 	tenantName := tenant.FetchTenant(tl.TenantID).Name
 	t.AddRow(colors.Black("Tenant"), colors.DarkWhite(tenantName))
-	t.AddRow(colors.Black("Network"), colors.DarkWhite(tl.NetID))
-	t.AddRow(colors.Black("Subnet"), colors.DarkWhite(tl.SubnetID))
+	// t.AddRow(colors.Black("Network"), colors.DarkWhite(tl.NetID))
+	// t.AddRow(colors.Black("Subnet"), colors.DarkWhite(tl.SubnetID))
 	// t.AddRow(colors.Black("Node ID"), colors.DarkWhite(tl.NodeID))
 	t.AddRow(colors.Black("Node"), colors.DarkWhite(tl.NodeName))
 

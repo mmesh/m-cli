@@ -34,9 +34,9 @@ func (api *API) DeleteEndpoint() {
 		NodeReq: &topology.NodeReq{
 			AccountID: n.AccountID,
 			TenantID:  n.TenantID,
-			NetID:     n.NetID,
-			SubnetID:  n.SubnetID,
-			NodeID:    n.NodeID,
+			// NetID:     n.NetID,
+			// SubnetID:  n.SubnetID,
+			NodeID: n.NodeID,
 		},
 		EndpointID: eID,
 	}

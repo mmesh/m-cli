@@ -83,7 +83,7 @@ func nodes() map[string]*topology.Node {
 	nxc, grpcConn := grpc.GetTopologyAPIClient()
 	defer grpcConn.Close()
 
-	lr := &topology.ListNodesRequest{
+	lr := &topology.ListNodesBySubnetRequest{
 		Meta: &resource.ListRequest{},
 		Subnet: &topology.SubnetReq{
 			AccountID: s.AccountID,
@@ -96,9 +96,9 @@ func nodes() map[string]*topology.Node {
 	nodes := make(map[string]*topology.Node) // map[nodeName]*topology.Node
 
 	for {
-		nl, err := nxc.ListNodes(context.TODO(), lr)
+		nl, err := nxc.ListNodesBySubnet(context.TODO(), lr)
 		if err != nil {
-			status.Error(err, "Unable to list nodes")
+			status.Error(err, "Unable to list nodes by subnet")
 		}
 
 		for _, n := range nl.Nodes {
