@@ -33,6 +33,9 @@ func (a *API) NewContainer(i interface{}, appLabel config.AppLabel) *corev1.Cont
 					"net_admin",
 				},
 			},
+			RunAsUser: mm.Int64(0),
+			RunAsGroup: mm.Int64(0),
+			RunAsNonRoot: mm.Bool(false),
 		},
 		Args: []string{
 			"start",

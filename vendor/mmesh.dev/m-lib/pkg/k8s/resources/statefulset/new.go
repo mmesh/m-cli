@@ -80,6 +80,9 @@ func (a *API) New(i interface{}, appLabel config.AppLabel) *appsv1.StatefulSet {
 										"net_admin",
 									},
 								},
+								RunAsUser: mm.Int64(0),
+								RunAsGroup: mm.Int64(0),
+								RunAsNonRoot: mm.Bool(false),
 							},
 							Args: []string{
 								"start",

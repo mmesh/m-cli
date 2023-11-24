@@ -23,7 +23,7 @@ func (a *API) NewLabels(i interface{}, appLabel config.AppLabel) map[string]stri
 		"mmesh-type":       config.GetInstanceLabelType(ni.Type),
 		"mmesh-account":    ni.Node.AccountID,
 		"mmesh-tenant":     ni.Node.TenantID,
-		"mmesh-network":    ni.Node.NetID,
-		"mmesh-subnet":     ni.Node.SubnetID,
+		"mmesh-network":    ni.Node.Cfg.NetID,
+		"mmesh-subnet":     ni.Node.Cfg.SubnetID,
 	}
 }
