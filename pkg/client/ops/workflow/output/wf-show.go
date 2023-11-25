@@ -120,6 +120,9 @@ func (api *API) Show(wf *ops.Workflow) {
 		t.AddRow(colors.Black("---------"), colors.Black("-------"), colors.Black("----"), colors.Black("---"), colors.Black("---"))
 
 		for _, task := range wf.Tasks {
+			if task.Command == nil {
+				continue
+			}
 			taskName := colors.DarkWhite(task.Name)
 			taskCmd := colors.DarkWhite(task.Command.Cmd)
 			taskArgs := colors.DarkWhite(strings.Join(task.Command.Args, " "))
