@@ -127,7 +127,7 @@ func getNetworkFilterEndpoint(dst bool, def string, af ipnet.AddressFamily) *nfE
 	endpObj = input.GetSelect(inputText, "", endpOpts, survey.Required)
 
 	if endpObj == string(endpointObject) {
-		n := node.GetNode(false)
+		n := node.GetNodeBySubnet(false)
 		e := node.GetEndpoint(n)
 		nfEndp = &nfEndpoint{
 			objectType: endpointObject,

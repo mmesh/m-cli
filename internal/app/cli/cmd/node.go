@@ -40,9 +40,10 @@ var nodeGetInstallationWebhookCmd = &cobra.Command{
 }
 */
 
-// nodeListCmd represents the admin/networks/vrfs list verb
+var nodeListByTenant, nodeListBySubnet bool
+
 var nodeListCmd = &cobra.Command{
-	Use:   "list",
+	Use:   "list --by-tenant | --by-subnet",
 	Short: "List nodes",
 	Long:  appHeader(`List nodes.`),
 	Args:  cobra.NoArgs,
@@ -50,11 +51,14 @@ var nodeListCmd = &cobra.Command{
 		preflight()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		client.Node().List()
+		if nodeListBySubnet {
+			client.Node().ListBySubnet()
+		} else if nodeListByTenant {
+			client.Node().ListByTenant()
+		}
 	},
 }
 
-// nodeShowCmd represents the network/node show verb
 var nodeShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show node",
@@ -68,10 +72,35 @@ var nodeShowCmd = &cobra.Command{
 	},
 }
 
-// nodeDeleteCmd represents the network/nodes delete verb
+var nodeConnectCmd = &cobra.Command{
+	Use:   "connect",
+	Short: "Connect (move) node to a subnet",
+	Long:  appHeader(`Connect (move) node to a subnet.`),
+	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		client.Node().Connect()
+	},
+}
+
+var nodeDisconnectCmd = &cobra.Command{
+	Use:   "disable-networking",
+	Short: "Disable mmesh networking and disconnect node from a subnet",
+	Long:  appHeader(`Disable mmesh networking and disconnect node from a subnet.`),
+	Args:  cobra.NoArgs,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		preflight()
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		client.Node().Disconnect()
+	},
+}
+
 var nodeDeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: "Remove node",
+	Short: "Remove node from database",
 	Long:  appHeader(`Remove node from database.`),
 	Args:  cobra.NoArgs,
 	PreRun: func(cmd *cobra.Command, args []string) {
@@ -82,7 +111,6 @@ var nodeDeleteCmd = &cobra.Command{
 	},
 }
 
-// nodeMetricsCmd represents the network/node metrics verb
 var nodeMetricsCmd = &cobra.Command{
 	Use:   "metrics",
 	Short: "Show detailed metrics",
@@ -96,7 +124,6 @@ var nodeMetricsCmd = &cobra.Command{
 	},
 }
 
-// nodeResetTrafficMatrixCmd represents the network/nodes delete verb
 // var nodeResetTrafficMatrixCmd = &cobra.Command{
 // 	Use:   "reset-traffic-matrix",
 // 	Short: "Reset traffic matrix metrics",
@@ -110,7 +137,6 @@ var nodeMetricsCmd = &cobra.Command{
 // 	},
 // }
 
-// nodeShowEndpointCmd represents the network/node show-endpoint verb
 var nodeShowEndpointCmd = &cobra.Command{
 	Use:   "show-endpoint",
 	Short: "Show network endpoint details",
@@ -124,7 +150,6 @@ var nodeShowEndpointCmd = &cobra.Command{
 	},
 }
 
-// nodeDeleteEndpointCmd represents the network/node delete-endpoint verb
 var nodeDeleteEndpointCmd = &cobra.Command{
 	Use:   "delete-endpoint",
 	Short: "Delete network endpoint",
@@ -143,6 +168,8 @@ func init() {
 	// nodeCmd.AddCommand(nodeGetInstallationWebhookCmd)
 	nodeCmd.AddCommand(nodeListCmd)
 	nodeCmd.AddCommand(nodeShowCmd)
+	nodeCmd.AddCommand(nodeConnectCmd)
+	nodeCmd.AddCommand(nodeDisconnectCmd)
 	nodeCmd.AddCommand(nodeDeleteCmd)
 	nodeCmd.AddCommand(nodeMetricsCmd)
 	// nodeCmd.AddCommand(nodeResetTrafficMatrixCmd)
@@ -153,4 +180,8 @@ func init() {
 	nodeCmd.PersistentFlags().StringVarP(&vars.NetID, "network", "n", "", "network identifier")
 	nodeCmd.PersistentFlags().StringVarP(&vars.SubnetID, "subnet", "s", "", "subnet identifier")
 	nodeCmd.PersistentFlags().StringVarP(&vars.NodeID, "node", "x", "", "node identifier")
+
+	nodeListCmd.Flags().BoolVar(&nodeListByTenant, "by-tenant", false, "list nodes by tenant")
+	nodeListCmd.Flags().BoolVar(&nodeListBySubnet, "by-subnet", false, "list nodes by subnet")
+	nodeListCmd.MarkFlagsOneRequired("by-tenant", "by-subnet")
 }

@@ -1,6 +1,11 @@
 package node
 
-func (api *API) List() {
-	//output.Show(nl)
-	Output().List(nodes())
+func (api *API) ListByTenant() {
+	// output.Show(nl)
+	Output().List(nodesByTenant())
+}
+
+func (api *API) ListBySubnet() {
+	// output.Show(nl)
+	Output().List(nodesBySubnet())
 }

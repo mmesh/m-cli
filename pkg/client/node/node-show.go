@@ -1,5 +1,5 @@
 package node
 
 func (api *API) Show() {
-	Output().Show(GetNode(false))
+	Output().Show(GetNodeByTenant(false, nil))
 }

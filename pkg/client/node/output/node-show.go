@@ -9,7 +9,6 @@ import (
 	"mmesh.dev/m-cli/pkg/client/event"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-lib/pkg/utils/colors"
-	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
 func (api *API) Show(n *topology.Node) {
@@ -64,26 +63,23 @@ func (api *API) Show(n *topology.Node) {
 	// 	fmt.Println()
 	// }
 
-	output.SubTitleT2("Node Endpoints")
+	if len(n.Endpoints) > 0 {
+		output.SubTitleT2("Node Endpoints")
 
-	if len(n.Endpoints) == 0 {
-		msg.Alert("No endpoint data found, node probably offline")
-		return
+		t := uitable.New()
+		t.MaxColWidth = 36
+		t.Wrap = false
+
+		// t.AddRow(output.TableHeader("Endpoint ID / FQDN"), output.TableHeader("IPv4"), output.TableHeader("IPv6"))
+		t.AddRow(colors.Black("Endpoint ID / FQDN"), colors.Black("IPv4"), colors.Black("IPv6"))
+		t.AddRow(colors.Black("------------------"), colors.Black("----"), colors.Black("----"))
+		for _, e := range n.Endpoints {
+			fqdn := colors.DarkWhite(e.DNSName + ".mmesh.local")
+			t.AddRow(e.EndpointID)
+			t.AddRow(fqdn, colors.DarkWhite(e.IPv4), e.IPv6)
+		}
+
+		fmt.Println(t)
+		fmt.Println()
 	}
-
-	t := uitable.New()
-	t.MaxColWidth = 36
-	t.Wrap = false
-
-	// t.AddRow(output.TableHeader("Endpoint ID / FQDN"), output.TableHeader("IPv4"), output.TableHeader("IPv6"))
-	t.AddRow(colors.Black("Endpoint ID / FQDN"), colors.Black("IPv4"), colors.Black("IPv6"))
-	t.AddRow(colors.Black("------------------"), colors.Black("----"), colors.Black("----"))
-	for _, e := range n.Endpoints {
-		fqdn := colors.DarkWhite(e.DNSName + ".mmesh.local")
-		t.AddRow(e.EndpointID)
-		t.AddRow(fqdn, colors.DarkWhite(e.IPv4), e.IPv6)
-	}
-
-	fmt.Println(t)
-	fmt.Println()
 }

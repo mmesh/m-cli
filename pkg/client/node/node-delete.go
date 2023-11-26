@@ -10,7 +10,7 @@ import (
 )
 
 func (api *API) Delete() {
-	n := GetNode(false)
+	n := GetNodeByTenant(false, nil)
 
 	output.ConfirmDeletion()
 

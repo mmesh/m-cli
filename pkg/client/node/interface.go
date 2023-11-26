@@ -5,9 +5,12 @@ import "mmesh.dev/m-cli/pkg/client/node/output"
 type Interface interface {
 	AddNode()
 	// GetInstallationWebhook()
-	List()
+	ListByTenant()
+	ListBySubnet()
 	Show()
 	Delete()
+	Connect()
+	Disconnect()
 	Metrics()
 	// ResetNetworkTraffic()
 	ShowEndpoint()

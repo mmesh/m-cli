@@ -7,22 +7,23 @@ import (
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
+	"mmesh.dev/m-lib/pkg/mm"
 )
 
 func (api *API) ShowEndpoint() {
-	n := GetNode(false)
+	n := GetNodeByTenant(false, mm.Bool(true))
 	eID := GetEndpoint(n).EndpointID
 
 	for endpointID, e := range n.Endpoints {
 		if endpointID == eID {
-			//output.Show(e)
+			// output.Show(e)
 			Output().ShowEndpoint(e)
 		}
 	}
 }
 
 func (api *API) DeleteEndpoint() {
-	n := GetNode(false)
+	n := GetNodeByTenant(false, mm.Bool(true))
 	eID := GetEndpoint(n).EndpointID
 
 	s := output.Spinner()
@@ -34,9 +35,7 @@ func (api *API) DeleteEndpoint() {
 		NodeReq: &topology.NodeReq{
 			AccountID: n.AccountID,
 			TenantID:  n.TenantID,
-			// NetID:     n.NetID,
-			// SubnetID:  n.SubnetID,
-			NodeID: n.NodeID,
+			NodeID:    n.NodeID,
 		},
 		EndpointID: eID,
 	}

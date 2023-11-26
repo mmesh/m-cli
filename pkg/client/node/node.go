@@ -8,19 +8,52 @@ import (
 
 	"github.com/AlecAivazis/survey/v2"
 	"mmesh.dev/m-api-go/grpc/resources/resource"
+	tenant_pb "mmesh.dev/m-api-go/grpc/resources/tenant"
 	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/client/subnet"
+	"mmesh.dev/m-cli/pkg/client/tenant"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/status"
 	"mmesh.dev/m-cli/pkg/vars"
+	"mmesh.dev/m-lib/pkg/mm"
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
-func GetNode(edit bool) *topology.Node {
-	nl := nodes()
+func GetNodeByTenant(edit bool, connected *bool) *topology.Node {
+	nl := nodesByTenant()
 
+	return getNode(nl, edit, connected)
+}
+
+func GetNodeBySubnet(edit bool) *topology.Node {
+	nl := nodesBySubnet()
+
+	return getNode(nl, edit, mm.Bool(true))
+}
+
+func GetEndpoint(n *topology.Node) *topology.Endpoint {
+	var eID string
+	var endpoints []string
+
+	for endpointID := range n.Endpoints {
+		endpoints = append(endpoints, endpointID)
+	}
+
+	sort.Strings(endpoints)
+
+	if len(endpoints) == 0 {
+		msg.Info("No objects found")
+		os.Exit(1)
+	}
+
+	eID = input.GetSelect("Endpoints:", "", endpoints, survey.Required)
+
+	return n.Endpoints[eID]
+}
+
+func getNode(nl map[string]*topology.Node, edit bool, connected *bool) *topology.Node {
 	if len(nl) == 0 {
 		msg.Info("No objects found")
 		os.Exit(1)
@@ -30,7 +63,22 @@ func GetNode(edit bool) *topology.Node {
 	nodesOpts := make([]string, 0)
 	nodes := make(map[string]*topology.Node)
 
+	var getAll, getConnected bool
+	if connected != nil {
+		getConnected = *connected
+	} else {
+		getAll = true
+	}
+
 	for nodeName, n := range nl {
+		if !getAll {
+			if getConnected && len(n.Cfg.SubnetID) == 0 {
+				continue
+			}
+			if !getConnected && len(n.Cfg.SubnetID) > 0 {
+				continue
+			}
+		}
 		// nodeOptID = nodeName
 		nodeOptID = fmt.Sprintf("[%s] %s", nodeName, n.Cfg.Description)
 		nodesOpts = append(nodesOpts, nodeOptID)
@@ -54,31 +102,55 @@ func GetNode(edit bool) *topology.Node {
 	return nodes[nodeOptID]
 }
 
-func GetEndpoint(n *topology.Node) *topology.Endpoint {
-	var eID string
-	var endpoints []string
+func nodesByTenant() map[string]*topology.Node {
+	t := tenant.GetTenant()
 
-	for endpointID := range n.Endpoints {
-		endpoints = append(endpoints, endpointID)
+	s := output.Spinner()
+
+	nxc, grpcConn := grpc.GetTopologyAPIClient()
+	defer grpcConn.Close()
+
+	lr := &topology.ListNodesByTenantRequest{
+		Meta: &resource.ListRequest{},
+		Tenant: &tenant_pb.TenantReq{
+			AccountID: t.AccountID,
+			TenantID:  t.TenantID,
+		},
 	}
 
-	sort.Strings(endpoints)
+	nodes := make(map[string]*topology.Node) // map[nodeName]*topology.Node
 
-	if len(endpoints) == 0 {
-		msg.Info("No objects found")
-		os.Exit(1)
+	for {
+		nl, err := nxc.ListNodesByTenant(context.TODO(), lr)
+		if err != nil {
+			s.Stop()
+			status.Error(err, "Unable to list nodes by tenant")
+		}
+
+		for _, n := range nl.Nodes {
+			if n.Cfg != nil {
+				if len(n.Cfg.NodeName) > 0 {
+					nodes[n.Cfg.NodeName] = n
+				}
+			}
+		}
+
+		if len(nl.Meta.NextPageToken) > 0 {
+			lr.Meta.PageToken = nl.Meta.NextPageToken
+		} else {
+			break
+		}
 	}
 
-	eID = input.GetSelect("Endpoints:", "", endpoints, survey.Required)
+	s.Stop()
 
-	return n.Endpoints[eID]
+	return nodes
 }
 
-func nodes() map[string]*topology.Node {
+func nodesBySubnet() map[string]*topology.Node {
 	s := subnet.GetSubnet(false)
 
 	ss := output.Spinner()
-	defer ss.Stop()
 
 	nxc, grpcConn := grpc.GetTopologyAPIClient()
 	defer grpcConn.Close()
@@ -98,6 +170,7 @@ func nodes() map[string]*topology.Node {
 	for {
 		nl, err := nxc.ListNodesBySubnet(context.TODO(), lr)
 		if err != nil {
+			ss.Stop()
 			status.Error(err, "Unable to list nodes by subnet")
 		}
 
@@ -115,6 +188,8 @@ func nodes() map[string]*topology.Node {
 			break
 		}
 	}
+
+	ss.Stop()
 
 	return nodes
 }
