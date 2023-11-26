@@ -22,9 +22,7 @@ func (api *API) Delete() {
 	nr := &topology.NodeReq{
 		AccountID: n.AccountID,
 		TenantID:  n.TenantID,
-		// NetID:     n.NetID,
-		// SubnetID:  n.SubnetID,
-		NodeID: n.NodeID,
+		NodeID:    n.NodeID,
 	}
 
 	sr, err := nxc.DeleteNode(context.TODO(), nr)
