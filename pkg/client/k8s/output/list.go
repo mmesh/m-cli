@@ -53,18 +53,18 @@ func (api *API) List(k8sResources map[string]*resource.KubernetesResource) {
 
 func getNetStatus(r *resource.KubernetesResource) string {
 	tenantName := "-"
-	if len(r.TenantID) > 0 {
-		t := getTenant(r.TenantID)
+	if len(r.NetStatus.TenantID) > 0 {
+		t := getTenant(r.NetStatus.TenantID)
 		if t != nil {
 			tenantName = t.Name
 		}
 	}
 
-	netID := r.NetID
+	netID := r.NetStatus.NetID
 	if len(netID) == 0 {
 		netID = "-"
 	}
-	subnetID := r.SubnetID
+	subnetID := r.NetStatus.SubnetID
 	if len(subnetID) == 0 {
 		subnetID = "-"
 	}

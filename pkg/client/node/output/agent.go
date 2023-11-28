@@ -138,7 +138,7 @@ func agentInfo(n *topology.Node) {
 	t.AddRow(colors.Black("Port"), colors.DarkWhite(fmt.Sprintf("%d", na.Port)))
 
 	var k8sGw string
-	if ncfg.KubernetesGw {
+	if n.Type == topology.NodeType_K8S_GATEWAY {
 		k8sGw = output.StrEnabled("k8sGw")
 	}
 

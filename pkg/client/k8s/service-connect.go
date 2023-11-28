@@ -33,7 +33,7 @@ func (api *API) ConnectService() {
 		api.kubeConfig = kubeConfig
 	}
 
-	mgw := api.validKubernetesGateway(s, api.getKubernetesServices())
+	mgw := api.validKubernetesGateway(s, api.getKubernetesGateways())
 
 	ss := output.Spinner()
 
@@ -106,11 +106,11 @@ Enjoy :-)
 }
 
 func newAnnotations(r *resource.KubernetesResource, s *topology.Subnet) map[string]string {
-	dnsName, ok := r.Annotations["mmesh.io/dnsName"]
+	dnsName, ok := r.ServiceAnnotations["mmesh.io/dnsName"]
 	if !ok {
 		dnsName = r.Name
 	}
-	ipv4, ok := r.Annotations["mmesh.io/ipv4"]
+	ipv4, ok := r.ServiceAnnotations["mmesh.io/ipv4"]
 	if !ok {
 		ipv4 = "auto"
 	}

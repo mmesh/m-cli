@@ -5,6 +5,8 @@ import (
 )
 
 type Interface interface {
+	DeleteGateway()
+
 	ConnectService()
 	DisconnectService()
 

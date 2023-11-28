@@ -68,12 +68,7 @@ func (api *API) DisconnectPod() {
 			continue
 		}
 
-		ni, err := r.GetPodNodeInstance(&topology.Subnet{
-			AccountID: r.AccountID,
-			TenantID:  r.TenantID,
-			NetID:     r.NetID,
-			SubnetID:  r.SubnetID,
-		})
+		ni, err := r.GetPodNodeInstance(nil)
 		if err != nil {
 			s.Stop()
 			status.Error(err, "Unable to get node instance")

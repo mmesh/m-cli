@@ -6,21 +6,18 @@ import (
 	"mmesh.dev/m-cli/pkg/vars"
 )
 
-// k8sCmd represents the k8s command
 var k8sCmd = &cobra.Command{
 	Use:   "k8s",
 	Short: "Connect kubernetes clusters to your mmesh",
 	Long:  appHeader(`Connect kubernetes clusters to your mmesh.`),
 }
 
-// k8sServicesCmd represents the node list-services verb
 var k8sServicesCmd = &cobra.Command{
 	Use:   "svc",
 	Short: "Connect kubernetes services to your mmesh",
 	Long:  appHeader(`Connect kubernetes services to your mmesh.`),
 }
 
-// k8sPodsCmd represents the node list-services verb
 var k8sPodsCmd = &cobra.Command{
 	Use:   "pod",
 	Short: "Connect kubernetes pods to your mmesh",
@@ -38,7 +35,16 @@ var k8sPodsCmd = &cobra.Command{
 // 	},
 // }
 
-// k8sServicesListCmd represents the node list-services verb
+var k8sDeleteGatewayCmd = &cobra.Command{
+	Use:   "delete-gw",
+	Short: "Remove mmesh gateway from your kubernetes cluster",
+	Long:  appHeader(`Remove mmesh gateway from your kubernetes cluster.`),
+	Args:  cobra.NoArgs,
+	Run: func(cmd *cobra.Command, args []string) {
+		client.Kubernetes().DeleteGateway()
+	},
+}
+
 var k8sServicesListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List kubernetes services connected via mmesh ingress gateway",
@@ -52,7 +58,6 @@ var k8sServicesListCmd = &cobra.Command{
 	},
 }
 
-// k8sServicesConnectCmd represents the node connect verb
 var k8sServicesConnectCmd = &cobra.Command{
 	Use:   "connect",
 	Short: "Connect kubernetes services via mmesh ingress gateway",
@@ -66,7 +71,6 @@ var k8sServicesConnectCmd = &cobra.Command{
 	},
 }
 
-// k8sServicesDisconnectCmd represents the node disconnect verb
 var k8sServicesDisconnectCmd = &cobra.Command{
 	Use:   "disconnect",
 	Short: "Disconnect kubernetes services from mmesh ingress gateway",
@@ -125,6 +129,7 @@ var k8sPodsDisconnectCmd = &cobra.Command{
 func init() {
 	k8sCmd.AddCommand(k8sServicesCmd)
 	k8sCmd.AddCommand(k8sPodsCmd)
+	k8sCmd.AddCommand(k8sDeleteGatewayCmd)
 	k8sServicesCmd.AddCommand(k8sServicesListCmd)
 	k8sServicesCmd.AddCommand(k8sServicesConnectCmd)
 	k8sServicesCmd.AddCommand(k8sServicesDisconnectCmd)

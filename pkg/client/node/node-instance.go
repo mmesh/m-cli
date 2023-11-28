@@ -46,16 +46,14 @@ func (api *API) AddNode() {
 	nodeName := input.GetInput("Node Name:", "", "", input.ValidID)
 	desc := input.GetInput("Description:", "", "", nil)
 
-	nnr := &topology.NewGenericNodeRequest{
-		NodeRequest: &topology.NewNodeRequest{
-			AccountID:   s.AccountID,
-			TenantID:    s.TenantID,
-			NetID:       s.NetID,
-			SubnetID:    s.SubnetID,
-			NodeName:    nodeName,
-			Description: desc,
-			Type:        topology.NodeType_GENERIC,
-		},
+	nnr := &topology.NewNodeRequest{
+		AccountID:   s.AccountID,
+		TenantID:    s.TenantID,
+		NetID:       s.NetID,
+		SubnetID:    s.SubnetID,
+		NodeName:    nodeName,
+		Description: desc,
+		Type:        topology.NodeType_GENERIC,
 	}
 
 	ss := output.Spinner()

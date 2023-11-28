@@ -29,6 +29,16 @@ func (api *API) getKubernetesPods() map[string]*resource.KubernetesResource {
 	return rl
 }
 
+func (api *API) getKubernetesGateways() map[string]*resource.KubernetesResource {
+	rl := make(map[string]*resource.KubernetesResource)
+
+	for k, v := range api.getKubernetesServices() {
+		rl[k] = v
+	}
+
+	return rl
+}
+
 func (api *API) getKubernetesServices() map[string]*resource.KubernetesResource {
 	if api.kubeConfig == nil {
 		kubeConfig, err := getKubeConfig()
@@ -52,7 +62,7 @@ func (api *API) getKubernetesServices() map[string]*resource.KubernetesResource 
 			Name:                   s.ObjectMeta.Name,
 			Connected:              false,
 		}
-		r.ParseLabels(s.ObjectMeta.Labels)
+		r.ParseLabelsGateway(s.ObjectMeta.Labels)
 
 		rID := fmt.Sprintf("%s:%s", s.ObjectMeta.Namespace, s.ObjectMeta.Name)
 
@@ -84,9 +94,9 @@ func (api *API) getKubernetesServicesAnnotations() map[string]*resource.Kubernet
 			Namespace:              s.ObjectMeta.Namespace,
 			Name:                   s.ObjectMeta.Name,
 			Connected:              false,
-			Annotations:            make(map[string]string),
+			ServiceAnnotations:     make(map[string]string),
 		}
-		r.ParseAnnotations(s.ObjectMeta.Annotations)
+		r.ParseServiceAnnotations(s.ObjectMeta.Annotations)
 
 		rID := fmt.Sprintf("%s:%s", s.ObjectMeta.Namespace, s.ObjectMeta.Name)
 
@@ -119,7 +129,7 @@ func (api *API) getKubernetesStatefulSets() map[string]*resource.KubernetesResou
 			Name:                   ss.ObjectMeta.Name,
 			Connected:              false,
 		}
-		r.ParseLabels(ss.ObjectMeta.Labels)
+		r.ParseLabelsPod(ss.ObjectMeta.Labels)
 
 		rID := fmt.Sprintf("%s:%s", ss.ObjectMeta.Namespace, ss.ObjectMeta.Name)
 
@@ -152,7 +162,7 @@ func (api *API) getKubernetesDeployments() map[string]*resource.KubernetesResour
 			Name:                   d.ObjectMeta.Name,
 			Connected:              false,
 		}
-		r.ParseLabels(d.ObjectMeta.Labels)
+		r.ParseLabelsPod(d.ObjectMeta.Labels)
 
 		rID := fmt.Sprintf("%s:%s", d.ObjectMeta.Namespace, d.ObjectMeta.Name)
 
@@ -185,7 +195,7 @@ func (api *API) getKubernetesDaemonSets() map[string]*resource.KubernetesResourc
 			Name:                   ds.ObjectMeta.Name,
 			Connected:              false,
 		}
-		r.ParseLabels(ds.ObjectMeta.Labels)
+		r.ParseLabelsPod(ds.ObjectMeta.Labels)
 
 		rID := fmt.Sprintf("%s:%s", ds.ObjectMeta.Namespace, ds.ObjectMeta.Name)
 
@@ -219,7 +229,7 @@ func (api *API) getK8sResourceList(k8sResources map[string]*resource.KubernetesR
 			// status = "🟢"
 			// subnet = fmt.Sprintf(" %s", output.StrNormal(fmt.Sprintf("%s:%s", r.NetID, r.VRFID)))
 			// subnet = fmt.Sprintf("%s ", output.StrEnabled(fmt.Sprintf("%s:%s", r.NetID, r.VRFID)))
-			subnet = fmt.Sprintf("[%s:%s] ", r.NetID, r.SubnetID)
+			subnet = fmt.Sprintf("[%s:%s] ", r.NetStatus.NetID, r.NetStatus.SubnetID)
 		} else {
 			if connected {
 				continue

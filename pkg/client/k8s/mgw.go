@@ -18,10 +18,10 @@ import (
 
 func (api *API) validKubernetesGateway(s *topology.Subnet, gateways map[string]*resource.KubernetesResource) bool {
 	for _, sgw := range gateways {
-		if sgw.AccountID == s.AccountID &&
-			sgw.TenantID == s.TenantID &&
-			sgw.NetID == s.NetID &&
-			sgw.SubnetID == s.SubnetID {
+		if sgw.Labels.AccountID == s.AccountID &&
+			sgw.Labels.TenantID == s.TenantID &&
+			sgw.Labels.NetID == s.NetID &&
+			sgw.Labels.SubnetID == s.SubnetID {
 			// kubernetes gateway found for this subnet
 			return true
 		}

@@ -16,24 +16,39 @@ func (r *KubernetesResource) GetGatewayNodeInstance(s *topology.Subnet, external
 	nxc, grpcConn := grpc.GetTopologyAPIClient()
 	defer grpcConn.Close()
 
-	req := &topology.NewK8SGatewayRequest{
-		NodeRequest: &topology.NewNodeRequest{
-			AccountID:   s.AccountID,
-			TenantID:    s.TenantID,
-			NetID:       s.NetID,
-			SubnetID:    s.SubnetID,
-			NodeName:    r.Name,
-			Description: fmt.Sprintf("[k8s-gw] %s", r.Name),
-			Port:        externalPort,
-			Type:        topology.NodeType_K8S_GATEWAY,
-		},
-		ExternalPort: externalPort,
-		K8SOptsReq: &topology.KubernetesOptsRequest{
-			Namespace:  r.Namespace,
-			Name:       r.Name,
-			ReplicaSet: false,
+	if len(r.Labels.AccountID) > 0 && len(r.Labels.TenantID) > 0 && len(r.Labels.NodeGroupID) > 0 {
+		// nodeGroup already exists
+		ngr := &topology.NodeGroupReq{
+			AccountID:   r.Labels.AccountID,
+			TenantID:    r.Labels.TenantID,
+			NodeGroupID: r.Labels.NodeGroupID,
+		}
+
+		return nxc.GetNodeGroupInstance(context.TODO(), ngr)
+	}
+
+	// nodeGroup does not exist
+
+	if s == nil {
+		return nil, fmt.Errorf("missing subnet")
+	}
+
+	nnr := &topology.NewNodeRequest{
+		AccountID:   s.AccountID,
+		TenantID:    s.TenantID,
+		NetID:       s.NetID,
+		SubnetID:    s.SubnetID,
+		NodeName:    r.Name,
+		Description: fmt.Sprintf("[k8s-gw] %s", r.Name),
+		Port:        externalPort,
+		Type:        topology.NodeType_K8S_GATEWAY,
+		ReplicaSet:  false,
+		KubernetesAttrs: &topology.KubernetesAttrs{
+			Namespace: r.Namespace,
+			Name:      r.Name,
+			// PersistentVolume: false,
 		},
 	}
 
-	return nxc.CreateKubernetesGateway(context.TODO(), req)
+	return nxc.CreateKubernetesGateway(context.TODO(), nnr)
 }

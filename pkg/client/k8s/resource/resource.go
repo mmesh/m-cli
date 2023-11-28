@@ -13,17 +13,29 @@ type KubernetesResource struct {
 	Name                   string
 	Connected              bool
 
-	MMeshType string
-	AccountID string
-	TenantID  string
-	NetID     string
-	SubnetID  string
+	NetStatus NetStatus
 
-	// Labels map[string]string
-	Annotations map[string]string
+	Labels             KubernetesLabels
+	ServiceAnnotations map[string]string
 }
 
-func (r *KubernetesResource) ParseLabels(labels map[string]string) {
+type NetStatus struct {
+	TenantID string
+	NetID    string
+	SubnetID string
+}
+
+type KubernetesLabels struct {
+	NodeType  string
+	AccountID string
+	TenantID  string
+	// NodeID      string
+	NodeGroupID string
+	NetID       string
+	SubnetID    string
+}
+
+func (r *KubernetesResource) ParseLabelsPod(labels map[string]string) {
 	if labels == nil {
 		return
 	}
@@ -31,56 +43,93 @@ func (r *KubernetesResource) ParseLabels(labels map[string]string) {
 	for k, v := range labels {
 		switch k {
 		case "mmesh-type":
-			r.MMeshType = v
+			r.Labels.NodeType = v
 		case "mmesh-account":
-			r.AccountID = v
+			r.Labels.AccountID = v
 		case "mmesh-tenant":
-			r.TenantID = v
-		case "mmesh-network":
-			r.NetID = v
-		case "mmesh-subnet":
-			r.SubnetID = v
+			r.Labels.TenantID = v
+			r.NetStatus.TenantID = v
+		case "mmesh-nodegroup":
+			r.Labels.NodeGroupID = v
 		}
 	}
 
-	if len(r.MMeshType) > 0 &&
-		len(r.AccountID) > 0 &&
-		len(r.TenantID) > 0 &&
-		len(r.NetID) > 0 &&
-		len(r.SubnetID) > 0 {
+	if len(r.Labels.NodeType) > 0 &&
+		len(r.Labels.AccountID) > 0 &&
+		len(r.Labels.TenantID) > 0 &&
+		len(r.Labels.NodeGroupID) > 0 {
 		r.Connected = true
 	}
 }
 
-func (r *KubernetesResource) ParseAnnotations(annotations map[string]string) {
+func (r *KubernetesResource) ParseLabelsGateway(labels map[string]string) {
+	if labels == nil {
+		return
+	}
+
+	for k, v := range labels {
+		switch k {
+		case "mmesh-type":
+			r.Labels.NodeType = v
+		case "mmesh-account":
+			r.Labels.AccountID = v
+		case "mmesh-tenant":
+			r.Labels.TenantID = v
+			r.NetStatus.TenantID = v
+		// case "mmesh-node":
+		// 	r.Labels.NodeID = v
+		case "mmesh-nodegroup":
+			r.Labels.NodeGroupID = v
+		case "mmesh-network":
+			r.Labels.NetID = v
+			r.NetStatus.NetID = v
+		case "mmesh-subnet":
+			r.Labels.SubnetID = v
+			r.NetStatus.SubnetID = v
+		}
+	}
+
+	if len(r.Labels.NodeType) > 0 &&
+		len(r.Labels.AccountID) > 0 &&
+		len(r.Labels.TenantID) > 0 &&
+		len(r.Labels.NodeGroupID) > 0 &&
+		len(r.Labels.NetID) > 0 &&
+		len(r.Labels.SubnetID) > 0 {
+		r.Connected = true
+	}
+}
+
+func (r *KubernetesResource) ParseServiceAnnotations(annotations map[string]string) {
 	if annotations == nil {
 		return
 	}
 
+	var hasTenant, hasNetwork, hasSubnet bool
+
 	for k, v := range annotations {
 		switch k {
 		case "mmesh.io/account":
-			r.AccountID = v
-			r.Annotations[k] = v
+			r.ServiceAnnotations[k] = v
 		case "mmesh.io/tenant":
-			r.TenantID = v
-			r.Annotations[k] = v
+			r.ServiceAnnotations[k] = v
+			r.NetStatus.TenantID = v
+			hasTenant = true
 		case "mmesh.io/network":
-			r.NetID = v
-			r.Annotations[k] = v
+			r.ServiceAnnotations[k] = v
+			r.NetStatus.NetID = v
+			hasNetwork = true
 		case "mmesh.io/subnet":
-			r.SubnetID = v
-			r.Annotations[k] = v
+			r.ServiceAnnotations[k] = v
+			r.NetStatus.SubnetID = v
+			hasSubnet = true
 		case "mmesh.io/dnsName":
-			r.Annotations[k] = v
+			r.ServiceAnnotations[k] = v
 		case "mmesh.io/ipv4":
-			r.Annotations[k] = v
+			r.ServiceAnnotations[k] = v
 		}
 	}
 
-	if len(r.TenantID) > 0 &&
-		len(r.NetID) > 0 &&
-		len(r.SubnetID) > 0 {
+	if hasTenant && hasNetwork && hasSubnet {
 		r.Connected = true
 	}
 }
