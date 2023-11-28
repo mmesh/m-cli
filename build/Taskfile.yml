@@ -155,9 +155,9 @@ tasks:
       - task: docker:docker-login
       - docker push mmeshdev/mmeshctl:snapshot
       - docker push mmeshdev/mmeshctl:dev
-      - task: docker:ghcr-login
-      - docker push ghcr.io/mmesh/mmeshctl:snapshot
-      - docker push ghcr.io/mmesh/mmeshctl:dev
+      # - task: docker:ghcr-login
+      # - docker push ghcr.io/mmesh/mmeshctl:snapshot
+      # - docker push ghcr.io/mmesh/mmeshctl:dev
       - task: docker:image-scan
         vars: { IMAGE: "mmeshctl", REPO: "mmeshdev", TAG: "dev" }
 
