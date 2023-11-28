@@ -8,7 +8,7 @@ import (
 )
 
 func (a *API) CreateGateway(ni *topology.NodeInstance) error {
-	ns := ni.K8SOpts.Ns
+	ns := ni.Node.KubernetesAttrs.Namespace
 
 	if _, err := resources.API(a.KubeConfig).Namespace().Create(ns); err != nil {
 		return errors.Wrapf(err, "[%v] function resources.API().Namespace().Create()", errors.Trace())

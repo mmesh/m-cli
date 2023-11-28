@@ -20,11 +20,11 @@ func (a *API) NewContainer(i interface{}, appLabel config.AppLabel) *corev1.Cont
 		return nil
 	}
 
-	configVolumeName := fmt.Sprintf("%s-config", ni.K8SOpts.Name)
+	configVolumeName := fmt.Sprintf("%s-config", ni.Node.KubernetesAttrs.Name)
 
 	return &corev1.Container{
-		Name:            ni.K8SOpts.Name,
-		Image:           ni.K8SOpts.Image,
+		Name:            ni.Node.KubernetesAttrs.Name,
+		Image:           ni.Node.KubernetesAttrs.Image,
 		ImagePullPolicy: corev1.PullAlways,
 		SecurityContext: &corev1.SecurityContext{
 			Privileged: mm.Bool(true), // only needed by sysctl to enable ipv6

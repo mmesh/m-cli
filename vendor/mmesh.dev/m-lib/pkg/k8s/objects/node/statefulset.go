@@ -31,7 +31,7 @@ func (a *API) DisconnectStatefulSet(ns, name string, ni *topology.NodeInstance) 
 		return errors.Wrapf(err, "[%v] function resources.API().StatefulSet().RemoveContainer()", errors.Trace())
 	}
 
-	secretName := ni.K8SOpts.Name
+	secretName := ni.Node.KubernetesAttrs.Name
 
 	if err := resources.API(a.KubeConfig).Secret().Delete(ns, secretName); err != nil {
 		return errors.Wrapf(err, "[%v] function resources.API().Secret().Delete()", errors.Trace())

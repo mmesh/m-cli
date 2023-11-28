@@ -31,7 +31,7 @@ func (a *API) DisconnectDeployment(ns, name string, ni *topology.NodeInstance) e
 		return errors.Wrapf(err, "[%v] function resources.API().Deployment().RemoveContainer()", errors.Trace())
 	}
 
-	secretName := ni.K8SOpts.Name
+	secretName := ni.Node.KubernetesAttrs.Name
 
 	if err := resources.API(a.KubeConfig).Secret().Delete(ns, secretName); err != nil {
 		return errors.Wrapf(err, "[%v] function resources.API().Secret().Delete()", errors.Trace())

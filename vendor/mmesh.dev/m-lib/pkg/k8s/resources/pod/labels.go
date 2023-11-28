@@ -15,15 +15,5 @@ func (a *API) NewLabels(i interface{}, appLabel config.AppLabel) map[string]stri
 		return nil
 	}
 
-	return map[string]string{
-		// "mmesh-federation": ni.FederationID,
-		string(appLabel):   ni.Node.NodeID,
-		"mmesh-app":        string(appLabel),
-		"mmesh-objectID":   ni.Node.NodeID,
-		"mmesh-type":       config.GetInstanceLabelType(ni.Type),
-		"mmesh-account":    ni.Node.AccountID,
-		"mmesh-tenant":     ni.Node.TenantID,
-		"mmesh-network":    ni.Node.Cfg.NetID,
-		"mmesh-subnet":     ni.Node.Cfg.SubnetID,
-	}
+	return config.NodeLabels(ni)
 }

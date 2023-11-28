@@ -18,7 +18,7 @@ func (a *API) NewVolumes(i interface{}, appLabel config.AppLabel) []corev1.Volum
 		return nil
 	}
 
-	configVolumeName := fmt.Sprintf("%s-config", ni.K8SOpts.Name)
+	configVolumeName := fmt.Sprintf("%s-config", ni.Node.KubernetesAttrs.Name)
 
 	return []corev1.Volume{
 		{
@@ -33,7 +33,7 @@ func (a *API) NewVolumes(i interface{}, appLabel config.AppLabel) []corev1.Volum
 			Name: configVolumeName,
 			VolumeSource: corev1.VolumeSource{
 				Secret: &corev1.SecretVolumeSource{
-					SecretName: ni.K8SOpts.Name,
+					SecretName: ni.Node.KubernetesAttrs.Name,
 				},
 			},
 		},
