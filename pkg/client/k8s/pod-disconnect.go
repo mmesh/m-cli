@@ -92,15 +92,15 @@ func (api *API) DisconnectPod() {
 			}
 		}
 
-		nr := &topology.NodeReq{
-			AccountID: ni.Node.AccountID,
-			TenantID:  ni.Node.TenantID,
-			NodeID:    ni.Node.NodeID,
+		ngr := &topology.NodeGroupReq{
+			AccountID:   ni.Node.AccountID,
+			TenantID:    ni.Node.TenantID,
+			NodeGroupID: ni.Node.NodeGroupID,
 		}
 
-		if _, err := nxc.DeleteNode(context.TODO(), nr); err != nil {
+		if _, err := nxc.DeleteNodeGroup(context.TODO(), ngr); err != nil {
 			s.Stop()
-			status.Error(err, "Unable to delete node for k8s-pod")
+			status.Error(err, "Unable to delete kubernetes node group")
 		}
 	}
 

@@ -51,6 +51,12 @@ func (r *KubernetesResource) ParseLabelsPod(labels map[string]string) {
 			r.NetStatus.TenantID = v
 		case "mmesh-nodegroup":
 			r.Labels.NodeGroupID = v
+		case "mmesh-network":
+			// r.Labels.NetID = v
+			r.NetStatus.NetID = v
+		case "mmesh-subnet":
+			// r.Labels.SubnetID = v
+			r.NetStatus.SubnetID = v
 		}
 	}
 
