@@ -5,14 +5,13 @@ import (
 	"time"
 
 	"mmesh.dev/m-api-go/grpc/resources/events"
-	"mmesh.dev/m-api-go/grpc/resources/metrics"
 	"mmesh.dev/m-cli/pkg/output"
 	"mmesh.dev/m-cli/pkg/output/table"
 	"mmesh.dev/m-lib/pkg/resources"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
-func (api *API) ShowMetrics(em *metrics.EventMetrics) {
+func (api *API) ShowMetrics(em *events.EventMetrics) {
 	output.SubTitleT2("Activity")
 
 	t := table.New()
@@ -37,7 +36,7 @@ func (api *API) ShowMetrics(em *metrics.EventMetrics) {
 	fmt.Println()
 }
 
-func (api *API) FailureProbability(em *metrics.EventMetrics) string {
+func (api *API) FailureProbability(em *events.EventMetrics) string {
 	if em.FailProbability < 20 {
 		return colors.Green(fmt.Sprintf("%.2f%%", em.FailProbability))
 	} else if em.FailProbability < 60 {

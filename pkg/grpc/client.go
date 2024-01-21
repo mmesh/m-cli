@@ -182,6 +182,19 @@ func GetTopologyAPIClient() (rpc.TopologyAPIClient, *grpc.ClientConn) {
 	return nxc, conn
 }
 
+func GetNStoreAPIClient() (rpc.NStoreAPIClient, *grpc.ClientConn) {
+	p := getControllerAPIClientParams()
+
+	nxc, conn, err := client.NewNStoreAPIClient(p.grpcServer, p.authKey, p.authSecret)
+	if err != nil {
+		// msg.Errorf("Unable to connect to gRPC server. Check configuration and connectivity: %v", err)
+		msg.Errorf("Unable to connect to gRPC server: %v", errors.Cause(err))
+		os.Exit(1)
+	}
+
+	return nxc, conn
+}
+
 func GetMonitoringAPIClient() (rpc.MonitoringAPIClient, *grpc.ClientConn) {
 	p := getControllerAPIClientParams()
 
