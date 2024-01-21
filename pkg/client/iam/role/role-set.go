@@ -32,7 +32,7 @@ func (api *API) Set() {
 		role.RoleID = input.GetInput("Role ID:", "", "", validRoleID)
 	}
 
-	perms, err := nxc.ListIAMPermissions(context.TODO(), &empty.Empty{})
+	perms, err := nxc.ListIAMPermissions(context.TODO(), &empty.Request{})
 	if err != nil {
 		status.Error(err, "Unable to get IAM permissions")
 	}
