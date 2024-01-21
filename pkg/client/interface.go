@@ -4,7 +4,6 @@ import (
 	"mmesh.dev/m-cli/pkg/client/account"
 	"mmesh.dev/m-cli/pkg/client/alert"
 	"mmesh.dev/m-cli/pkg/client/auth"
-	"mmesh.dev/m-cli/pkg/client/billing"
 	// "mmesh.dev/m-cli/pkg/client/command"
 	// "mmesh.dev/m-cli/pkg/client/iam/acl"
 	// "mmesh.dev/m-cli/pkg/client/iam/role"
@@ -17,21 +16,12 @@ import (
 	"mmesh.dev/m-cli/pkg/client/ops/workflow"
 	"mmesh.dev/m-cli/pkg/client/ops/workflow/tasklog"
 	"mmesh.dev/m-cli/pkg/client/policy"
-	"mmesh.dev/m-cli/pkg/client/services"
 	"mmesh.dev/m-cli/pkg/client/subnet"
 	"mmesh.dev/m-cli/pkg/client/tenant"
 )
 
 func Auth() auth.Interface {
 	return &auth.API{}
-}
-
-func Billing() billing.Interface {
-	return &billing.API{}
-}
-
-func Services() services.Interface {
-	return &services.API{}
 }
 
 func Account() account.Interface {

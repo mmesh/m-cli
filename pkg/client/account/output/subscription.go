@@ -2,7 +2,6 @@ package output
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"mmesh.dev/m-api-go/grpc/resources/billing"
@@ -16,18 +15,6 @@ func showServiceSubscription(s *billing.Subscription, n int) {
 
 	svcID := fmt.Sprintf("%s%s%s %s", colors.DarkMagenta("["), colors.Magenta(fmt.Sprintf("%02d", n+1)), colors.DarkMagenta("]"), colors.Black("Service ID"))
 	t.AddRow(svcID, colors.DarkWhite(s.ServiceID))
-	if len(s.PricingPlanID) > 0 {
-		t.AddRow(colors.Black("     Plan ID"), output.StrID(strings.ToUpper(s.PricingPlanID)))
-	}
-	// if len(s.ProviderID) > 0 {
-	// 	t.AddRow(colors.Black("     Provider ID"), colors.DarkWhite(strings.Title(s.ProviderID)))
-	// }
-	if len(s.ProductID) > 0 {
-		t.AddRow(colors.Black("     Product ID"), colors.DarkWhite(strings.Title(s.ProductID)))
-	}
-	if len(s.PriceID) > 0 {
-		t.AddRow(colors.Black("     Price ID"), colors.DarkWhite(strings.Title(s.PriceID)))
-	}
 
 	if s.Discount != nil {
 		if len(s.Discount.PercentOff) > 0 {
@@ -75,12 +62,12 @@ func showServiceSubscription(s *billing.Subscription, n int) {
 		t.AddRow(colors.Black("     End Date"), colors.DarkWhite(tm))
 	}
 
-	if s.TrialStartDate != 0 {
-		tm = time.Unix(s.TrialStartDate, 0).String()
-		t.AddRow(colors.Black("     Trial Period Start"), colors.DarkWhite(tm))
-		tm = time.Unix(s.TrialEndDate, 0).String()
-		t.AddRow(colors.Black("     Trial Period End"), colors.DarkWhite(tm))
-	}
+	// if s.TrialStartDate != 0 {
+	// 	tm = time.Unix(s.TrialStartDate, 0).String()
+	// 	t.AddRow(colors.Black("     Trial Period Start"), colors.DarkWhite(tm))
+	// 	tm = time.Unix(s.TrialEndDate, 0).String()
+	// 	t.AddRow(colors.Black("     Trial Period End"), colors.DarkWhite(tm))
+	// }
 
 	tm = time.Unix(s.CurrentPeriodStart, 0).String()
 	t.AddRow(colors.Black("     Current Period Start"), colors.DarkWhite(tm))

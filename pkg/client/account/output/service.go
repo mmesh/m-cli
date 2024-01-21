@@ -2,6 +2,7 @@ package output
 
 import (
 	"fmt"
+	"strings"
 
 	"mmesh.dev/m-api-go/grpc/resources/account"
 	"mmesh.dev/m-cli/pkg/output"
@@ -61,6 +62,9 @@ func showService(a *account.Account) {
 
 		// ps := fmt.Sprintf("%d", len(a.Owner.Customer.StripePaymentSources))
 		// t.AddRow(colors.Black("Saved Payment Sources"), colors.DarkWhite(ps))
+		currency := colors.Yellow(strings.ToUpper(a.Owner.Customer.Currency))
+		currency = fmt.Sprintf("%s%s%s", colors.DarkYellow("["), currency, colors.DarkYellow("]"))
+		t.AddRow(colors.Black("Currency"), currency)
 		t.AddRow(colors.Black("Customer Balance"),
 			output.AmountMoney(a.Owner.Customer.Balance, a.Owner.Customer.Currency))
 		// output.CustomerBalance(a.Owner.Customer.Balance, a.Owner.Customer.Currency))
