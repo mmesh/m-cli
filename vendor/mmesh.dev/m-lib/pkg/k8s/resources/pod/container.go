@@ -63,8 +63,8 @@ func (a *API) NewContainer(i interface{}, appLabel config.AppLabel) *corev1.Cont
 			Limits: corev1.ResourceList{
 				// cpu: 30m
 				corev1.ResourceCPU: *resource.NewMilliQuantity(30, resource.DecimalSI),
-				// memory: 100Mi
-				corev1.ResourceMemory: *resource.NewQuantity(100*1024*1024, resource.BinarySI),
+				// memory: 200Mi
+				corev1.ResourceMemory: *resource.NewQuantity(200*1024*1024, resource.BinarySI),
 			},
 			Requests: corev1.ResourceList{
 				// cpu: 15m
