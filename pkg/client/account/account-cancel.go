@@ -40,7 +40,7 @@ func (api *API) Cancel() {
 
 func confirmCancelation() {
 	msg.Alert("You are about to cancel your mmesh account.")
-	msg.Alert("All its remaining resources (workflows, users, etc) will be deleted.")
+	msg.Alert("All its remaining resources or configurations (rbac, users, etc) will be deleted.")
 	msg.Alert("This action is irreversible, please, double check.")
 
 	if !input.GetConfirm("Confirm account cancelation?", false) {

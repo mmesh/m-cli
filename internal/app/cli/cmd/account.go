@@ -84,7 +84,6 @@ var accountSubscriptionCancelCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client.Account().Cancel()
-		client.Auth().Logout()
 	},
 }
 

@@ -8,6 +8,7 @@ import (
 
 	"github.com/briandowns/spinner"
 	"github.com/hokaccha/go-prettyjson"
+	"mmesh.dev/m-api-go/grpc/common/empty"
 	"mmesh.dev/m-api-go/grpc/common/status"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-lib/pkg/utils/colors"
@@ -15,7 +16,12 @@ import (
 )
 
 func Show(r interface{}) {
-	if sr, ok := r.(*status.StatusResponse); ok {
+	switch sr := r.(type) {
+	case *empty.Response:
+		msg.Info("Done")
+
+		return
+	case *status.StatusResponse:
 		switch sr.Code {
 		case status.StatusCode_OK:
 			msg.Info("Done")
