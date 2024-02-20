@@ -18,12 +18,6 @@ func (api *API) List(vss map[string]*topology.VS) {
 
 	for _, vs := range vss {
 		t.AddRow(vs.VSID, colors.DarkWhite(vs.Name), output.Fit(vs.Description, 32))
-		// t.AddRow(
-		// 	vs.VSID,
-		// 	colors.DarkWhite(vs.Name),
-		// 	colors.DarkWhite(vs.Proto.String()),
-		// 	colors.DarkWhite(fmt.Sprintf("%d", vs.VSPort)),
-		// )
 	}
 
 	t.Render()

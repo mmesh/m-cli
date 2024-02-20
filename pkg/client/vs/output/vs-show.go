@@ -30,7 +30,7 @@ func (api *API) Show(vs *topology.VS) {
 	} else {
 		t.AddRow(colors.Black("Authentication"), output.StrDisabled("no"))
 	}
-	// t.AddRow(colors.Black("Protocol"), colors.DarkWhite(vs.Proto.String()))
+	// t.AddRow(colors.Black("Protocol"), colors.DarkWhite(getProto(as.Proto)))
 	// t.AddRow(colors.Black("Port"), colors.DarkWhite(fmt.Sprintf("%d", vs.VSPort)))
 
 	t.Render()
