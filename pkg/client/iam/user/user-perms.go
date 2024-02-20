@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"mmesh.dev/m-api-go/grpc/resources/iam"
-	"mmesh.dev/m-api-go/grpc/rpc"
 	"mmesh.dev/m-cli/pkg/client/iam/acl"
 	"mmesh.dev/m-cli/pkg/client/iam/role"
 	"mmesh.dev/m-cli/pkg/client/iam/sg"
@@ -23,7 +22,7 @@ func (api *API) SetPermissions() {
 	supr := &iam.SetUserPermissionsRequest{
 		AccountID: u.AccountID,
 		UserID:    u.UserID,
-		RBAC:      setUserRBAC(nxc, u),
+		RBAC:      setUserRBAC(u),
 	}
 
 	s := output.Spinner()
@@ -39,7 +38,7 @@ func (api *API) SetPermissions() {
 	Output().Show(u)
 }
 
-func setUserRBAC(nxc rpc.IAMAPIClient, u *iam.User) *iam.UserRBAC {
+func setUserRBAC(u *iam.User) *iam.UserRBAC {
 	rbac := u.RBAC
 
 	rbac.SecurityGroups = input.GetMultiSelect("Security Groups:", "", getSecurityGroups(u.AccountID), rbac.SecurityGroups, nil)

@@ -22,6 +22,18 @@ func ShowUser(u *iam.User) {
 
 	t.AddRow(colors.Black("Account ID"), colors.DarkWhite(u.AccountID))
 	t.AddRow(colors.Black("User ID"), colors.DarkWhite(u.UserID))
+	t.AddRow(colors.Black("Email"), colors.DarkWhite(u.Email))
+
+	if u.Type == iam.UserType_USER_TYPE_ADM {
+		t.AddRow(colors.Black("User Type"), output.StrBlue("adm"))
+		// t.AddRow(colors.Black("Admin User"), output.StrEnabled("enabled"))
+		// t.AddRow(colors.Black("IAP User"), output.StrDisabled("disabled"))
+	}
+	if u.Type == iam.UserType_USER_TYPE_IAP {
+		t.AddRow(colors.Black("User Type"), output.StrBlue("proxy"))
+		// t.AddRow(colors.Black("Admin User"), output.StrDisabled("disabled"))
+		// t.AddRow(colors.Black("IAP User"), output.StrEnabled("enabled"))
+	}
 
 	if u.Status.Enabled {
 		t.AddRow(colors.Black("User Status"), output.StrEnabled("enabled"))

@@ -31,6 +31,32 @@ func GetInput(inputMsg, helpMsg, defaultValue string, v survey.Validator) string
 	return strings.TrimSpace(resp)
 }
 
+func GetMultiInput(inputMsg, helpMsg string, defaultValue []string, v survey.Validator) []string {
+	var resp string
+
+	if defaultValue == nil {
+		defaultValue = []string{}
+	}
+
+	defaultOpts := strings.Join(defaultValue, ",")
+
+	prompt := &survey.Input{Message: inputMsg, Help: helpMsg, Default: defaultOpts}
+
+	if v == nil {
+		if err := survey.AskOne(prompt, &resp, survey.WithIcons(SurveySetIcons)); err != nil {
+			status.Error(err, "Unable to get response")
+		}
+	} else {
+		if err := survey.AskOne(prompt, &resp, survey.WithValidator(v), survey.WithIcons(SurveySetIcons)); err != nil {
+			status.Error(err, "Unable to get response")
+		}
+	}
+
+	resp = strings.ToLower(strings.TrimSpace(resp))
+
+	return strings.Split(resp, ",")
+}
+
 func GetInputInt(inputMsg, helpMsg, defaultValue string, v survey.Validator) int {
 	n := GetInput(inputMsg, helpMsg, defaultValue, v)
 

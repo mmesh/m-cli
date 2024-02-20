@@ -6,7 +6,7 @@ var PricingPlanID string
 var LocationID string
 var FederationID string
 var AccountID string
-var TenantID, NetID, SubnetID, NodeID string
+var TenantID, NetID, SubnetID, NodeID, VSID string
 var ProjectID, WorkflowID, TaskLogID string
 var UserID, SecurityGroupID, RoleID, ACLID string
 var AlertID string

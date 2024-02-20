@@ -2,12 +2,10 @@ package acl
 
 import (
 	"context"
-	"fmt"
-	"sort"
 
 	"mmesh.dev/m-api-go/grpc/resources/iam"
 	"mmesh.dev/m-api-go/grpc/resources/topology"
-	"mmesh.dev/m-cli/pkg/client/account"
+	"mmesh.dev/m-cli/pkg/client/tenant"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
@@ -15,7 +13,7 @@ import (
 )
 
 func (api *API) Set() {
-	a := account.GetAccount()
+	t := tenant.GetTenant()
 
 	nxc1, grpcConn1 := grpc.GetTopologyAPIClient()
 	defer grpcConn1.Close()
@@ -27,59 +25,29 @@ func (api *API) Set() {
 		output.Choice("New RBAC ACL")
 
 		acl = &iam.ACL{
-			AccountID: a.AccountID,
-			Users:     make(map[string]bool),
+			AccountID: t.AccountID,
+			ACLID:     input.GetInput("ACL ID:", "", "", validACLID),
+			Users:     make(map[string]bool, 0),
+			Tags:      make([]string, 0),
 		}
-
-		acl.ACLID = input.GetInput("ACL ID:", "", "", validACLID)
 	}
 
 	s := output.Spinner()
 
 	req := &topology.TopologyRequest{
-		AccountID: a.AccountID,
+		AccountID: t.AccountID,
+		TenantID:  t.TenantID,
 	}
 
-	nsm, err := nxc1.GetNodeSummaryMap(context.TODO(), req)
+	ttags, err := nxc1.GetTopologyTags(context.TODO(), req)
 	if err != nil {
 		s.Stop()
-		status.Error(err, "Unable to get all-nodes summary")
-	}
-
-	// get all-node options
-	nodesOpts := make([]string, 0)
-	nodes := make(map[string]*topology.NodeSummary)
-
-	for _, n := range nsm.Nodes {
-		nodeOptID := fmt.Sprintf("[%s] %s: %s", n.TenantName, n.SubnetID, n.NodeName)
-		nodesOpts = append(nodesOpts, nodeOptID)
-		nodes[nodeOptID] = n
-	}
-
-	sort.Strings(nodesOpts)
-
-	// get current acl nodes
-	currentNodesOpts := make([]string, 0)
-	for _, nodeID := range acl.NodeIDs {
-		if n, ok := nsm.Nodes[nodeID]; ok {
-			nodeOptID := fmt.Sprintf("[%s] %s: %s", n.TenantName, n.SubnetID, n.NodeName)
-			currentNodesOpts = append(currentNodesOpts, nodeOptID)
-		}
+		status.Error(err, "Unable to get topology tags")
 	}
 
 	s.Stop()
 
-	nodesOpts = input.GetMultiSelect("Nodes:", "", nodesOpts, currentNodesOpts, nil)
-
-	nodeIDs := make([]string, 0)
-
-	for _, nodeOptID := range nodesOpts {
-		if ns, ok := nodes[nodeOptID]; ok {
-			nodeIDs = append(nodeIDs, ns.NodeID)
-		}
-	}
-
-	acl.NodeIDs = nodeIDs
+	acl.Tags = input.GetMultiSelect("Tags:", "", ttags.Tags, acl.Tags, nil)
 
 	s = output.Spinner()
 
@@ -94,5 +62,5 @@ func (api *API) Set() {
 
 	s.Stop()
 
-	Output().Show(acl, nsm)
+	Output().Show(acl)
 }

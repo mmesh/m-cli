@@ -27,7 +27,7 @@ func (api *API) New() {
 
 	nnr.RoutedSubnets = input.GetConfirm("Route this network's subnets each other?", false)
 
-	nnr.LocationID = getConnectivityZone().LocationID
+	nnr.LocationID = GetConnectivityZone().LocationID
 
 	s := output.Spinner()
 

@@ -24,6 +24,63 @@ func ValidUUID(id string) error {
 	return nil
 }
 
+func ValidName(val interface{}) error {
+	name := val.(string)
+
+	if len(name) == 0 {
+		return fmt.Errorf("invalid name: missing identifier")
+	}
+
+	if errMsgs := isDNS1035Label(name); len(errMsgs) > 0 {
+		err := fmt.Errorf("invalid name")
+
+		for _, errMsg := range errMsgs {
+			err = fmt.Errorf("%s | %s", err, errMsg)
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func ValidTags(val interface{}) error {
+	str := val.(string)
+
+	if len(str) == 0 {
+		return nil
+	}
+
+	tags := strings.Split(strings.ToLower(strings.TrimSpace(str)), ",")
+
+	for _, tag := range tags {
+		r, err := regexp.MatchString(`^[a-z]{1}[a-z0-9]+$`, tag)
+		if err != nil {
+			return err
+		}
+		if !r {
+			return errors.New("invalid tag")
+		}
+	}
+
+	return nil
+}
+
+func ValidFQDN(val interface{}) error {
+	fqdn := val.(string)
+
+	if len(fqdn) == 0 {
+		return nil
+		// return fmt.Errorf("missing fqdn")
+	}
+
+	if _, err := net.LookupHost(fqdn); err != nil {
+		return fmt.Errorf("invalid fqdn: %v", err)
+	}
+
+	return nil
+}
+
 func ValidID(val interface{}) error {
 	id := val.(string)
 
@@ -180,4 +237,62 @@ func ValidSSHPublicKey(val interface{}) error {
 	}
 
 	return nil
+}
+
+// regexps
+
+// Ref: https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/util/validation/validation.go
+
+// maxLenError returns a string explanation of a "string too long" validation
+// failure.
+func maxLenError(length int) string {
+	return fmt.Sprintf("must be no more than %d characters", length)
+}
+
+// regexError returns a string explanation of a regex validation failure.
+func regexError(msg string, fmt string, examples ...string) string {
+	if len(examples) == 0 {
+		return msg + " (regex used for validation is '" + fmt + "')"
+	}
+
+	msg += " (e.g. "
+	for i := range examples {
+		if i > 0 {
+			msg += " or "
+		}
+		msg += "'" + examples[i] + "', "
+	}
+	msg += "regex used for validation is '" + fmt + "')"
+
+	return msg
+}
+
+// emptyError returns a string explanation of a "must not be empty" validation
+// failure.
+func emptyError() string {
+	return "must be non-empty"
+}
+
+const dns1035LabelFmt string = "[a-z]([-a-z0-9]*[a-z0-9])?"
+
+const dns1035LabelErrMsg string = "a DNS-1035 label must consist of lower case alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character"
+
+// DNS1035LabelMaxLength is a label's max length in DNS (RFC 1035)
+const DNS1035LabelMaxLength int = 63
+
+var dns1035LabelRegexp = regexp.MustCompile("^" + dns1035LabelFmt + "$")
+
+// IsDNS1035Label tests for a string that conforms to the definition of a label in
+// DNS (RFC 1035).
+func isDNS1035Label(value string) []string {
+	var errs []string
+
+	if len(value) > DNS1035LabelMaxLength {
+		errs = append(errs, maxLenError(DNS1035LabelMaxLength))
+	}
+
+	if !dns1035LabelRegexp.MatchString(value) {
+		errs = append(errs, regexError(dns1035LabelErrMsg, dns1035LabelFmt, "my-name", "abc-123"))
+	}
+	return errs
 }

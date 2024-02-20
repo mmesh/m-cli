@@ -14,7 +14,7 @@ import (
 	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
-func getConnectivityZone() *location.Location {
+func GetConnectivityZone() *location.Location {
 	ll := listConnectivityLocations()
 
 	if len(ll) == 0 {

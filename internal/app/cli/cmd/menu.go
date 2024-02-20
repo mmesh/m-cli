@@ -10,9 +10,7 @@ var iamCmd = &cobra.Command{
 	Short: "Users administration and access management (RBAC)",
 	Long:  appHeader(`Users administration and access management (RBAC).`),
 }
-*/
 
-/*
 var userCmd = &cobra.Command{
 	Use:   "user",
 	Short: "User settings",
@@ -54,6 +52,7 @@ func init() {
 	rootCmd.AddCommand(networkCmd)
 	rootCmd.AddCommand(subnetCmd)
 	rootCmd.AddCommand(nodeCmd)
+	rootCmd.AddCommand(vsCmd)
 	rootCmd.AddCommand(networkPolicyCmd)
 	rootCmd.AddCommand(k8sCmd)
 	// rootCmd.AddCommand(serviceCmd)

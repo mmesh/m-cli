@@ -4,8 +4,10 @@ import (
 	"mmesh.dev/m-cli/pkg/client/account"
 	"mmesh.dev/m-cli/pkg/client/alert"
 	"mmesh.dev/m-cli/pkg/client/auth"
+	"mmesh.dev/m-cli/pkg/client/vs"
+
 	// "mmesh.dev/m-cli/pkg/client/command"
-	// "mmesh.dev/m-cli/pkg/client/iam/acl"
+	"mmesh.dev/m-cli/pkg/client/iam/acl"
 	// "mmesh.dev/m-cli/pkg/client/iam/role"
 	// "mmesh.dev/m-cli/pkg/client/iam/sg"
 	"mmesh.dev/m-cli/pkg/client/iam/user"
@@ -44,15 +46,19 @@ func Node() node.Interface {
 	return &node.API{}
 }
 
+func VS() vs.Interface {
+	return &vs.API{}
+}
+
 func NetworkPolicy() policy.Interface {
 	return &policy.API{}
 }
 
-/*
 func ACL() acl.Interface {
 	return &acl.API{}
 }
 
+/*
 func Role() role.Interface {
 	return &role.API{}
 }
