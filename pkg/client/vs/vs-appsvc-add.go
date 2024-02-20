@@ -34,6 +34,10 @@ func (api *API) AddVSAppSvc() {
 		status.Error(fmt.Errorf("vs/node tenantID mismatch"), "Unable to modifiy virtual server")
 	}
 
+	if vs.NetID != n.Cfg.NetID {
+		status.Error(fmt.Errorf("vs/node netID mismatch"), "Unable to modifiy virtual server")
+	}
+
 	protocols := []string{"HTTP", "HTTPS"}
 	var defaultPort string
 	var rsProto topology.VSProto
@@ -49,8 +53,6 @@ func (api *API) AddVSAppSvc() {
 		defaultPort = "443"
 	}
 
-	rsPort := getPort(defaultPort)
-
 	avsasr.NodeAppSvcReq = &topology.NodeAppSvcReq{
 		TenantID:          n.TenantID,
 		NetID:             n.Cfg.NetID,
@@ -58,9 +60,9 @@ func (api *API) AddVSAppSvc() {
 		NodeID:            n.NodeID,
 		NodeName:          n.Cfg.NodeName,
 		AppSvcName:        input.GetInput("App Svc Name:", "", "", input.ValidName),
-		AppSvcDescription: input.GetInput("Description:", "", "", survey.Required),
+		AppSvcDescription: input.GetInput("Description:", "", "", nil),
 		Proto:             rsProto,
-		RSPort:            rsPort,
+		RSPort:            getAppSvcPort(defaultPort),
 	}
 
 	s := output.Spinner()

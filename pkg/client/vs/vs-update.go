@@ -3,7 +3,6 @@ package vs
 import (
 	"context"
 
-	"github.com/AlecAivazis/survey/v2"
 	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
@@ -26,7 +25,7 @@ func (api *API) Update() {
 		AccountID:   vs.AccountID,
 		VSID:        vs.VSID,
 		Name:        input.GetInput("Name:", "", vs.Name, input.ValidName),
-		Description: input.GetInput("Description:", "", vs.Description, survey.Required),
+		Description: input.GetInput("Description:", "", vs.Description, nil),
 		LocationID:  vs.LocationID,
 		Cname:       input.GetInput("Custom DNS CNAME:", "Fully Qualified Domain Name", vs.Cname, input.ValidFQDN),
 		ReqAuth:     input.GetConfirm("Authentication:", vs.ReqAuth),
@@ -34,7 +33,7 @@ func (api *API) Update() {
 	}
 
 	if len(uvsr.Cname) > 0 {
-		if err := ipnet.VSCNAMEIsValid(uvsr.Cname, uvsr.LocationID); err != nil {
+		if err := ipnet.VSCNAMEIsValid(uvsr.Cname, vs.LocationID); err != nil {
 			status.Error(err, "Unable to modify virtual server")
 		}
 	}

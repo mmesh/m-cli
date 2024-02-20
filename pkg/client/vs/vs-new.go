@@ -9,7 +9,6 @@ import (
 	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-cli/pkg/client/network"
 	"mmesh.dev/m-cli/pkg/client/node"
-	"mmesh.dev/m-cli/pkg/client/tenant"
 	"mmesh.dev/m-cli/pkg/grpc"
 	"mmesh.dev/m-cli/pkg/input"
 	"mmesh.dev/m-cli/pkg/output"
@@ -19,14 +18,15 @@ import (
 )
 
 func (api *API) New() {
-	t := tenant.GetTenant()
+	nw := network.GetNetwork(false)
 
 	nvsr := &topology.NewVSRequest{
-		AccountID:   t.AccountID,
-		TenantID:    t.TenantID,
+		AccountID:   nw.AccountID,
+		TenantID:    nw.TenantID,
+		NetID:       nw.NetID,
 		Name:        input.GetInput("VS Name:", "", "", input.ValidName),
-		Description: input.GetInput("Description:", "", "", survey.Required),
-		LocationID:  network.GetConnectivityZone().LocationID,
+		Description: input.GetInput("Description:", "", "", nil),
+		LocationID:  nw.LocationID,
 		Cname:       input.GetInput("Custom DNS CNAME:", "Fully Qualified Domain Name", "", input.ValidFQDN),
 		ReqAuth:     input.GetConfirm("Authentication:", true),
 		Proto:       topology.VSProto_PROTO_TCP_HTTPS,
@@ -62,8 +62,12 @@ func (api *API) New() {
 
 		n := node.GetNodeByTenant(false, mm.Bool(true))
 
-		if t.TenantID != n.TenantID {
+		if nw.TenantID != n.TenantID {
 			status.Error(fmt.Errorf("vs/node tenantID mismatch"), "Unable to create virtual server")
+		}
+
+		if nw.NetID != n.Cfg.NetID {
+			status.Error(fmt.Errorf("vs/node netID mismatch"), "Unable to create virtual server")
 		}
 
 		proto := input.GetSelect("Protocol:", "", protocols, survey.Required)
@@ -84,9 +88,9 @@ func (api *API) New() {
 			NodeID:            n.NodeID,
 			NodeName:          n.Cfg.NodeName,
 			AppSvcName:        input.GetInput("App Svc Name:", "", "", input.ValidName),
-			AppSvcDescription: input.GetInput("Description:", "", "", survey.Required),
+			AppSvcDescription: input.GetInput("Description:", "", "", nil),
 			Proto:             rsProto,
-			RSPort:            getPort(defaultPort),
+			RSPort:            getAppSvcPort(defaultPort),
 		}
 
 		nodeCount++
@@ -113,8 +117,8 @@ func (api *API) New() {
 	Output().Show(vs)
 }
 
-func getPort(defaultPort string) int32 {
-	port := input.GetInput("VS Port:", "", defaultPort, input.ValidPort)
+func getAppSvcPort(defaultPort string) int32 {
+	port := input.GetInput("App Svc Port:", "", defaultPort, input.ValidPort)
 	p, err := strconv.Atoi(port)
 	if err != nil {
 		status.Error(err, "Invalid port")
