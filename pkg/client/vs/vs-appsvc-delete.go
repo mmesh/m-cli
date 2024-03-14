@@ -26,7 +26,7 @@ func (api *API) DeleteVSAppSvc() {
 	appSvcs := make(map[string]*topology.AppSvc)
 
 	for _, as := range vs.AppSvcs {
-		appSvcOptID = fmt.Sprintf("[%s] %s", as.Name, as.Description)
+		appSvcOptID = fmt.Sprintf("[%s] port %d", as.NodeName, as.RSPort)
 		appSvcsOpts = append(appSvcsOpts, appSvcOptID)
 		appSvcs[appSvcOptID] = as
 	}

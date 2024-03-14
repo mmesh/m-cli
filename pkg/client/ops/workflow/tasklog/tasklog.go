@@ -33,7 +33,30 @@ func GetTaskLog() *ops.TaskLog {
 
 	taskLogID = input.GetSelect("TaskLog:", "", taskLogOpts, survey.Required)
 
-	return taskLogList[taskLogID]
+	tl := taskLogList[taskLogID]
+
+	s := output.Spinner()
+
+	nxc, grpcConn := grpc.GetOpsAPIClient()
+	defer grpcConn.Close()
+
+	tlr := &ops.TaskLogReq{
+		AccountID:  tl.AccountID,
+		TenantID:   tl.TenantID,
+		ProjectID:  tl.ProjectID,
+		WorkflowID: tl.WorkflowID,
+		TaskLogID:  tl.TaskLogID,
+	}
+
+	tl, err := nxc.GetTaskLog(context.TODO(), tlr)
+	if err != nil {
+		s.Stop()
+		status.Error(err, "Unable to get tasklog")
+	}
+
+	s.Stop()
+
+	return tl
 }
 
 func taskLogs() []*ops.TaskLog {

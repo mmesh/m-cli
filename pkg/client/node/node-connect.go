@@ -29,7 +29,6 @@ func (api *API) Connect() {
 		},
 		NetID:    s.NetID,
 		SubnetID: s.SubnetID,
-		Tags:     n.Cfg.Tags,
 	}
 
 	sr, err := nxc.UpdateNodeNetworking(context.TODO(), unr)
@@ -60,7 +59,6 @@ func (api *API) Disconnect() {
 		},
 		NetID:    "",
 		SubnetID: "",
-		Tags:     n.Cfg.Tags,
 	}
 
 	sr, err := nxc.UpdateNodeNetworking(context.TODO(), unr)

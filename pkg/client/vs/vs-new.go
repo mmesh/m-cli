@@ -82,15 +82,15 @@ func (api *API) New() {
 		}
 
 		nodeAppSvcMap[n.NodeID] = &topology.NodeAppSvcReq{
-			TenantID:          n.TenantID,
-			NetID:             n.Cfg.NetID,
-			SubnetID:          n.Cfg.SubnetID,
-			NodeID:            n.NodeID,
-			NodeName:          n.Cfg.NodeName,
-			AppSvcName:        input.GetInput("App Svc Name:", "", "", input.ValidName),
-			AppSvcDescription: input.GetInput("Description:", "", "", nil),
-			Proto:             rsProto,
-			RSPort:            getAppSvcPort(defaultPort),
+			TenantID: n.TenantID,
+			NetID:    n.Cfg.NetID,
+			SubnetID: n.Cfg.SubnetID,
+			NodeID:   n.NodeID,
+			NodeName: n.Cfg.NodeName,
+			// AppSvcName:        input.GetInput("App Svc Name:", "", "", input.ValidName),
+			// AppSvcDescription: input.GetInput("Description:", "", "", nil),
+			Proto:  rsProto,
+			RSPort: getAppSvcPort(defaultPort),
 		}
 
 		nodeCount++

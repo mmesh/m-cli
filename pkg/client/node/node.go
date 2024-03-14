@@ -110,7 +110,7 @@ func nodesByTenant() map[string]*topology.Node {
 	nxc, grpcConn := grpc.GetTopologyAPIClient()
 	defer grpcConn.Close()
 
-	lr := &topology.ListNodesByTenantRequest{
+	lr := &topology.ListNodesRequest{
 		Meta: &resource.ListRequest{},
 		Tenant: &tenant_pb.TenantReq{
 			AccountID: t.AccountID,
@@ -121,7 +121,7 @@ func nodesByTenant() map[string]*topology.Node {
 	nodes := make(map[string]*topology.Node) // map[nodeName]*topology.Node
 
 	for {
-		nl, err := nxc.ListNodesByTenant(context.TODO(), lr)
+		nl, err := nxc.ListNodes(context.TODO(), lr)
 		if err != nil {
 			s.Stop()
 			status.Error(err, "Unable to list nodes by tenant")
@@ -155,20 +155,22 @@ func nodesBySubnet() map[string]*topology.Node {
 	nxc, grpcConn := grpc.GetTopologyAPIClient()
 	defer grpcConn.Close()
 
-	lr := &topology.ListNodesBySubnetRequest{
+	lr := &topology.ListNodesRequest{
 		Meta: &resource.ListRequest{},
-		Subnet: &topology.SubnetReq{
+		Tenant: &tenant_pb.TenantReq{
 			AccountID: s.AccountID,
 			TenantID:  s.TenantID,
-			NetID:     s.NetID,
-			SubnetID:  s.SubnetID,
+		},
+		Filter: &topology.NodeFilter{
+			NetID:    s.NetID,
+			SubnetID: s.SubnetID,
 		},
 	}
 
 	nodes := make(map[string]*topology.Node) // map[nodeName]*topology.Node
 
 	for {
-		nl, err := nxc.ListNodesBySubnet(context.TODO(), lr)
+		nl, err := nxc.ListNodes(context.TODO(), lr)
 		if err != nil {
 			ss.Stop()
 			status.Error(err, "Unable to list nodes by subnet")
