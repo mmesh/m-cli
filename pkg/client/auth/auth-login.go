@@ -52,16 +52,22 @@ func (api *API) OTPSignin(req *auth_pb.OTPSigninRequest, verbose bool) {
 	s.Stop()
 
 	if otpResp.UserCreated {
-		msg.Info("Welcome to mmesh!")
+		fmt.Printf("%s\n\n",
+			colors.Black(`Welcome to mmesh.io!
 
-		// go to setup URL
-		setupURL := "https://mmesh.io/app/setup"
+Your user does not have an account registered, but you can now create one for free
+at https://mmesh.io/signin to start enjoying the platform in less than 2 minutes.
 
-		if err := open.Start(setupURL); err != nil {
+Thanks for using mmesh.io ;)`))
+
+		// go to signin URL
+		signinURL := "https://cloud.mmesh.io/signin"
+
+		if err := open.Start(signinURL); err != nil {
 			status.Error(err, "Unable to open URL in your browser")
 		}
 
-		fmt.Printf("\n%s %s\n\n", colors.DarkWhite("🢂"), colors.Black("Opening setup URL in your browser..."))
+		fmt.Printf("\n%s %s\n\n", colors.DarkWhite("->"), colors.Black("Opening signin URL in your browser..."))
 
 		return
 	}
