@@ -132,7 +132,7 @@ archives:
           mode: 0644
 
 brews:
-  - tap:
+  - repository:
       owner: mmesh
       name: homebrew-tap
       branch: master
@@ -261,7 +261,7 @@ release:
     - Follow us on [Twitter](https://twitter.com/mmesh_io)
 
 changelog:
-  skip: false
+  disable: false
   use: github
   sort: asc
   groups:
